@@ -1,6 +1,6 @@
-package com.spider.extractor.impl;
+package im.nll.spider.extractor.impl;
 
-import com.spider.extractor.Extractor;
+import im.nll.spider.extractor.Extractor;
 
 /**
  * @author <a href="mailto:fivesmallq@gmail.com">fivesmallq</a>

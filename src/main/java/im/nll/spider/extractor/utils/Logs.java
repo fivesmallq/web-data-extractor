@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.spider.extractor.utils;
+package im.nll.spider.extractor.utils;
 
 
 import org.slf4j.Logger;

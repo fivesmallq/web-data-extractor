@@ -1,4 +1,4 @@
-package com.spider.extractor;
+package im.nll.spider.extractor;
 
 /**
  * @author <a href="mailto:fivesmallq@gmail.com">fivesmallq</a>

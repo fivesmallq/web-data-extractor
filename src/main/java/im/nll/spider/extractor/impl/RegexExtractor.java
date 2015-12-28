@@ -1,7 +1,7 @@
-package com.spider.extractor.impl;
+package im.nll.spider.extractor.impl;
 
-import com.spider.extractor.Extractor;
-import com.spider.extractor.utils.StringUtils;
+import im.nll.spider.extractor.Extractor;
+import im.nll.spider.extractor.utils.StringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
