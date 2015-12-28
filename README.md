@@ -59,4 +59,4 @@ String name = WebDataExtractor.of(html).selector("tr:contains(名称) td", "0").
     }
 ````
 
-see [WebDataExtractorsTest](https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/com/nihiler/spider/WebDataExtractorsTest.java)
+see [WebDataExtractorsTest](https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/com/spider/extractor/WebDataExtractorsTest.java)
