@@ -2,14 +2,42 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.nihiler.spider</groupId>
+    <groupId>im.nll.spider</groupId>
     <artifactId>web-data-extractor</artifactId>
     <version>0.9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>extractor</name>
-    <url>http://maven.apache.org</url>
+    <name>name>${project.groupId}:${project.artifactId}</name>
+    <description>Web Data Extractor</description>
+    <url>https://github.com/fivesmallq/web-data-extractor</url>
+    <inceptionYear>2015</inceptionYear>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>http://github.com/fivesmallq/web-data-extractor/issues</url>
+    </issueManagement>
 
+    <developers>
+        <developer>
+            <name>fivesmallq</name>
+            <email>fivesmallq@gmail.com</email>
+            <url>http://nll.im</url>
+        </developer>
+    </developers>
+    <scm>
+        <connection>
+            scm:git:https://github.com/fivesmallq/web-data-extractor.git
+        </connection>
+        <developerConnection>
+            scm:git:https://github.com/fivesmallq/web-data-extractor.git
+        </developerConnection>
+        <url>https://github.com/fivesmallq/web-data-extractor</url>
+    </scm>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -72,18 +100,6 @@
                 <configuration>
                     <skipTests>true</skipTests>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>pl.project13.maven</groupId>
