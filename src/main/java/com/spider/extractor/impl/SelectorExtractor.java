@@ -1,7 +1,7 @@
-package com.nihiler.spider.impl;
+package com.spider.extractor.impl;
 
-import com.nihiler.spider.Extractor;
-import com.nihiler.spider.utils.StringUtils;
+import com.spider.extractor.Extractor;
+import com.spider.extractor.utils.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 

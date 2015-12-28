@@ -1,10 +1,10 @@
-package com.nihiler.spider;
+package com.spider.extractor;
 
 import com.google.common.collect.Lists;
-import com.nihiler.spider.impl.JSONPathExtractor;
-import com.nihiler.spider.impl.RegexExtractor;
-import com.nihiler.spider.impl.SelectorExtractor;
-import com.nihiler.spider.impl.XPathExtractor;
+import com.spider.extractor.impl.JSONPathExtractor;
+import com.spider.extractor.impl.RegexExtractor;
+import com.spider.extractor.impl.SelectorExtractor;
+import com.spider.extractor.impl.XPathExtractor;
 
 import java.util.List;
 

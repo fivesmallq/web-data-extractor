@@ -1,4 +1,4 @@
-package com.nihiler.spider;
+package com.spider.extractor;
 
 public class Basic {
     private String number;

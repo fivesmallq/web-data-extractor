@@ -1,4 +1,4 @@
-package com.nihiler.spider.utils;
+package com.spider.extractor.utils;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;

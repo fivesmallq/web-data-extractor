@@ -1,8 +1,8 @@
-package com.nihiler.spider;
+package com.spider.extractor;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.nihiler.spider.impl.SelectorExtractor;
+import com.spider.extractor.impl.SelectorExtractor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
