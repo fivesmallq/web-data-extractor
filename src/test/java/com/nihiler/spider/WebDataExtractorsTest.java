@@ -4,8 +4,10 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.nihiler.spider.impl.SelectorExtractor;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -14,17 +16,25 @@ import java.util.Map;
  * @date 15/12/25 下午9:34
  */
 public class WebDataExtractorsTest {
+    private String html;
+
+    @Before
+    public void before() {
+        try {
+            html = Resources.toString(Resources.getResource("basic.html"), Charsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void testGet() throws Exception {
-        String html = Resources.toString(Resources.getResource("basic.html"), Charsets.UTF_8);
-
-        String number = WebDataExtractor.of(html).extract(new SelectorExtractor("tr:contains(注册号) td", "0")).get();
-        String name = WebDataExtractor.of(html).selector("tr:contains(名称) td", "1").get();
-        String type = WebDataExtractor.of(html).selector("tr:contains(类型) td", "0").get();
-        String legalPersion = WebDataExtractor.of(html).selector("tr:contains(法定代表人) td", "1").get();
-        String address = WebDataExtractor.of(html).selector("tr:contains(住所) td", "0").get();
-        String money = WebDataExtractor.of(html).selector("tr:contains(注册资本) td", "0").regex("\\d+.\\d+").get();
+        String number = WebDataExtractor.of(html).filter(new SelectorExtractor("tr:contains(注册号) td", "0")).asString();
+        String name = WebDataExtractor.of(html).selector("tr:contains(名称) td", "1").asString();
+        String type = WebDataExtractor.of(html).selector("tr:contains(类型) td", "0").asString();
+        String legalPersion = WebDataExtractor.of(html).selector("tr:contains(法定代表人) td", "1").asString();
+        String address = WebDataExtractor.of(html).selector("tr:contains(住所) td", "0").asString();
+        String money = WebDataExtractor.of(html).selector("tr:contains(注册资本) td", "0").regex("\\d+.\\d+").asString();
 
         Assert.assertEquals(number, "110000003277298");
         Assert.assertEquals(name, "高德软件有限公司");
@@ -36,9 +46,7 @@ public class WebDataExtractorsTest {
 
     @Test
     public void testToMap() throws Exception {
-        String html = Resources.toString(Resources.getResource("basic.html"), Charsets.UTF_8);
-
-        Map<String, String> dataMap = WebDataExtractor.of(html).toMap(
+        Map<String, String> dataMap = WebDataExtractor.of(html).asMap(
                 Extractors.nameOf("number").selector("tr:contains(注册号) td", "0"),
                 Extractors.nameOf("name").selector("tr:contains(名称) td", "1"),
                 Extractors.nameOf("type").selector("tr:contains(类型) td", "0"),
@@ -56,8 +64,7 @@ public class WebDataExtractorsTest {
 
     @Test
     public void testToBean() throws Exception {
-        String html = Resources.toString(Resources.getResource("basic.html"), Charsets.UTF_8);
-        Basic basic = WebDataExtractor.of(html).toBean(Basic.class,
+        Basic basic = WebDataExtractor.of(html).asBean(Basic.class,
                 Extractors.nameOf("number").selector("tr:contains(注册号) td", "0"),
                 Extractors.nameOf("name").selector("tr:contains(名称) td", "1"),
                 Extractors.nameOf("type").selector("tr:contains(类型) td", "0"),

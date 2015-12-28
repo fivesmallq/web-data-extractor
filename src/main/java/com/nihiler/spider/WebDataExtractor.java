@@ -25,7 +25,7 @@ public class WebDataExtractor {
         return new WebDataExtractor(html);
     }
 
-    public WebDataExtractor extract(Extractor extractor) {
+    public WebDataExtractor filter(Extractor extractor) {
         this.html = extractor.extract(html);
         return this;
     }
@@ -50,11 +50,11 @@ public class WebDataExtractor {
         return this;
     }
 
-    public String get() {
+    public String asString() {
         return html;
     }
 
-    public Map<String, String> toMap(Extractors... extractors) {
+    public Map<String, String> asMap(Extractors... extractors) {
         Map<String, String> dataMap = Maps.newLinkedHashMap();
         for (Extractors extractorsOne : extractors) {
             String data = extractorsOne.extract(this.html);
@@ -64,7 +64,7 @@ public class WebDataExtractor {
     }
 
 
-    public <T> T toBean(Class<T> clazz, Extractors... extractors) {
+    public <T> T asBean(Class<T> clazz, Extractors... extractors) {
         T entity = Reflect.on(clazz).create().get();
         for (Extractors extractorsOne : extractors) {
             String name = extractorsOne.getName();
