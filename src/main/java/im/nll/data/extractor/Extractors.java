@@ -1,10 +1,10 @@
-package im.nll.spider.extractor;
+package im.nll.data.extractor;
 
 import com.google.common.collect.Lists;
-import im.nll.spider.extractor.impl.JSONPathExtractor;
-import im.nll.spider.extractor.impl.RegexExtractor;
-import im.nll.spider.extractor.impl.SelectorExtractor;
-import im.nll.spider.extractor.impl.XPathExtractor;
+import im.nll.data.extractor.impl.JSONPathExtractor;
+import im.nll.data.extractor.impl.RegexExtractor;
+import im.nll.data.extractor.impl.SelectorExtractor;
+import im.nll.data.extractor.impl.XPathExtractor;
 
 import java.util.List;
 

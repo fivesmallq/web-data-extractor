@@ -1,4 +1,4 @@
-package im.nll.spider.extractor;
+package im.nll.data.extractor;
 
 public class Basic {
     private String number;

@@ -1,11 +1,11 @@
-package im.nll.spider.extractor;
+package im.nll.data.extractor;
 
 import com.google.common.collect.Maps;
-import im.nll.spider.extractor.impl.JSONPathExtractor;
-import im.nll.spider.extractor.impl.RegexExtractor;
-import im.nll.spider.extractor.impl.SelectorExtractor;
-import im.nll.spider.extractor.impl.XPathExtractor;
-import im.nll.spider.extractor.utils.Reflect;
+import im.nll.data.extractor.impl.JSONPathExtractor;
+import im.nll.data.extractor.impl.RegexExtractor;
+import im.nll.data.extractor.impl.SelectorExtractor;
+import im.nll.data.extractor.impl.XPathExtractor;
+import im.nll.data.extractor.utils.Reflect;
 
 import java.util.Map;
 

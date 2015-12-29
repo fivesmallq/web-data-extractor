@@ -1,4 +1,4 @@
-package im.nll.spider.extractor.utils;
+package im.nll.data.extractor.utils;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;

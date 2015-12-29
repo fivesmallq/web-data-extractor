@@ -1,8 +1,8 @@
-package im.nll.spider.extractor;
+package im.nll.data.extractor;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import im.nll.spider.extractor.impl.SelectorExtractor;
+import im.nll.data.extractor.impl.SelectorExtractor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
