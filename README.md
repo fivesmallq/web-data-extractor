@@ -1,7 +1,8 @@
-# web-data-extractor
+# web-data-extractor [![Build Status](https://travis-ci.org/fivesmallq/web-data-extractor.svg)](https://travis-ci.org/fivesmallq/web-data-extractor)
+
 web-data-extractor: Extract data from web page. like HTML,XML,JSON.
 
-##Example
+##Examples
 
 ###extract single data
 
