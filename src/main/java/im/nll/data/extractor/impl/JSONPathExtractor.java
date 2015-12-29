@@ -8,7 +8,7 @@ import im.nll.data.extractor.Extractor;
 import java.util.List;
 
 /**
- * jsonpath extractor<p>impl by <a href=https://github.com/jayway/JsonPath>https://github.com/jayway/JsonPath</a></p>
+ * json extractor<p>impl by <a href=https://github.com/jayway/JsonPath>https://github.com/jayway/JsonPath</a></p>
  *
  * @author <a href="mailto:fivesmallq@gmail.com">fivesmallq</a>
  * @version Revision: 1.0

@@ -35,7 +35,7 @@ public class Extractors {
         return this;
     }
 
-    public Extractors jsonpath(String... params) {
+    public Extractors json(String... params) {
         this.extractors.add(new JSONPathExtractor(params));
         return this;
     }

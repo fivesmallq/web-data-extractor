@@ -30,7 +30,7 @@ public class WebDataExtractor {
         return this;
     }
 
-    public WebDataExtractor jsonpath(String... params) {
+    public WebDataExtractor json(String... params) {
         this.html = new JSONPathExtractor(params).extract(html);
         return this;
     }
