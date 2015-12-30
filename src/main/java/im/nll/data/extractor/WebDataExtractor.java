@@ -1,5 +1,6 @@
 package im.nll.data.extractor;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import im.nll.data.extractor.impl.JSONPathExtractor;
 import im.nll.data.extractor.impl.RegexExtractor;
@@ -7,6 +8,7 @@ import im.nll.data.extractor.impl.SelectorExtractor;
 import im.nll.data.extractor.impl.XPathExtractor;
 import im.nll.data.extractor.utils.Reflect;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,6 +18,7 @@ import java.util.Map;
  */
 public class WebDataExtractor {
     private String html;
+    private List<String> htmlList;
 
     public WebDataExtractor(String html) {
         this.html = html;
@@ -50,6 +53,17 @@ public class WebDataExtractor {
         return this;
     }
 
+    /**
+     * split html use listable extractor
+     *
+     * @param listableExtractor
+     * @return
+     */
+    public WebDataExtractor split(ListableExtractor listableExtractor) {
+        this.htmlList = listableExtractor.extractList(html);
+        return this;
+    }
+
     public String asString() {
         return html;
     }
@@ -72,5 +86,19 @@ public class WebDataExtractor {
             Reflect.on(entity).set(name, data);
         }
         return entity;
+    }
+
+    public <T> List<T> asBeanList(Class<T> clazz, Extractors... extractors) {
+        List<T> entityList = Lists.newLinkedList();
+        for (String html : htmlList) {
+            T entity = Reflect.on(clazz).create().get();
+            for (Extractors extractorsOne : extractors) {
+                String name = extractorsOne.getName();
+                String data = extractorsOne.extract(this.html);
+                Reflect.on(entity).set(name, data);
+            }
+            entityList.add(entity);
+        }
+        return entityList;
     }
 }

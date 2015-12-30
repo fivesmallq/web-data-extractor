@@ -1,4 +1,4 @@
-package im.nll.data.extractor;
+package im.nll.data.extractor.entity;
 
 public class Basic {
     private String number;

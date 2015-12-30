@@ -2,12 +2,15 @@ package im.nll.data.extractor;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import im.nll.data.extractor.entity.Basic;
+import im.nll.data.extractor.entity.Website;
 import im.nll.data.extractor.impl.SelectorExtractor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,11 +20,14 @@ import java.util.Map;
  */
 public class WebDataExtractorsTest {
     private String html;
+    private String listHtml;
+
 
     @Before
     public void before() {
         try {
             html = Resources.toString(Resources.getResource("basic.html"), Charsets.UTF_8);
+            listHtml = Resources.toString(Resources.getResource("list.html"), Charsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,5 +84,19 @@ public class WebDataExtractorsTest {
         Assert.assertEquals(basic.getLegalPersion(), "陆兆禧");
         Assert.assertEquals(basic.getAddress(), "北京市昌平区科技园区昌盛路18号B1座1-5层");
         Assert.assertEquals(basic.getMoney(), "24242.4242");
+    }
+
+    @Test
+    public void testToBeanList() throws Exception {
+        List<Website> websites = WebDataExtractor.of(listHtml).split(new SelectorExtractor("tr:has(td)")).asBeanList(Website.class,
+                Extractors.nameOf("type").selector("td", "0"),
+                Extractors.nameOf("name").selector("td", "1"),
+                Extractors.nameOf("url").selector("td", "2"));
+        Assert.assertNotNull(websites);
+        Website first = websites.get(0);
+        Assert.assertEquals(websites.size(), 3);
+        Assert.assertEquals(first.getType(), "网站");
+        Assert.assertEquals(first.getName(), "高德导航");
+        Assert.assertEquals(first.getUrl(), "www.anav.com");
     }
 }
