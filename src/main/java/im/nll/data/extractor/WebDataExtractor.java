@@ -7,6 +7,7 @@ import im.nll.data.extractor.impl.RegexExtractor;
 import im.nll.data.extractor.impl.SelectorExtractor;
 import im.nll.data.extractor.impl.XPathExtractor;
 import im.nll.data.extractor.utils.Reflect;
+import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,7 @@ public class WebDataExtractor {
     }
 
     public <T> List<T> asBeanList(Class<T> clazz, Extractors... extractors) {
+        Validate.notNull(htmlList, "must split first!");
         List<T> entityList = Lists.newLinkedList();
         for (String html : htmlList) {
             T entity = Reflect.on(clazz).create().get();
