@@ -7,3 +7,5 @@ branches:
     - master
 notifications:
   email: false
+after_success:
+    - codecov
