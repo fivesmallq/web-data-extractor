@@ -1,10 +1,14 @@
 package im.nll.data.extractor;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-import im.nll.data.extractor.entity.Basic;
-import im.nll.data.extractor.entity.Website;
+import im.nll.data.extractor.entity.*;
 import im.nll.data.extractor.impl.SelectorExtractor;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +25,7 @@ import java.util.Map;
 public class WebDataExtractorsTest {
     private String html;
     private String listHtml;
+    private String listHtml2;
 
 
     @Before
@@ -28,6 +33,7 @@ public class WebDataExtractorsTest {
         try {
             html = Resources.toString(Resources.getResource("basic.html"), Charsets.UTF_8);
             listHtml = Resources.toString(Resources.getResource("list.html"), Charsets.UTF_8);
+            listHtml2 = Resources.toString(Resources.getResource("list2.html"), Charsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,15 +107,50 @@ public class WebDataExtractorsTest {
 
     @Test
     public void testToBeanListWithEntityExtractor() throws Exception {
-        List<Website> websites = WebDataExtractor.of(listHtml).split(new SelectorExtractor("tr:has(td)", "", "1")).asBeanList(Website.class,
-                Extractors.nameOf("type").selector("td", "0"),
-                Extractors.nameOf("name").selector("td", "1"),
-                Extractors.nameOf("url").selector("td", "2"));
+        List<Website> websites = WebDataExtractor.of(listHtml).split(new SelectorExtractor("tr:has(td)", "", "1")).asBeanList(new EntityExtractor<Website>() {
+            @Override
+            public Website extract(String data) {
+                Website website = WebDataExtractor.of(data).asBean(Website.class,
+                        Extractors.nameOf("type").selector("td", "0"),
+                        Extractors.nameOf("name").selector("td", "1"),
+                        Extractors.nameOf("url").selector("td", "2"));
+                return website;
+            }
+        });
         Assert.assertNotNull(websites);
         Website first = websites.get(0);
         Assert.assertEquals(websites.size(), 3);
         Assert.assertEquals(first.getType(), "网站");
         Assert.assertEquals(first.getName(), "高德导航");
         Assert.assertEquals(first.getUrl(), "www.anav.com");
+    }
+
+    @Test
+    public void testToBeanListWithEntityListExtractor() throws Exception {
+        List<KeyPersonnel> keyPersonnels = WebDataExtractor.of(listHtml2).asBeanList(new EntityListExtractor<KeyPersonnel>() {
+            @Override
+            public List<KeyPersonnel> extractList(String data) {
+                Document document = Jsoup.parse(data);
+                Elements elements = document.select("td[style]");
+                List<KeyPersonnel> keyPersonnelList = Lists.newLinkedList();
+                for (Element element : elements) {
+                    KeyPersonnel mainMember = new KeyPersonnel();
+                    String order = element.text();
+                    String name = element.nextElementSibling().text();
+                    String position = element.nextElementSibling().nextElementSibling().text();
+                    mainMember.setOrder(order);
+                    mainMember.setName(name);
+                    mainMember.setPosition(position);
+                    keyPersonnelList.add(mainMember);
+                }
+                return keyPersonnelList;
+            }
+        });
+        Assert.assertNotNull(keyPersonnels);
+        KeyPersonnel first = keyPersonnels.get(0);
+        Assert.assertEquals(keyPersonnels.size(), 5);
+        Assert.assertEquals(first.getOrder(), "1");
+        Assert.assertEquals(first.getName(), "陆兆禧");
+        Assert.assertEquals(first.getPosition(), "董事长");
     }
 }
