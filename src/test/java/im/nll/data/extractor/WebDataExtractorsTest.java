@@ -88,7 +88,7 @@ public class WebDataExtractorsTest {
 
     @Test
     public void testToBeanList() throws Exception {
-        List<Website> websites = WebDataExtractor.of(listHtml).split(new SelectorExtractor("tr:has(td)")).asBeanList(Website.class,
+        List<Website> websites = WebDataExtractor.of(listHtml).split(new SelectorExtractor("tr:has(td)", "", "1")).asBeanList(Website.class,
                 Extractors.nameOf("type").selector("td", "0"),
                 Extractors.nameOf("name").selector("td", "1"),
                 Extractors.nameOf("url").selector("td", "2"));

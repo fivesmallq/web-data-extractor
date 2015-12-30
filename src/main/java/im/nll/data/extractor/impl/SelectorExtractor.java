@@ -6,6 +6,7 @@ import im.nll.data.extractor.utils.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public class SelectorExtractor implements ListableExtractor {
 
     @Override
     public String extract(String data) {
-        Document document = Jsoup.parse(data);
+        Document document = Jsoup.parse(data, "", Parser.xmlParser());
         String result = "";
         switch (outType) {
             case TYPE_TEXT:
@@ -74,7 +75,7 @@ public class SelectorExtractor implements ListableExtractor {
     @Override
     public List<String> extractList(String content) {
         List<String> strings = Lists.newArrayList();
-        Document document = Jsoup.parse(content);
+        Document document = Jsoup.parse(content, "", Parser.xmlParser());
         Elements elements = document.select(query);
         for (Element element : elements) {
             switch (outType) {
