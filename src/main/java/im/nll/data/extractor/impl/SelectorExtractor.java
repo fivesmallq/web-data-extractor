@@ -1,9 +1,14 @@
 package im.nll.data.extractor.impl;
 
-import im.nll.data.extractor.Extractor;
+import com.google.common.collect.Lists;
+import im.nll.data.extractor.ListableExtractor;
 import im.nll.data.extractor.utils.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.util.List;
 
 /**
  * * 一个使用Jquery选择器的抽取器
@@ -20,7 +25,7 @@ import org.jsoup.nodes.Document;
  * @version Revision: 1.0
  * @date 15/12/25 下午9:25
  */
-public class SelectorExtractor implements Extractor {
+public class SelectorExtractor implements ListableExtractor {
     private final static int TYPE_TEXT = 0;
     private final static int TYPE_HTML = 1;
     private String query;
@@ -64,5 +69,26 @@ public class SelectorExtractor implements Extractor {
                 break;
         }
         return result;
+    }
+
+    @Override
+    public List<String> extractList(String content) {
+        List<String> strings = Lists.newArrayList();
+        Document document = Jsoup.parse(content);
+        Elements elements = document.select(query);
+        for (Element element : elements) {
+            switch (outType) {
+                case TYPE_TEXT:
+                    strings.add(element.text());
+                    break;
+                case TYPE_HTML:
+                    strings.add(element.html());
+                    break;
+                default:
+                    strings.add(element.attr(attr));
+                    break;
+            }
+        }
+        return strings;
     }
 }
