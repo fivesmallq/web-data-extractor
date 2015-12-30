@@ -1,4 +1,6 @@
 language: java
+before_script:
+  - pip install --user codecov
 jdk:
   - oraclejdk8
 # whitelist
