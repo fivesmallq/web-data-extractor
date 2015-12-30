@@ -6,8 +6,10 @@ import im.nll.data.extractor.impl.JSONPathExtractor;
 import im.nll.data.extractor.impl.RegexExtractor;
 import im.nll.data.extractor.impl.SelectorExtractor;
 import im.nll.data.extractor.impl.XPathExtractor;
+import im.nll.data.extractor.utils.Logs;
 import im.nll.data.extractor.utils.Reflect;
 import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import java.util.Map;
  * @date 15/12/25 下午9:26
  */
 public class WebDataExtractor {
+    private static final Logger LOGGER = Logs.get();
     private String html;
     private List<String> htmlList;
 
@@ -84,7 +87,11 @@ public class WebDataExtractor {
         for (Extractors extractorsOne : extractors) {
             String name = extractorsOne.getName();
             String data = extractorsOne.extract(this.html);
-            Reflect.on(entity).set(name, data);
+            try {
+                Reflect.on(entity).set(name, data);
+            } catch (Exception e) {
+                LOGGER.error("conver to bean error! can't set '{}' with '{}'", name, data, e);
+            }
         }
         return entity;
     }
@@ -97,7 +104,11 @@ public class WebDataExtractor {
             for (Extractors extractorsOne : extractors) {
                 String name = extractorsOne.getName();
                 String data = extractorsOne.extract(this.html);
-                Reflect.on(entity).set(name, data);
+                try {
+                    Reflect.on(entity).set(name, data);
+                } catch (Exception e) {
+                    LOGGER.error("conver to bean error! can't set '{}' with '{}'", name, data, e);
+                }
             }
             entityList.add(entity);
         }
