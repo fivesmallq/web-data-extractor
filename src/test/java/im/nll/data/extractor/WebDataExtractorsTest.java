@@ -41,7 +41,6 @@ public class WebDataExtractorsTest {
         String legalPersion = WebDataExtractor.of(html).selector("tr:contains(法定代表人) td", "1").asString();
         String address = WebDataExtractor.of(html).selector("tr:contains(住所) td", "0").asString();
         String money = WebDataExtractor.of(html).selector("tr:contains(注册资本) td", "0").regex("\\d+.\\d+").asString();
-
         Assert.assertEquals(number, "110000003277298");
         Assert.assertEquals(name, "高德软件有限公司");
         Assert.assertEquals(type, "有限责任公司(自然人投资或控股)");
@@ -88,6 +87,20 @@ public class WebDataExtractorsTest {
 
     @Test
     public void testToBeanList() throws Exception {
+        List<Website> websites = WebDataExtractor.of(listHtml).split(new SelectorExtractor("tr:has(td)", "", "1")).asBeanList(Website.class,
+                Extractors.nameOf("type").selector("td", "0"),
+                Extractors.nameOf("name").selector("td", "1"),
+                Extractors.nameOf("url").selector("td", "2"));
+        Assert.assertNotNull(websites);
+        Website first = websites.get(0);
+        Assert.assertEquals(websites.size(), 3);
+        Assert.assertEquals(first.getType(), "网站");
+        Assert.assertEquals(first.getName(), "高德导航");
+        Assert.assertEquals(first.getUrl(), "www.anav.com");
+    }
+
+    @Test
+    public void testToBeanListWithEntityExtractor() throws Exception {
         List<Website> websites = WebDataExtractor.of(listHtml).split(new SelectorExtractor("tr:has(td)", "", "1")).asBeanList(Website.class,
                 Extractors.nameOf("type").selector("td", "0"),
                 Extractors.nameOf("name").selector("td", "1"),

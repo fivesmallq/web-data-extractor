@@ -2,10 +2,9 @@ package im.nll.data.extractor;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import im.nll.data.extractor.impl.JSONPathExtractor;
-import im.nll.data.extractor.impl.RegexExtractor;
-import im.nll.data.extractor.impl.SelectorExtractor;
-import im.nll.data.extractor.impl.XPathExtractor;
+import im.nll.data.extractor.entity.EntityExtractor;
+import im.nll.data.extractor.entity.EntityListExtractor;
+import im.nll.data.extractor.impl.*;
 import im.nll.data.extractor.utils.Logs;
 import im.nll.data.extractor.utils.Reflect;
 import org.apache.commons.lang3.Validate;
@@ -57,6 +56,11 @@ public class WebDataExtractor {
         return this;
     }
 
+    public WebDataExtractor stringRange(String... params) {
+        this.html = new StringRangeExtractor(params).extract(html);
+        return this;
+    }
+
     /**
      * split html use listable extractor
      *
@@ -80,7 +84,6 @@ public class WebDataExtractor {
         }
         return dataMap;
     }
-
 
     public <T> T asBean(Class<T> clazz, Extractors... extractors) {
         T entity = Reflect.on(clazz).create().get();
@@ -110,6 +113,20 @@ public class WebDataExtractor {
                     LOGGER.error("conver to bean error! can't set '{}' with '{}'", name, data, e);
                 }
             }
+            entityList.add(entity);
+        }
+        return entityList;
+    }
+
+    public <T> List<T> asBeanList(EntityListExtractor<T> entityListExtractor) {
+        return entityListExtractor.extractList(this.html);
+    }
+
+    public <T> List<T> asBeanList(EntityExtractor<T> entityExtractor) {
+        Validate.notNull(htmlList, "must split first!");
+        List<T> entityList = Lists.newLinkedList();
+        for (String html : htmlList) {
+            T entity = entityExtractor.extract(html);
             entityList.add(entity);
         }
         return entityList;

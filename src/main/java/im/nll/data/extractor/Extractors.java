@@ -1,10 +1,7 @@
 package im.nll.data.extractor;
 
 import com.google.common.collect.Lists;
-import im.nll.data.extractor.impl.JSONPathExtractor;
-import im.nll.data.extractor.impl.RegexExtractor;
-import im.nll.data.extractor.impl.SelectorExtractor;
-import im.nll.data.extractor.impl.XPathExtractor;
+import im.nll.data.extractor.impl.*;
 
 import java.util.List;
 
@@ -47,6 +44,11 @@ public class Extractors {
 
     public Extractors regex(String... params) {
         this.extractors.add(new RegexExtractor(params));
+        return this;
+    }
+
+    public Extractors stringRange(String... params) {
+        this.extractors.add(new StringRangeExtractor(params));
         return this;
     }
 
