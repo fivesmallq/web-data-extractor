@@ -60,4 +60,22 @@ String name = WebDataExtractor.of(html).selector("tr:contains(名称) td", "0").
     }
 ````
 
+###extract data to bean list
+
+````java
+    @Test
+    public void testToBeanList() throws Exception {
+        List<Website> websites = WebDataExtractor.of(listHtml).split(new SelectorExtractor("tr:has(td)")).asBeanList(Website.class,
+                Extractors.nameOf("type").selector("td", "0"),
+                Extractors.nameOf("name").selector("td", "1"),
+                Extractors.nameOf("url").selector("td", "2"));
+        Assert.assertNotNull(websites);
+        Website first = websites.get(0);
+        Assert.assertEquals(websites.size(), 3);
+        Assert.assertEquals(first.getType(), "网站");
+        Assert.assertEquals(first.getName(), "高德导航");
+        Assert.assertEquals(first.getUrl(), "www.anav.com");
+    }
+````
+
 see [WebDataExtractorsTest](https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/im/nll/data/extractor/WebDataExtractorsTest.java)
