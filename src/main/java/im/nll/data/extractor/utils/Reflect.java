@@ -1,26 +1,26 @@
 /**
- * Copyright (c) 2011-2012, Lukas Eder, lukas.eder@gmail.com
+ * Copyright (c) 2011-2013, Lukas Eder, lukas.eder@gmail.com
  * All rights reserved.
- * <p>
+ *
  * This software is licensed to you under the Apache License, Version 2.0
  * (the "License"); You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * <p>
+ *
  * . Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- * <p>
+ *   list of conditions and the following disclaimer.
+ *
  * . Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * <p>
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
  * . Neither the name "jOOR" nor the names of its contributors may be
- * used to endorse or promote products derived from this software without
- * specific prior written permission.
- * <p>
+ *   used to endorse or promote products derived from this software without
+ *   specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,19 +35,9 @@
  */
 package im.nll.data.extractor.utils;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.*;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,22 +55,11 @@ import java.util.Map;
  * // Invoke methods using the call() method:
  * .call("toString")
  * // Retrieve the wrapped object
- * </pre>
  *
  * @author Lukas Eder
+ * @author Irek Matysiewicz
  */
 public class Reflect {
-    private static Logger logger = Logs.get();
-
-    // ---------------------------------------------------------------------
-    // SpringSide
-    private static final String SETTER_PREFIX = "set";
-
-    private static final String GETTER_PREFIX = "get";
-
-    private static final String CGLIB_CLASS_SEPARATOR = "$$";
-
-    // ---------------------------------------------------------------------
 
     // ---------------------------------------------------------------------
     // Static API used as entrance points to the fluent API
@@ -91,15 +70,30 @@ public class Reflect {
      * <p>
      * This is the same as calling <code>on(Class.forName(name))</code>
      *
-     * @param name
-     *            A fully qualified class name
+     * @param name A fully qualified class name
      * @return A wrapped class object, to be used for further reflection.
-     * @throws ReflectException
-     *             If any reflection exception occurred.
+     * @throws ReflectException If any reflection exception occurred.
      * @see #on(Class)
      */
     public static Reflect on(String name) throws ReflectException {
         return on(forName(name));
+    }
+
+    /**
+     * Wrap a class name, loading it via a given class loader.
+     * <p>
+     * This is the same as calling
+     * <code>on(Class.forName(name, classLoader))</code>
+     *
+     * @param name A fully qualified class name.
+     * @param classLoader The class loader in whose context the class should be
+     *            loaded.
+     * @return A wrapped class object, to be used for further reflection.
+     * @throws ReflectException If any reflection exception occurred.
+     * @see #on(Class)
+     */
+    public static Reflect on(String name, ClassLoader classLoader) throws ReflectException {
+        return on(forName(name, classLoader));
     }
 
     /**
@@ -109,8 +103,7 @@ public class Reflect {
      * {@link Class} object, or as a basis for constructing objects of that
      * class using {@link #create(Object...)}
      *
-     * @param clazz
-     *            The class to be wrapped
+     * @param clazz The class to be wrapped
      * @return A wrapped class object, to be used for further reflection.
      */
     public static Reflect on(Class<?> clazz) {
@@ -123,8 +116,7 @@ public class Reflect {
      * Use this when you want to access instance fields and methods on any
      * {@link Object}
      *
-     * @param object
-     *            The object to be wrapped
+     * @param object The object to be wrapped
      * @return A wrapped object, to be used for further reflection.
      */
     public static Reflect on(Object object) {
@@ -132,10 +124,12 @@ public class Reflect {
     }
 
     /**
-     * Conveniently render an {@link AccessibleObject} accessible
+     * Conveniently render an {@link AccessibleObject} accessible.
+     * <p>
+     * To prevent {@link SecurityException}, this is only done if the argument
+     * object and its declaring class are non-public.
      *
-     * @param accessible
-     *            The object to render accessible
+     * @param accessible The object to render accessible
      * @return The argument object rendered accessible
      */
     public static <T extends AccessibleObject> T accessible(T accessible) {
@@ -143,6 +137,17 @@ public class Reflect {
             return null;
         }
 
+        if (accessible instanceof Member) {
+            Member member = (Member) accessible;
+
+            if (Modifier.isPublic(member.getModifiers()) &&
+                    Modifier.isPublic(member.getDeclaringClass().getModifiers())) {
+
+                return accessible;
+            }
+        }
+
+        // [jOOQ #3392] The accessible flag is set to false by default, also for public members.
         if (!accessible.isAccessible()) {
             accessible.setAccessible(true);
         }
@@ -187,8 +192,7 @@ public class Reflect {
     /**
      * Get the wrapped object
      *
-     * @param <T>
-     *            A convenience generic parameter for automatic unsafe casting
+     * @param <T> A convenience generic parameter for automatic unsafe casting
      */
     @SuppressWarnings("unchecked")
     public <T> T get() {
@@ -203,31 +207,18 @@ public class Reflect {
      * member field. If the wrapped object is any other {@link Object}, then
      * this will set a value to an instance member field.
      *
-     * @param name
-     *            The field name
-     * @param value
-     *            The new field value
+     * @param name The field name
+     * @param value The new field value
      * @return The same wrapped object, to be used for further reflection.
-     * @throws ReflectException
-     *             If any reflection exception occurred.
+     * @throws ReflectException If any reflection exception occurred.
      */
     public Reflect set(String name, Object value) throws ReflectException {
         try {
-
-            // Try setting a public field
-            Field field = type().getField(name);
+            Field field = field0(name);
             field.set(object, unwrap(value));
             return this;
-        } catch (Exception e1) {
-
-            // Try again, setting a non-public field
-            try {
-                accessible(type().getDeclaredField(name)).set(object,
-                        unwrap(value));
-                return this;
-            } catch (Exception e2) {
-                throw new ReflectException(e2);
-            }
+        } catch (Exception e) {
+            throw new ReflectException(e);
         }
     }
 
@@ -242,11 +233,9 @@ public class Reflect {
      * If you want to "navigate" to a wrapped version of the field, use
      * {@link #field(String)} instead.
      *
-     * @param name
-     *            The field name
+     * @param name The field name
      * @return The field value
-     * @throws ReflectException
-     *             If any reflection exception occurred.
+     * @throws ReflectException If any reflection exception occurred.
      * @see #field(String)
      */
     public <T> T get(String name) throws ReflectException {
@@ -261,26 +250,40 @@ public class Reflect {
      * the wrapped object is any other {@link Object}, then this wrap an
      * instance member field.
      *
-     * @param name
-     *            The field name
+     * @param name The field name
      * @return The wrapped field
-     * @throws ReflectException
-     *             If any reflection exception occurred.
+     * @throws ReflectException If any reflection exception occurred.
      */
     public Reflect field(String name) throws ReflectException {
         try {
-
-            // Try getting a public field
-            Field field = type().getField(name);
+            Field field = field0(name);
             return on(field.get(object));
-        } catch (Exception e1) {
+        } catch (Exception e) {
+            throw new ReflectException(e);
+        }
+    }
 
-            // Try again, getting a non-public field
-            try {
-                return on(accessible(type().getDeclaredField(name)).get(object));
-            } catch (Exception e2) {
-                throw new ReflectException(e2);
+    private Field field0(String name) throws ReflectException {
+        Class<?> type = type();
+
+        // Try getting a public field
+        try {
+            return type.getField(name);
+        }
+
+        // Try again, getting a non-public field
+        catch (NoSuchFieldException e) {
+            do {
+                try {
+                    return accessible(type.getDeclaredField(name));
+                } catch (NoSuchFieldException ignore) {
+                }
+
+                type = type.getSuperclass();
             }
+            while (type != null);
+
+            throw new ReflectException(e);
         }
     }
 
@@ -301,13 +304,21 @@ public class Reflect {
      */
     public Map<String, Reflect> fields() {
         Map<String, Reflect> result = new LinkedHashMap<String, Reflect>();
+        Class<?> type = type();
 
-        for (Field field : type().getFields()) {
-            if (!isClass ^ Modifier.isStatic(field.getModifiers())) {
-                String name = field.getName();
-                result.put(name, field(name));
+        do {
+            for (Field field : type.getDeclaredFields()) {
+                if (!isClass ^ Modifier.isStatic(field.getModifiers())) {
+                    String name = field.getName();
+
+                    if (!result.containsKey(name))
+                        result.put(name, field(name));
+                }
             }
+
+            type = type.getSuperclass();
         }
+        while (type != null);
 
         return result;
     }
@@ -318,13 +329,11 @@ public class Reflect {
      * This is a convenience method for calling
      * <code>call(name, new Object[0])</code>
      *
-     * @param name
-     *            The method name
+     * @param name The method name
      * @return The wrapped method result or the same wrapped object if the
      *         method returns <code>void</code>, to be used for further
      *         reflection.
-     * @throws ReflectException
-     *             If any reflection exception occurred.
+     * @throws ReflectException If any reflection exception occurred.
      * @see #call(String, Object...)
      */
     public Reflect call(String name) throws ReflectException {
@@ -352,16 +361,21 @@ public class Reflect {
      * public void method(Number param1, Object param2);
      * public void method(int param1, Object param2);
      * </pre></code>
+     * <p>
+     * The best matching method is searched for with the following strategy:
+     * <ol>
+     * <li>public method with exact signature match in class hierarchy</li>
+     * <li>non-public method with exact signature match on declaring class</li>
+     * <li>public method with similar signature in class hierarchy</li>
+     * <li>non-public method with similar signature on declaring class</li>
+     * </ol>
      *
-     * @param name
-     *            The method name
-     * @param args
-     *            The method arguments
+     * @param name The method name
+     * @param args The method arguments
      * @return The wrapped method result or the same wrapped object if the
      *         method returns <code>void</code>, to be used for further
      *         reflection.
-     * @throws ReflectException
-     *             If any reflection exception occurred.
+     * @throws ReflectException If any reflection exception occurred.
      */
     public Reflect call(String name, Object... args) throws ReflectException {
         Class<?>[] types = types(args);
@@ -369,22 +383,93 @@ public class Reflect {
         // Try invoking the "canonical" method, i.e. the one with exact
         // matching argument types
         try {
-            Method method = type().getMethod(name, types);
+            Method method = exactMethod(name, types);
             return on(method, object, args);
         }
 
-        // If there is no exact match, try to find one that has a "similar"
+        // If there is no exact match, try to find a method that has a "similar"
         // signature if primitive argument types are converted to their wrappers
         catch (NoSuchMethodException e) {
-            for (Method method : type().getMethods()) {
-                if (method.getName().equals(name)
-                        && match(method.getParameterTypes(), types)) {
-                    return on(method, object, args);
+            try {
+                Method method = similarMethod(name, types);
+                return on(method, object, args);
+            } catch (NoSuchMethodException e1) {
+                throw new ReflectException(e1);
+            }
+        }
+    }
+
+    /**
+     * Searches a method with the exact same signature as desired.
+     * <p>
+     * If a public method is found in the class hierarchy, this method is returned.
+     * Otherwise a private method with the exact same signature is returned.
+     * If no exact match could be found, we let the {@code NoSuchMethodException} pass through.
+     */
+    private Method exactMethod(String name, Class<?>[] types) throws NoSuchMethodException {
+        Class<?> type = type();
+
+        // first priority: find a public method with exact signature match in class hierarchy
+        try {
+            return type.getMethod(name, types);
+        }
+
+        // second priority: find a private method with exact signature match on declaring class
+        catch (NoSuchMethodException e) {
+            do {
+                try {
+                    return type.getDeclaredMethod(name, types);
+                } catch (NoSuchMethodException ignore) {
+                }
+
+                type = type.getSuperclass();
+            }
+            while (type != null);
+
+            throw new NoSuchMethodException();
+        }
+    }
+
+    /**
+     * Searches a method with a similar signature as desired using
+     * {@link #isSimilarSignature(java.lang.reflect.Method, String, Class[])}.
+     * <p>
+     * First public methods are searched in the class hierarchy, then private
+     * methods on the declaring class. If a method could be found, it is
+     * returned, otherwise a {@code NoSuchMethodException} is thrown.
+     */
+    private Method similarMethod(String name, Class<?>[] types) throws NoSuchMethodException {
+        Class<?> type = type();
+
+        // first priority: find a public method with a "similar" signature in class hierarchy
+        // similar interpreted in when primitive argument types are converted to their wrappers
+        for (Method method : type.getMethods()) {
+            if (isSimilarSignature(method, name, types)) {
+                return method;
+            }
+        }
+
+        // second priority: find a non-public method with a "similar" signature on declaring class
+        do {
+            for (Method method : type.getDeclaredMethods()) {
+                if (isSimilarSignature(method, name, types)) {
+                    return method;
                 }
             }
 
-            throw new ReflectException(e);
+            type = type.getSuperclass();
         }
+        while (type != null);
+
+        throw new NoSuchMethodException("No similar method " + name + " with params " + Arrays.toString(types) + " could be found on type " + type() + ".");
+    }
+
+    /**
+     * Determines if a method has a "similar" signature, especially if wrapping
+     * primitive argument types would result in an exactly matching signature.
+     */
+    private boolean isSimilarSignature(Method possiblyMatchingMethod, String desiredMethodName, Class<?>[] desiredParamTypes) {
+        return possiblyMatchingMethod.getName().equals(desiredMethodName) && match(possiblyMatchingMethod.getParameterTypes(), desiredParamTypes);
     }
 
     /**
@@ -394,8 +479,7 @@ public class Reflect {
      * <code>create(new Object[0])</code>
      *
      * @return The wrapped new object, to be used for further reflection.
-     * @throws ReflectException
-     *             If any reflection exception occurred.
+     * @throws ReflectException If any reflection exception occurred.
      * @see #create(Object...)
      */
     public Reflect create() throws ReflectException {
@@ -424,11 +508,9 @@ public class Reflect {
      * public C(int param1, Object param2);
      * </pre></code>
      *
-     * @param args
-     *            The constructor arguments
+     * @param args The constructor arguments
      * @return The wrapped new object, to be used for further reflection.
-     * @throws ReflectException
-     *             If any reflection exception occurred.
+     * @throws ReflectException If any reflection exception occurred.
      */
     public Reflect create(Object... args) throws ReflectException {
         Class<?>[] types = types(args);
@@ -436,14 +518,14 @@ public class Reflect {
         // Try invoking the "canonical" constructor, i.e. the one with exact
         // matching argument types
         try {
-            Constructor<?> constructor = type().getConstructor(types);
+            Constructor<?> constructor = type().getDeclaredConstructor(types);
             return on(constructor, args);
         }
 
         // If there is no exact match, try to find one that has a "similar"
         // signature if primitive argument types are converted to their wrappers
         catch (NoSuchMethodException e) {
-            for (Constructor<?> constructor : type().getConstructors()) {
+            for (Constructor<?> constructor : type().getDeclaredConstructors()) {
                 if (match(constructor.getParameterTypes(), types)) {
                     return on(constructor, args);
                 }
@@ -457,17 +539,16 @@ public class Reflect {
      * Create a proxy for the wrapped object allowing to typesafely invoke
      * methods on it using a custom interface
      *
-     * @param proxyType
-     *            The interface type that is implemented by the proxy
+     * @param proxyType The interface type that is implemented by the proxy
      * @return A proxy for the wrapped object
      */
     @SuppressWarnings("unchecked")
     public <P> P as(Class<P> proxyType) {
         final boolean isMap = (object instanceof Map);
         final InvocationHandler handler = new InvocationHandler() {
+            @SuppressWarnings("null")
             @Override
-            public Object invoke(Object proxy, Method method, Object[] args)
-                    throws Throwable {
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 String name = method.getName();
 
                 // Actual method name matches always come first
@@ -475,7 +556,7 @@ public class Reflect {
                     return on(object).call(name, args).get();
                 }
 
-                // [#14] Simulate POJO behaviour on wrapped map objects
+                // [#14] Emulate POJO behaviour on wrapped map objects
                 catch (ReflectException e) {
                     if (isMap) {
                         Map<String, Object> map = (Map<String, Object>) object;
@@ -496,8 +577,7 @@ public class Reflect {
             }
         };
 
-        return (P) Proxy.newProxyInstance(proxyType.getClassLoader(),
-                new Class[]{proxyType}, handler);
+        return (P) Proxy.newProxyInstance(proxyType.getClassLoader(), new Class[]{proxyType}, handler);
     }
 
     /**
@@ -526,10 +606,13 @@ public class Reflect {
     private boolean match(Class<?>[] declaredTypes, Class<?>[] actualTypes) {
         if (declaredTypes.length == actualTypes.length) {
             for (int i = 0; i < actualTypes.length; i++) {
-                if (!wrapper(declaredTypes[i]).isAssignableFrom(
-                        wrapper(actualTypes[i]))) {
-                    return false;
-                }
+                if (actualTypes[i] == NULL.class)
+                    continue;
+
+                if (wrapper(declaredTypes[i]).isAssignableFrom(wrapper(actualTypes[i])))
+                    continue;
+
+                return false;
             }
 
             return true;
@@ -573,10 +656,9 @@ public class Reflect {
     /**
      * Wrap an object created from a constructor
      */
-    private static Reflect on(Constructor<?> constructor, Object... args)
-            throws ReflectException {
+    private static Reflect on(Constructor<?> constructor, Object... args) throws ReflectException {
         try {
-            return on(constructor.newInstance(args));
+            return on(accessible(constructor).newInstance(args));
         } catch (Exception e) {
             throw new ReflectException(e);
         }
@@ -585,8 +667,7 @@ public class Reflect {
     /**
      * Wrap an object returned from a method
      */
-    private static Reflect on(Method method, Object object, Object... args)
-            throws ReflectException {
+    private static Reflect on(Method method, Object object, Object... args) throws ReflectException {
         try {
             accessible(method);
 
@@ -625,7 +706,8 @@ public class Reflect {
         Class<?>[] result = new Class[values.length];
 
         for (int i = 0; i < values.length; i++) {
-            result[i] = values[i].getClass();
+            Object value = values[i];
+            result[i] = value == null ? NULL.class : value.getClass();
         }
 
         return result;
@@ -639,6 +721,14 @@ public class Reflect {
     private static Class<?> forName(String name) throws ReflectException {
         try {
             return Class.forName(name);
+        } catch (Exception e) {
+            throw new ReflectException(e);
+        }
+    }
+
+    private static Class<?> forName(String name, ClassLoader classLoader) throws ReflectException {
+        try {
+            return Class.forName(name, true, classLoader);
         } catch (Exception e) {
             throw new ReflectException(e);
         }
@@ -661,426 +751,34 @@ public class Reflect {
      * Get a wrapper type for a primitive type, or the argument type itself, if
      * it is not a primitive type.
      */
-    private static Class<?> wrapper(Class<?> type) {
-        if (boolean.class == type) {
-            return Boolean.class;
-        } else if (int.class == type) {
-            return Integer.class;
-        } else if (long.class == type) {
-            return Long.class;
-        } else if (short.class == type) {
-            return Short.class;
-        } else if (byte.class == type) {
-            return Byte.class;
-        } else if (double.class == type) {
-            return Double.class;
-        } else if (float.class == type) {
-            return Float.class;
-        } else if (char.class == type) {
-            return Character.class;
-        } else {
-            return type;
-        }
-    }
-
-    /************************* 后添加的方法 ***********************************/
-
-    private final static List<Class<?>> PrimitiveClasses = new ArrayList<Class<?>>() {
-        private static final long serialVersionUID = 1L;
-
-        {
-            add(Long.class);
-            add(Integer.class);
-            add(String.class);
-            add(java.util.Date.class);
-            add(java.sql.Date.class);
-            add(java.sql.Timestamp.class);
-        }
-    };
-
-    /**
-     * 判断一个类是否是原生类型
-     *
-     * @param cls
-     * @return
-     */
-    public final static boolean isPrimitive(Class<?> cls) {
-        return cls.isPrimitive() || PrimitiveClasses.contains(cls);
-    }
-
-    /**
-     * Return a list of all fields (whatever access status, and on whatever
-     * superclass they were defined) that can be found on this class. This is
-     * like a union of {@link Class#getDeclaredFields()} which ignores and
-     * super-classes, and {@link Class#getFields()} which ignored non-public
-     * fields
-     *
-     * @param entity
-     * @return The complete list of fields
-     */
-    public static <T> Field[] getAllFields(T entity) {
-        return getAllFields(entity.getClass());
-    }
-
-    /**
-     * Return a list of all fields (whatever access status, and on whatever
-     * superclass they were defined) that can be found on this class. This is
-     * like a union of {@link Class#getDeclaredFields()} which ignores and
-     * super-classes, and {@link Class#getFields()} which ignored non-public
-     * fields
-     *
-     * @param clazz
-     *            The class to introspect
-     * @return The complete list of fields
-     */
-    public static Field[] getAllFields(Class<?> clazz) {
-        List<String> names = new ArrayList<String>();
-        List<Field> fieldsList = new ArrayList<Field>();
-        getFields(clazz, names, fieldsList, false);
-        Class<?> superclass = clazz.getSuperclass();
-        while (superclass != null) {
-            getFields(superclass, names, fieldsList, true);
-            superclass = superclass.getSuperclass();
-        }
-        return fieldsList.toArray(new Field[fieldsList.size()]);
-    }
-
-    private static void getFields(Class<?> clazz, List<String> names,
-                                  List<Field> fieldsList, boolean isSupperClass) {
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            if (!names.contains(field.getName())) {
-                // 只有非static和非final类型的变量才能作为数据库字段
-                if (!Modifier.isStatic(field.getModifiers())
-                        && !Modifier.isFinal(field.getModifiers())) {
-                    if (isSupperClass) {
-                        fieldsList.add(0, field);
-                    } else {
-                        fieldsList.add(field);
-                    }
-                }
-                names.add(field.getName());
+    public static Class<?> wrapper(Class<?> type) {
+        if (type == null) {
+            return null;
+        } else if (type.isPrimitive()) {
+            if (boolean.class == type) {
+                return Boolean.class;
+            } else if (int.class == type) {
+                return Integer.class;
+            } else if (long.class == type) {
+                return Long.class;
+            } else if (short.class == type) {
+                return Short.class;
+            } else if (byte.class == type) {
+                return Byte.class;
+            } else if (double.class == type) {
+                return Double.class;
+            } else if (float.class == type) {
+                return Float.class;
+            } else if (char.class == type) {
+                return Character.class;
+            } else if (void.class == type) {
+                return Void.class;
             }
         }
+
+        return type;
     }
 
-    /**
-     * Returns a PropertyDescriptor[] for the given Class.
-     *
-     * @param c
-     *            The Class to retrieve PropertyDescriptors for.
-     * @return A PropertyDescriptor[] describing the Class.
-     * @throws SQLException
-     *             if introspection failed.
-     */
-    public static PropertyDescriptor[] propertyDescriptors(Class<?> c)
-            throws SQLException {
-        // Introspector caches BeanInfo classes for better performance
-        BeanInfo beanInfo = null;
-        try {
-            beanInfo = Introspector.getBeanInfo(c);
-
-        } catch (IntrospectionException e) {
-            throw new SQLException("Bean introspection failed: "
-                    + e.getMessage());
-        }
-
-        return beanInfo.getPropertyDescriptors();
-    }
-
-    // ---------------------------------------------------------------------
-    // SpringSide Reflections
-    // ---------------------------------------------------------------------
-
-    /**
-     * 调用Getter方法.
-     */
-    public static Object invokeGetter(Object obj, String propertyName) {
-        String getterMethodName = GETTER_PREFIX
-                + StringUtils.capitalize(propertyName);
-        return invokeMethod(obj, getterMethodName, new Class[]{},
-                new Object[]{});
-    }
-
-    /**
-     * 调用Setter方法, 仅匹配方法名。
-     */
-    public static void invokeSetter(Object obj, String propertyName,
-                                    Object value) {
-        String setterMethodName = SETTER_PREFIX
-                + StringUtils.capitalize(propertyName);
-        invokeMethodByName(obj, setterMethodName, new Object[]{value});
-    }
-
-    /**
-     * 直接读取对象属性值, 无视private/protected修饰符, 不经过getter函数.
-     */
-    public static Object getFieldValue(final Object obj, final String fieldName) {
-        Field field = getAccessibleField(obj, fieldName);
-
-        if (field == null) {
-            throw new IllegalArgumentException("Could not find field ["
-                    + fieldName + "] on target [" + obj + "]");
-        }
-
-        Object result = null;
-        try {
-            result = field.get(obj);
-        } catch (IllegalAccessException e) {
-            logger.error("不可能抛出的异常{}", e);
-        }
-        return result;
-    }
-
-    /**
-     * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
-     */
-    public static void setFieldValue(final Object obj, final String fieldName,
-                                     final Object value) {
-        Field field = getAccessibleField(obj, fieldName);
-
-        if (field == null) {
-            throw new IllegalArgumentException("Could not find field ["
-                    + fieldName + "] on target [" + obj + "]");
-        }
-
-        try {
-            field.set(obj, value);
-        } catch (IllegalAccessException e) {
-            logger.error("不可能抛出的异常:{}", e);
-        }
-    }
-
-    /**
-     * 直接调用对象方法, 无视private/protected修饰符.
-     * 用于一次性调用的情况，否则应使用getAccessibleMethod()函数获得Method后反复调用. 同时匹配方法名+参数类型，
-     */
-    public static Object invokeMethod(final Object obj,
-                                      final String methodName, final Class<?>[] parameterTypes,
-                                      final Object[] args) {
-        Method method = getAccessibleMethod(obj, methodName, parameterTypes);
-        if (method == null) {
-            throw new IllegalArgumentException("Could not find method ["
-                    + methodName + "] on target [" + obj + "]");
-        }
-
-        try {
-            return method.invoke(obj, args);
-        } catch (Exception e) {
-            throw convertReflectionExceptionToUnchecked(e);
-        }
-    }
-
-    /**
-     * 直接调用对象方法, 无视private/protected修饰符，
-     * 用于一次性调用的情况，否则应使用getAccessibleMethodByName()函数获得Method后反复调用.
-     * 只匹配函数名，如果有多个同名函数调用第一个。
-     */
-    public static Object invokeMethodByName(final Object obj,
-                                            final String methodName, final Object[] args) {
-        Method method = getAccessibleMethodByName(obj, methodName);
-        if (method == null) {
-            throw new IllegalArgumentException("Could not find method ["
-                    + methodName + "] on target [" + obj + "]");
-        }
-
-        try {
-            return method.invoke(obj, args);
-        } catch (Exception e) {
-            throw convertReflectionExceptionToUnchecked(e);
-        }
-    }
-
-    /**
-     * 循环向上转型, 获取对象的DeclaredField, 并强制设置为可访问.
-     *
-     * 如向上转型到Object仍无法找到, 返回null.
-     */
-    public static Field getAccessibleField(final Object obj,
-                                           final String fieldName) {
-        Validate.notNull(obj, "object can't be null");
-        Validate.notNull(fieldName, "fieldName can't be blank");
-        for (Class<?> superClass = obj.getClass(); superClass != Object.class; superClass = superClass
-                .getSuperclass()) {
-            try {
-                Field field = superClass.getDeclaredField(fieldName);
-                makeAccessible(field);
-                return field;
-            } catch (NoSuchFieldException e) {// NOSONAR
-                // Field不在当前类定义,继续向上转型
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 循环向上转型, 获取对象的DeclaredMethod,并强制设置为可访问. 如向上转型到Object仍无法找到, 返回null.
-     * 匹配函数名+参数类型。
-     *
-     * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object...
-     * args)
-     */
-    public static Method getAccessibleMethod(final Object obj,
-                                             final String methodName, final Class<?>... parameterTypes) {
-        Validate.notNull(obj, "object can't be null");
-        Validate.notNull(methodName, "methodName can't be blank");
-
-        for (Class<?> searchType = obj.getClass(); searchType != Object.class; searchType = searchType
-                .getSuperclass()) {
-            try {
-                Method method = searchType.getDeclaredMethod(methodName,
-                        parameterTypes);
-                makeAccessible(method);
-                return method;
-            } catch (NoSuchMethodException e) {
-                // Method不在当前类定义,继续向上转型
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 循环向上转型, 获取对象的DeclaredMethod,并强制设置为可访问. 如向上转型到Object仍无法找到, 返回null. 只匹配函数名。
-     *
-     * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object...
-     * args)
-     */
-    public static Method getAccessibleMethodByName(final Object obj,
-                                                   final String methodName) {
-        Validate.notNull(obj, "object can't be null");
-        Validate.notNull(methodName, "methodName can't be blank");
-
-        for (Class<?> searchType = obj.getClass(); searchType != Object.class; searchType = searchType
-                .getSuperclass()) {
-            Method[] methods = searchType.getDeclaredMethods();
-            for (Method method : methods) {
-                if (method.getName().equals(methodName)) {
-                    makeAccessible(method);
-                    return method;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 改变private/protected的方法为public，尽量不调用实际改动的语句，避免JDK的SecurityManager抱怨。
-     */
-    public static void makeAccessible(Method method) {
-        if ((!Modifier.isPublic(method.getModifiers()) || !Modifier
-                .isPublic(method.getDeclaringClass().getModifiers()))
-                && !method.isAccessible()) {
-            method.setAccessible(true);
-        }
-    }
-
-    /**
-     * 改变private/protected的成员变量为public，尽量不调用实际改动的语句，避免JDK的SecurityManager抱怨。
-     */
-    public static void makeAccessible(Field field) {
-        if ((!Modifier.isPublic(field.getModifiers())
-                || !Modifier.isPublic(field.getDeclaringClass().getModifiers()) || Modifier
-                .isFinal(field.getModifiers())) && !field.isAccessible()) {
-            field.setAccessible(true);
-        }
-    }
-
-    /**
-     * 通过反射, 获得Class定义中声明的泛型参数的类型, 注意泛型必须定义在父类处 如无法找到, 返回Object.class. eg.
-     * public UserDao extends HibernateDao<User>
-     *
-     * @param clazz
-     *            The class to introspect
-     * @return the first generic declaration, or Object.class if cannot be
-     *         determined
-     */
-    public static <T> Class<?> getClassGenricType(final Class<?> clazz) {
-        return getClassGenricType(clazz, 0);
-    }
-
-    /**
-     * 通过反射, 获得Class定义中声明的父类的泛型参数的类型. 如无法找到, 返回Object.class.
-     *
-     * 如public UserDao extends HibernateDao<User,Long>
-     *
-     * @param clazz
-     *            clazz The class to introspect
-     * @param index
-     *            the Index of the generic ddeclaration,start from 0.
-     * @return the index generic declaration, or Object.class if cannot be
-     *         determined
-     */
-    public static Class<?> getClassGenricType(final Class<?> clazz,
-                                              final int index) {
-
-        Type genType = clazz.getGenericSuperclass();
-
-        if (!(genType instanceof ParameterizedType)) {
-            logger.warn("{}'s superclass not ParameterizedType",
-                    clazz.getSimpleName());
-            return Object.class;
-        }
-
-        Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
-
-        if (index >= params.length || index < 0) {
-            logger.warn("Index: {} Size of {}'s Parameterized Type: {}", index,
-                    clazz.getSimpleName(), params.length);
-            return Object.class;
-        }
-        if (!(params[index] instanceof Class)) {
-            logger.warn(
-                    "{} not set the actual class on superclass generic parameter",
-                    clazz.getSimpleName());
-            return Object.class;
-        }
-
-        return (Class<?>) params[index];
-    }
-
-    public static Class<?> getUserClass(Object instance) {
-        Validate.notNull(instance, "Instance must not be null");
-        Class<? extends Object> clazz = instance.getClass();
-        if (clazz != null && clazz.getName().contains(CGLIB_CLASS_SEPARATOR)) {
-            Class<?> superClass = clazz.getSuperclass();
-            if (superClass != null && !Object.class.equals(superClass)) {
-                return superClass;
-            }
-        }
-        return clazz;
-
-    }
-
-    /**
-     * 将反射时的checked exception转换为unchecked exception.
-     */
-    public static RuntimeException convertReflectionExceptionToUnchecked(
-            Exception e) {
-        if (e instanceof IllegalAccessException
-                || e instanceof IllegalArgumentException
-                || e instanceof NoSuchMethodException) {
-            return new IllegalArgumentException(e);
-        } else if (e instanceof InvocationTargetException) {
-            return new RuntimeException(
-                    ((InvocationTargetException) e).getTargetException());
-        } else if (e instanceof RuntimeException) {
-            return (RuntimeException) e;
-        }
-        return new RuntimeException("Unexpected Checked Exception.", e);
-    }
-
-    /**
-     * Returns the package name of {@code classFullName} according to the Java
-     * Language Specification (section 6.7). Unlike {@link Class#getPackage},
-     * this method only parses the class name, without attempting to define the
-     * {@link Package} and hence load files.
-     */
-    public static String getPackageName(String classFullName) {
-        int lastDot = classFullName.lastIndexOf('.');
-        if (lastDot < 0) {
-            return "";
-        } else {
-            return classFullName.substring(0, lastDot);
-        }
+    private static class NULL {
     }
 }
