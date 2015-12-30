@@ -2080,15 +2080,4 @@ public class StringUtils {
         }
         return list;
     }
-
-    public static List<String> substringsBetween(final String str, final String open, final String close) {
-        return substringsBetween(str, open, close, false);
-    }
-
-    public static void main(String[] args) {
-        String url1 = "http://blog.csdn.net/zolalad?viewmode=contents";
-        String url2 = "/zolalad/article/details/17509603";
-        System.out.println(normalizeUrl(url1, url2));
-    }
-
 }

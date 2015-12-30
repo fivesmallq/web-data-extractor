@@ -6,8 +6,8 @@ import im.nll.data.extractor.entity.EntityExtractor;
 import im.nll.data.extractor.entity.EntityListExtractor;
 import im.nll.data.extractor.impl.*;
 import im.nll.data.extractor.utils.Logs;
-import org.apache.commons.lang3.Validate;
-import org.joor.Reflect;
+import im.nll.data.extractor.utils.Reflect;
+import im.nll.data.extractor.utils.Validate;
 import org.slf4j.Logger;
 
 import java.util.List;
