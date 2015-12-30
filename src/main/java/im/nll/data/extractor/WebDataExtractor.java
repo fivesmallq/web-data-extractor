@@ -103,7 +103,7 @@ public class WebDataExtractor {
             T entity = Reflect.on(clazz).create().get();
             for (Extractors extractorsOne : extractors) {
                 String name = extractorsOne.getName();
-                String data = extractorsOne.extract(this.html);
+                String data = extractorsOne.extract(html);
                 try {
                     Reflect.on(entity).set(name, data);
                 } catch (Exception e) {
