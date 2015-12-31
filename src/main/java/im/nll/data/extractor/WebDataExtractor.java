@@ -110,7 +110,7 @@ public class WebDataExtractor {
                 try {
                     Reflect.on(entity).set(name, data);
                 } catch (Exception e) {
-                    LOGGER.error("convertt to bean error! can't set '{}' with '{}'", name, data, e);
+                    LOGGER.error("convert to bean error! can't set '{}' with '{}'", name, data, e);
                 }
             }
             entityList.add(entity);
