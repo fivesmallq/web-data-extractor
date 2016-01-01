@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author <a href="mailto:fivesmallq@gmail.com">fivesmallq</a>
@@ -32,5 +33,13 @@ public class JSONPathExtractorTest {
         String author1 = new JSONPathExtractor("$.store.book[1].author").extract(json);
         Assert.assertEquals(author0, "Nigel Rees");
         Assert.assertEquals(author1, "Evelyn Waugh");
+    }
+
+    @Test
+    public void testExtractList() throws Exception {
+        List<String> authors = new JSONPathExtractor("$.store.book[*].author").extractList(json);
+        Assert.assertNotNull(authors);
+        Assert.assertEquals(authors.size(), 4);
+        Assert.assertEquals(authors.get(0), "Nigel Rees");
     }
 }
