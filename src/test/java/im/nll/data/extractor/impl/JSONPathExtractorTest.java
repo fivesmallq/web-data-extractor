@@ -2,6 +2,7 @@ package im.nll.data.extractor.impl;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,15 +30,11 @@ public class JSONPathExtractorTest {
 
     @Test
     public void testExtract() throws Exception {
-        String author0 = new JSONPathExtractor("$.store.book[0].author").extract(json);
-        String author1 = new JSONPathExtractor("$.store.book[1].author").extract(json);
-        Assert.assertEquals(author0, "Nigel Rees");
-        Assert.assertEquals(author1, "Evelyn Waugh");
-    }
-
-    @Test
-    public void testExtractList() throws Exception {
-        List<String> authors = new JSONPathExtractor("$.store.book[*].author").extractList(json);
+        List<String> author0 = new JSONPathExtractor("$.store.book[0].author").extract(json);
+        List<String> author1 = new JSONPathExtractor("$.store.book[1].author").extract(json);
+        List<String> authors = new JSONPathExtractor("$.store.book[*].author").extract(json);
+        Assert.assertEquals(author0.get(0), "Nigel Rees");
+        Assert.assertEquals(author1.get(0), "Evelyn Waugh");
         Assert.assertNotNull(authors);
         Assert.assertEquals(authors.size(), 4);
         Assert.assertEquals(authors.get(0), "Nigel Rees");

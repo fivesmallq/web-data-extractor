@@ -3,8 +3,11 @@ package im.nll.data.extractor.impl;
 import im.nll.data.extractor.Extractor;
 import im.nll.data.extractor.utils.StringUtils;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * regex extractor
@@ -26,14 +29,10 @@ public class RegexExtractor implements Extractor {
     }
 
     @Override
-    public String extract(String data) {
+    public List<String> extract(String data) {
         Pattern pattern = Pattern.compile(regex, Pattern.DOTALL
                 | Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(data);
-        if (matcher.find())
-            return matcher.group(group).trim();
-        else {
-            return "";
-        }
+        return ImmutableList.of(matcher.find()?matcher.group(group).trim():"");
     }
 }

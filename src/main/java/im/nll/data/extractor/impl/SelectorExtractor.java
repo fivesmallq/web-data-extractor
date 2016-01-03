@@ -1,8 +1,10 @@
 package im.nll.data.extractor.impl;
 
 import com.google.common.collect.Lists;
-import im.nll.data.extractor.ListableExtractor;
+
+import im.nll.data.extractor.Extractor;
 import im.nll.data.extractor.utils.StringUtils;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -26,7 +28,7 @@ import java.util.List;
  * @version Revision: 1.0
  * @date 15/12/25 下午9:25
  */
-public class SelectorExtractor implements ListableExtractor {
+public class SelectorExtractor implements Extractor {
     private final static int TYPE_TEXT = 0;
     private final static int TYPE_HTML = 1;
     private String query;
@@ -55,27 +57,9 @@ public class SelectorExtractor implements ListableExtractor {
     }
 
     @Override
-    public String extract(String data) {
+    public List<String> extract(String data) {
+    	List<String> strings = Lists.newArrayList();
         Document document = Jsoup.parse(data, "", Parser.xmlParser());
-        String result = "";
-        switch (outType) {
-            case TYPE_TEXT:
-                result = document.select(query).eq(eq).text();
-                break;
-            case TYPE_HTML:
-                result = document.select(query).eq(eq).html();
-                break;
-            default:
-                result = document.select(query).eq(eq).attr(attr);
-                break;
-        }
-        return result;
-    }
-
-    @Override
-    public List<String> extractList(String content) {
-        List<String> strings = Lists.newArrayList();
-        Document document = Jsoup.parse(content, "", Parser.xmlParser());
         Elements elements = document.select(query);
         for (Element element : elements) {
             switch (outType) {

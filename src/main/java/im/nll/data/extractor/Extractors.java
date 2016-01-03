@@ -1,66 +1,77 @@
 package im.nll.data.extractor;
 
-import com.google.common.collect.Lists;
-import im.nll.data.extractor.impl.*;
+import im.nll.data.extractor.impl.SelectorExtractor;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+import com.google.common.collect.Maps;
 
 /**
  * @author <a href="mailto:fivesmallq@gmail.com">fivesmallq</a>
  * @version Revision: 1.0
  * @date 15/12/28 下午4:43
  */
-public class Extractors {
-    public Extractors(String name) {
-        this.name = name;
+public class Extractors extends ExtractResult{
+    
+    private String html;
+    private Stack<ExtractResult> extractResults = new Stack<ExtractResult>();
+    
+    public Extractors(String html) {
+        this.html = html;
     }
 
-    private String name;
-    private List<Extractor> extractors = Lists.newLinkedList();
-
-    public static Extractors nameOf(String name) {
-        return new Extractors(name);
+    public static Extractors on(String html) {
+        return new Extractors(html);
+    }
+    
+    public ExtractResult extract(Extractor extractor){
+        return extract(null, extractor);
+    }
+    
+    public ExtractResult extract(String field, Extractor extractor){
+        return extract(html, null, extractor);
     }
 
-    public Extractors filter(Extractor extractor) {
-        this.extractors.add(extractor);
-        return this;
-    }
-
-    public Extractors selector(String... params) {
-        this.extractors.add(new SelectorExtractor(params));
-        return this;
-    }
-
-    public Extractors json(String... params) {
-        this.extractors.add(new JSONPathExtractor(params));
-        return this;
-    }
-
-    public Extractors xpath(String... params) {
-        this.extractors.add(new XPathExtractor(params));
-        return this;
-    }
-
-    public Extractors regex(String... params) {
-        this.extractors.add(new RegexExtractor(params));
-        return this;
-    }
-
-    public Extractors stringRange(String... params) {
-        this.extractors.add(new StringRangeExtractor(params));
-        return this;
-    }
-
-    public String extract(String html) {
-        String result = html;
-        for (Extractor extractor : extractors) {
-            result = extractor.extract(result);
+	public ExtractResult extract(String input, String field, Extractor extractor) {
+        ExtractResult result = new ExtractResult(this, field, extractor.extract(input));
+        if(!input.equalsIgnoreCase(html)){
+        	extractResults.pop();
         }
+        extractResults.push(result);
         return result;
+	}
+    
+	@Override
+    public Map<String, String> asMap(){
+        // extractResults value - key: result.asString
+    	Map<String, String> result = Maps.newLinkedHashMap();
+    	for(ExtractResult extract: extractResults){
+    		result.put(extract.getField(), extract.asString());
+    	}
+    	return result;
+    }
+    
+	@Override
+    public <T> T asBean(Class<T> clazz){
+        return null; // TODO
+    }
+    
+	@Override
+    public <T> List<T> asBeanList(Class<T> clazz){
+        return null;
+    }
+	
+	public String asString(){
+        return extractResults.elementAt(0).asString();
+    }
+    
+    public ExtractResult selector(String query){
+    	return selector(null, query);
     }
 
-    public String getName() {
-        return name;
-    }
+	public ExtractResult selector(String field, String query) {
+		return extract(field, new SelectorExtractor(query));
+	}
 }
