@@ -46,6 +46,7 @@ public class Extractors {
     }
 
     public Extractors with(Extractor extractor) {
+        Validate.notNull(prevField, "must call extract method first!");
         List<Extractor> extractors = extractorsMap.getOrDefault(prevField, Lists.newLinkedList());
         extractors.add(extractor);
         extractorsMap.put(prevField, extractors);
