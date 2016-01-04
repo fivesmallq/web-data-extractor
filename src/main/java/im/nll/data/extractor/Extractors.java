@@ -1,5 +1,6 @@
 package im.nll.data.extractor;
 
+import im.nll.data.extractor.impl.RegexExtractor;
 import im.nll.data.extractor.impl.SelectorExtractor;
 
 import java.util.List;
@@ -13,65 +14,113 @@ import com.google.common.collect.Maps;
  * @version Revision: 1.0
  * @date 15/12/28 下午4:43
  */
-public class Extractors extends ExtractResult{
-    
-    private String html;
-    private Stack<ExtractResult> extractResults = new Stack<ExtractResult>();
-    
-    public Extractors(String html) {
-        this.html = html;
-    }
+public class Extractors implements ExtractEnd {
 
-    public static Extractors on(String html) {
-        return new Extractors(html);
-    }
-    
-    public ExtractResult extract(Extractor extractor){
-        return extract(null, extractor);
-    }
-    
-    public ExtractResult extract(String field, Extractor extractor){
-        return extract(html, null, extractor);
-    }
+	private String html;
+	private Stack<ExtractResultJoiner> extractResults = new Stack<ExtractResultJoiner>();
+	private ExtractResultJoiner priority;
 
-	public ExtractResult extract(String input, String field, Extractor extractor) {
-        ExtractResult result = new ExtractResult(this, field, extractor.extract(input));
-        if(!input.equalsIgnoreCase(html)){
-        	extractResults.pop();
-        }
-        extractResults.push(result);
-        return result;
+	public Extractors(String html) {
+		this.html = html;
 	}
-    
-	@Override
-    public Map<String, String> asMap(){
-        // extractResults value - key: result.asString
-    	Map<String, String> result = Maps.newLinkedHashMap();
-    	for(ExtractResult extract: extractResults){
-    		result.put(extract.getField(), extract.asString());
-    	}
-    	return result;
-    }
-    
-	@Override
-    public <T> T asBean(Class<T> clazz){
-        return null; // TODO
-    }
-    
-	@Override
-    public <T> List<T> asBeanList(Class<T> clazz){
-        return null;
-    }
-	
-	public String asString(){
-        return extractResults.elementAt(0).asString();
-    }
-    
-    public ExtractResult selector(String query){
-    	return selector(null, query);
-    }
 
-	public ExtractResult selector(String field, String query) {
+	ExtractResultJoiner pop() {
+		return extractResults.pop();
+	}
+
+	void setNextWith(ExtractResultJoiner prev) {
+		this.priority = prev;
+	}
+
+	public static Extractors on(String html) {
+		return new Extractors(html);
+	}
+
+	public ExtractResultJoiner extract(Extractor extractor) {
+		return extract(null, extractor);
+	}
+
+	public ExtractResultJoiner extract(String field, Extractor extractor) {
+		return extract(html, field, extractor);
+	}
+
+	public ExtractResultJoiner extract(String input, String field,
+			Extractor extractor) {
+		try {
+			ExtractResultJoiner result;
+			// 此方法在 with() 后调用时 priority 会被赋值
+			if (priority != null) {
+				result = new ExtractResultJoiner(this, priority.getFieldName(),
+						extractor.extract(priority.asString()));
+			} else {
+				result = new ExtractResultJoiner(this, field,
+						extractor.extract(input));
+			}
+			extractResults.push(result);
+			return result;
+		} finally {
+			priority = null;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see im.nll.data.extractor.ExtractEnd#asMap()
+	 */
+	@Override
+	public Map<String, String> asMap() {
+		// extractResults value - key: result.asString
+		Map<String, String> result = Maps.newLinkedHashMap();
+		for (ExtractResultJoiner extract : extractResults) {
+			result.put(extract.getFieldName(), extract.asString());
+		}
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see im.nll.data.extractor.ExtractEnd#asBean()
+	 */
+	@Override
+	public <T> T asBean(Class<T> clazz) {
+		return null; // TODO
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see im.nll.data.extractor.ExtractEnd#asBeanList()
+	 */
+	@Override
+	public <T> List<T> asBeanList(Class<T> clazz) {
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see im.nll.data.extractor.ExtractEnd#asString()
+	 */
+	@Override
+	public String asString() {
+		return extractResults.elementAt(0).asString();
+	}
+
+	public ExtractResultJoiner selector(String query) {
+		return selector(null, query);
+	}
+
+	public ExtractResultJoiner selector(String field, String query) {
 		return extract(field, new SelectorExtractor(query));
+	}
+
+	public ExtractResultJoiner regex(String query) {
+		return regex(null, query);
+	}
+
+	private ExtractResultJoiner regex(String field, String query) {
+		return extract(field, new RegexExtractor(query));
 	}
 }

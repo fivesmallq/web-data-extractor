@@ -45,9 +45,9 @@ public class WebDataExtractorsTest {
     @Test
     public void testGet() throws Exception {
         String number = Extractors.on(html).extract(new SelectorExtractor("tr:contains(注册号) td", "0")).asString();
-        String name = Extractors.on(html).selector("tr:contains(名称) td").get(1);
+        String name = Extractors.on(html).selector("tr:contains(名称) td").get(1).asString();
         String type = Extractors.on(html).selector("tr:contains(类型) td").asString();
-        String legalPersion = Extractors.on(html).selector("tr:contains(法定代表人) td").get(1);
+        String legalPersion = Extractors.on(html).selector("tr:contains(法定代表人) td").get(1).asString();
         String address = Extractors.on(html).selector("tr:contains(住所) td").asString();
         String money = Extractors.on(html).selector("tr:contains(注册资本) td").with(new RegexExtractor("\\d+.\\d+")).asString();
         Assert.assertEquals("110000003277298", number);
@@ -60,20 +60,22 @@ public class WebDataExtractorsTest {
 
     @Test
     public void testToMap() throws Exception {
-//        Map<String, String> dataMap = WebDataExtractor.of(html).asMap(
-//                Extractors.nameOf("number").selector("tr:contains(注册号) td", "0"),
-//                Extractors.nameOf("name").selector("tr:contains(名称) td", "1"),
-//                Extractors.nameOf("type").selector("tr:contains(类型) td", "0"),
-//                Extractors.nameOf("legalPersion").selector("tr:contains(法定代表人) td", "1"),
-//                Extractors.nameOf("address").selector("tr:contains(住所) td", "0"),
-//                Extractors.nameOf("money").selector("tr:contains(注册资本) td", "0").regex("\\d+.\\d+"));
-//
-//        Assert.assertEquals(dataMap.get("number"), "110000003277298");
-//        Assert.assertEquals(dataMap.get("name"), "高德软件有限公司");
-//        Assert.assertEquals(dataMap.get("type"), "有限责任公司(自然人投资或控股)");
-//        Assert.assertEquals(dataMap.get("legalPersion"), "陆兆禧");
-//        Assert.assertEquals(dataMap.get("address"), "北京市昌平区科技园区昌盛路18号B1座1-5层");
-//        Assert.assertEquals(dataMap.get("money"), "24242.4242");
+        Map<String, String> dataMap = Extractors.on(html)
+        		.selector("number", "tr:contains(注册号) td")
+        		.and().selector("name", "tr:contains(注册号) td").get(1)
+        		.and().selector("type", "tr:contains(类型) td")
+        		.and().selector("legalPersion", "tr:contains(法定代表人) td").get(1)
+        		.and().selector("address", "tr:contains(住所) td")
+        		.and().selector("money", "tr:contains(注册资本) td")
+        			.with().regex("\\d+.\\d+")
+        		.asMap();
+        
+        Assert.assertEquals("110000003277298", dataMap.get("number"));
+        Assert.assertEquals("高德软件有限公司", dataMap.get("name"));
+        Assert.assertEquals("有限责任公司(自然人投资或控股)", dataMap.get("type"));
+        Assert.assertEquals("陆兆禧", dataMap.get("legalPersion"));
+        Assert.assertEquals("北京市昌平区科技园区昌盛路18号B1座1-5层", dataMap.get("address"));
+        Assert.assertEquals("24242.4242", dataMap.get("money"));
     }
 
     @Test
