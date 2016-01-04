@@ -2,6 +2,7 @@ package im.nll.data.extractor.impl;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,14 +31,11 @@ public class SelectorExtractorTest {
     @Test
     public void testExtract() throws Exception {
         selectorExtractor = new SelectorExtractor("th.color_tb");
-        String title = selectorExtractor.extract(html);
-        Assert.assertEquals(title, "网站或网店信息");
-    }
-
-    @Test
-    public void testExtractList() throws Exception {
+        List<String> title = selectorExtractor.extract(html);
+        Assert.assertEquals(title.get(0), "网站或网店信息");
+        
         selectorExtractor = new SelectorExtractor("tr:has(td)", "", "1");
-        List<String> datas = selectorExtractor.extractList(html);
+        List<String> datas = selectorExtractor.extract(html);
         Assert.assertEquals(datas.size(), 3);
         Assert.assertEquals(datas.get(0), "<td> 网站 </td> \n" +
                 "<td>高德导航</td> \n" +

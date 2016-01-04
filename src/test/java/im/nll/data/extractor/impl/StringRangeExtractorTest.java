@@ -2,6 +2,7 @@ package im.nll.data.extractor.impl;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,34 +32,30 @@ public class StringRangeExtractorTest {
     public void testExtract() throws Exception {
         String demoHtml = "<td>www.baidu.com</td>";
         stringRangeExtractor = new StringRangeExtractor("<td>", "</td>");
-        String result = stringRangeExtractor.extract(demoHtml);
-        Assert.assertEquals(result, "www.baidu.com");
+        List<String> result = stringRangeExtractor.extract(demoHtml);
+        Assert.assertEquals(result.get(0), "www.baidu.com");
 
         stringRangeExtractor = new StringRangeExtractor("x", "xx");
         result = stringRangeExtractor.extract(demoHtml);
-        Assert.assertEquals(result, "");
+        Assert.assertEquals(result.get(0), "");
 
         stringRangeExtractor = new StringRangeExtractor("<td>", "</td>", "true");
         result = stringRangeExtractor.extract(demoHtml);
-        Assert.assertEquals(result, "<td>www.baidu.com</td>");
+        Assert.assertEquals(result.get(0), "<td>www.baidu.com</td>");
 
         stringRangeExtractor = new StringRangeExtractor("<td>", "</td>", "false");
         result = stringRangeExtractor.extract(demoHtml);
-        Assert.assertEquals(result, "www.baidu.com");
-    }
-
-    @Test
-    public void testExtractList() throws Exception {
+        Assert.assertEquals(result.get(0), "www.baidu.com");
+        
         stringRangeExtractor = new StringRangeExtractor("<td style", "</td>", "true");
-        List<String> stringList = stringRangeExtractor.extractList(html);
+        List<String> stringList = stringRangeExtractor.extract(html);
         Assert.assertNotNull(stringList);
         Assert.assertEquals(stringList.size(), 5);
         Assert.assertEquals(stringList.get(3), "<td style=\"text-align:center;\">4</td>");
         stringRangeExtractor = new StringRangeExtractor("<td style", "</td>", "false");
-        stringList = stringRangeExtractor.extractList(html);
+        stringList = stringRangeExtractor.extract(html);
         Assert.assertNotNull(stringList);
         Assert.assertEquals(stringList.size(), 5);
         Assert.assertEquals(stringList.get(3), "=\"text-align:center;\">4");
-
     }
 }

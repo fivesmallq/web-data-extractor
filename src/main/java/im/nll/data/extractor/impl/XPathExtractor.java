@@ -1,5 +1,7 @@
 package im.nll.data.extractor.impl;
 
+import java.util.List;
+
 import im.nll.data.extractor.Extractor;
 
 /**
@@ -14,7 +16,7 @@ public class XPathExtractor implements Extractor {
     }
 
     @Override
-    public String extract(String html) {
+    public List<String> extract(String html) {
         return null;
     }
 }
