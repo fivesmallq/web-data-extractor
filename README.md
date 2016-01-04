@@ -4,7 +4,7 @@
 [![codecov.io](http://codecov.io/github/fivesmallq/web-data-extractor/coverage.svg?branch=master)](http://codecov.io/github/fivesmallq/web-data-extractor?branch=master)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-Extract data from common web format. like HTML,XML,JSON.
+Extract data from common web format, like HTML,XML,JSON.
 
 ##Examples
 
@@ -82,4 +82,4 @@ String name = WebDataExtractor.of(html).selector("tr:contains(名称) td", "0").
     }
 ````
 
-see [WebDataExtractorsTest](https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/im/nll/data/extractor/WebDataExtractorsTest.java)
+see [Example](https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/im/nll/data/extractor/WebDataExtractorsTest.java)
