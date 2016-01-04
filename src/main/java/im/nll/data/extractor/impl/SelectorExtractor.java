@@ -41,16 +41,12 @@ public class SelectorExtractor implements ListableExtractor {
     private int outType = 0;
     private String attr;
 
-    public SelectorExtractor(String... params) {
-        this.query = params[0];
-        if (params.length > 1 && StringUtils.isNotNullOrEmpty(params[1])) {
-            this.eq = StringUtils.tryParseInt(params[1], 0);
-        }
-        if (params.length > 2 && StringUtils.isNotNullOrEmpty(params[2])) {
-            this.outType = StringUtils.tryParseInt(params[2]);
-            if (this.outType == -1) {
-                attr = params[2];
-            }
+    public SelectorExtractor(String query) {
+        if (query.endsWith(".html")) {
+            this.outType = 1;
+            this.query = StringUtils.substringBeforeLast(query, ".html");
+        } else {
+            this.query = query;
         }
     }
 

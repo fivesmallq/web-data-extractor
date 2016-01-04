@@ -1,11 +1,11 @@
 package im.nll.data.extractor.entity;
 
 /**
- * @author <a href="mailto:wuzhiqiang@ucfgroup.com">wuzhiqiang</a>
+ * @author <a href="mailto:fivesmallq@gmail.com">fivesmallq</a>
  * @version Revision: 1.0
  * @date 15/12/30 上午11:28
  */
-public class Website {
+public class Language {
     private String type;
     private String name;
     private String url;
