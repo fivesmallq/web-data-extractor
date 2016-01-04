@@ -14,7 +14,7 @@ import java.util.List;
  * @version Revision: 1.0
  * @date 15/12/25 下午9:24
  */
-public class JSONPathExtractor implements Extractor {
+public class JSONPathExtractor extends Extractor {
     static final Configuration conf = Configuration.defaultConfiguration().addOptions(Option.ALWAYS_RETURN_LIST, Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
     private String jsonpath;
 

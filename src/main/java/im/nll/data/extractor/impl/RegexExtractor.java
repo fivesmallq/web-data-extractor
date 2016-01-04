@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableList;
  * @version Revision: 1.0
  * @date 15/12/28 下午4:24
  */
-public class RegexExtractor implements Extractor {
+public class RegexExtractor extends Extractor {
     private String regex;
     private int group;
     //TODO impl filter

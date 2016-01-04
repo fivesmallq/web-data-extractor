@@ -44,7 +44,7 @@ public class WebDataExtractorsTest {
 
     @Test
     public void testGet() throws Exception {
-        String number = Extractors.on(html).extract(new SelectorExtractor("tr:contains(注册号) td", "0")).asString();
+        String number = Extractors.on(html).extract(new SelectorExtractor("tr:contains(注册号) td")).asString();
         String name = Extractors.on(html).selector("tr:contains(名称) td").get(1).asString();
         String type = Extractors.on(html).selector("tr:contains(类型) td").asString();
         String legalPersion = Extractors.on(html).selector("tr:contains(法定代表人) td").get(1).asString();
@@ -80,34 +80,39 @@ public class WebDataExtractorsTest {
 
     @Test
     public void testToBean() throws Exception {
-//        Basic basic = WebDataExtractor.of(html).asBean(Basic.class,
-//                Extractors.nameOf("number").selector("tr:contains(注册号) td", "0"),
-//                Extractors.nameOf("name").selector("tr:contains(名称) td", "1"),
-//                Extractors.nameOf("type").selector("tr:contains(类型) td", "0"),
-//                Extractors.nameOf("legalPersion").selector("tr:contains(法定代表人) td", "1"),
-//                Extractors.nameOf("address").selector("tr:contains(住所) td", "0"),
-//                Extractors.nameOf("money").selector("tr:contains(注册资本) td", "0").regex("\\d+.\\d+"));
-//
-//        Assert.assertEquals(basic.getNumber(), "110000003277298");
-//        Assert.assertEquals(basic.getName(), "高德软件有限公司");
-//        Assert.assertEquals(basic.getType(), "有限责任公司(自然人投资或控股)");
-//        Assert.assertEquals(basic.getLegalPersion(), "陆兆禧");
-//        Assert.assertEquals(basic.getAddress(), "北京市昌平区科技园区昌盛路18号B1座1-5层");
-//        Assert.assertEquals(basic.getMoney(), "24242.4242");
+        Basic basic = Extractors.on(html)
+        		.selector("number", "tr:contains(注册号) td")
+        		.and().selector("name", "tr:contains(注册号) td").get(1)
+        		.and().selector("type", "tr:contains(类型) td")
+        		.and().selector("legalPersion", "tr:contains(法定代表人) td").get(1)
+        		.and().selector("address", "tr:contains(住所) td")
+        		.and().selector("money", "tr:contains(注册资本) td")
+        			.with().regex("\\d+.\\d+")
+    			.asBean(Basic.class);
+
+        Assert.assertEquals(basic.getNumber(), "110000003277298");
+        Assert.assertEquals(basic.getName(), "高德软件有限公司");
+        Assert.assertEquals(basic.getType(), "有限责任公司(自然人投资或控股)");
+        Assert.assertEquals(basic.getLegalPersion(), "陆兆禧");
+        Assert.assertEquals(basic.getAddress(), "北京市昌平区科技园区昌盛路18号B1座1-5层");
+        Assert.assertEquals(basic.getMoney(), "24242.4242");
     }
 
     @Test
     public void testToBeanList() throws Exception {
-//        List<Website> websites = WebDataExtractor.of(listHtml).split(new SelectorExtractor("tr:has(td)", "", "1")).asBeanList(Website.class,
-//                Extractors.nameOf("type").selector("td", "0"),
-//                Extractors.nameOf("name").selector("td", "1"),
-//                Extractors.nameOf("url").selector("td", "2"));
-//        Assert.assertNotNull(websites);
-//        Website first = websites.get(0);
-//        Assert.assertEquals(websites.size(), 3);
-//        Assert.assertEquals(first.getType(), "网站");
-//        Assert.assertEquals(first.getName(), "高德导航");
-//        Assert.assertEquals(first.getUrl(), "www.anav.com");
+    	
+        List<Website> websites = Extractors.on(listHtml).extract(new SelectorExtractor("tr:has(td)", "", "1"))
+        		.foreach().begin().selector("type", "td").get(0)
+	        		.and().selector("name", "td").get(1)
+	        		.and().selector("url", "td").get(2)
+                .end().asBeanList(Website.class);
+        
+        Assert.assertNotNull(websites);
+        Website first = websites.get(0);
+        Assert.assertEquals(websites.size(), 3);
+        Assert.assertEquals(first.getType(), "网站");
+        Assert.assertEquals(first.getName(), "高德导航");
+        Assert.assertEquals(first.getUrl(), "www.anav.com");
     }
 
     @Test

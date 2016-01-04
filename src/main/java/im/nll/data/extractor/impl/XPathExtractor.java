@@ -9,7 +9,7 @@ import im.nll.data.extractor.Extractor;
  * @version Revision: 1.0
  * @date 15/12/25 下午9:26
  */
-public class XPathExtractor implements Extractor {
+public class XPathExtractor extends Extractor {
 
     public XPathExtractor(String ... params) {
 

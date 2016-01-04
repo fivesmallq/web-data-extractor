@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableList;
  * @version Revision: 1.0
  * @date 15/12/30 下午3:38
  */
-public class StringRangeExtractor implements Extractor {
+public class StringRangeExtractor extends Extractor {
 	private String open;
 	private String close;
 	private boolean tokenReservedFlag = false;

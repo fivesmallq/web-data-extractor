@@ -28,7 +28,7 @@ import java.util.List;
  * @version Revision: 1.0
  * @date 15/12/25 下午9:25
  */
-public class SelectorExtractor implements Extractor {
+public class SelectorExtractor extends Extractor {
     private final static int TYPE_TEXT = 0;
     private final static int TYPE_HTML = 1;
     private String query;

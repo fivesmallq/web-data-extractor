@@ -7,6 +7,9 @@ import java.util.List;
  * @version Revision: 1.0
  * @date 15/12/25 下午6:20
  */
-public interface Extractor {
-    List<String> extract(String data);
+public abstract class Extractor {
+	
+    int selected = 0;
+
+	public abstract List<String> extract(String data);
 }
