@@ -1,7 +1,6 @@
 package im.nll.data.extractor.impl;
 
 import im.nll.data.extractor.Extractor;
-import im.nll.data.extractor.utils.StringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,15 +13,10 @@ import java.util.regex.Pattern;
  */
 public class RegexExtractor implements Extractor {
     private String regex;
-    private int group;
-    //TODO impl filter
-    private String filter;
+    private int group = 0;
 
-    public RegexExtractor(String ... params) {
-        this.regex = params[0];
-        if (params.length > 1 && StringUtils.isNotNullOrEmpty(params[1])) {
-            this.group = StringUtils.tryParseInt(params[1], 0);
-        }
+    public RegexExtractor(String regex) {
+        this.regex = regex;
     }
 
     @Override

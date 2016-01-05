@@ -18,8 +18,8 @@ public class JSONPathExtractor implements ListableExtractor {
     static final Configuration conf = Configuration.defaultConfiguration().addOptions(Option.ALWAYS_RETURN_LIST, Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
     private String jsonpath;
 
-    public JSONPathExtractor(String... params) {
-        this.jsonpath = params[0];
+    public JSONPathExtractor(String jsonpath) {
+        this.jsonpath = jsonpath;
     }
 
     @Override

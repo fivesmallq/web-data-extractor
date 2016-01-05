@@ -29,18 +29,16 @@ public class SelectorExtractorTest {
 
     @Test
     public void testExtract() throws Exception {
-        selectorExtractor = new SelectorExtractor("th.color_tb");
+        selectorExtractor = new SelectorExtractor("th.title");
         String title = selectorExtractor.extract(html);
-        Assert.assertEquals(title, "网站或网店信息");
+        Assert.assertEquals(title, "languages");
     }
 
     @Test
     public void testExtractList() throws Exception {
-        selectorExtractor = new SelectorExtractor("tr:has(td)", "", "1");
+        selectorExtractor = new SelectorExtractor("tr:has(td)");
         List<String> datas = selectorExtractor.extractList(html);
         Assert.assertEquals(datas.size(), 3);
-        Assert.assertEquals(datas.get(0), "<td> 网站 </td> \n" +
-                "<td>高德导航</td> \n" +
-                "<td>www.anav.com</td>");
+        Assert.assertEquals(datas.get(0), "static Java https://www.java.com");
     }
 }
