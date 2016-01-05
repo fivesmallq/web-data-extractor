@@ -21,7 +21,7 @@ public class StringRangeExtractorTest {
     @Before
     public void setUp() throws Exception {
         try {
-            html = Resources.toString(Resources.getResource("list2.html"), Charsets.UTF_8);
+            html = Resources.toString(Resources.getResource("list.html"), Charsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,16 +49,24 @@ public class StringRangeExtractorTest {
 
     @Test
     public void testExtractList() throws Exception {
-        stringRangeExtractor = new StringRangeExtractor("<td style", "</td>", "true");
+        stringRangeExtractor = new StringRangeExtractor("<tr class=\"item\">", "</tr>", "true");
         List<String> stringList = stringRangeExtractor.extractList(html);
         Assert.assertNotNull(stringList);
-        Assert.assertEquals(stringList.size(), 5);
-        Assert.assertEquals(stringList.get(3), "<td style=\"text-align:center;\">4</td>");
-        stringRangeExtractor = new StringRangeExtractor("<td style", "</td>", "false");
+        Assert.assertEquals(stringList.size(), 3);
+        Assert.assertEquals("<tr class=\"item\">\n" +
+                "        <td class=\"type\">dynamic</td>\n" +
+                "        <td class=\"name\">Python</td>\n" +
+                "        <td class=\"url\">>https://www.python.org</td>\n" +
+                "    </tr>", stringList.get(2));
+        stringRangeExtractor = new StringRangeExtractor("<tr class=\"item\">", "</tr>", "false");
         stringList = stringRangeExtractor.extractList(html);
         Assert.assertNotNull(stringList);
-        Assert.assertEquals(stringList.size(), 5);
-        Assert.assertEquals(stringList.get(3), "=\"text-align:center;\">4");
+        Assert.assertEquals(stringList.size(), 3);
+        Assert.assertEquals("\n" +
+                "        <td class=\"type\">dynamic</td>\n" +
+                "        <td class=\"name\">Python</td>\n" +
+                "        <td class=\"url\">>https://www.python.org</td>\n" +
+                "    ", stringList.get(2));
 
     }
 }
