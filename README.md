@@ -11,13 +11,13 @@ Extract data from common web format, like HTML,XML,JSON.
 ###extract single data
 
 ````java
-String number = WebDataExtractor.of(html).filter(new SelectorExtractor("tr:contains(名称) td", "0")).asString();
+    String followers = Extractors.on(baseHtml).extract(new SelectorExtractor("div.followers")).with(new RegexExtractor("\\d+")).asString();
 ````
 
-or use ``selector`` method
+or use static method
 
 ````java
-String name = WebDataExtractor.of(html).selector("tr:contains(名称) td", "0").asString();
+    String followers = Extractors.on(baseHtml).extract(selector("div.followers")).with(regex("\\d+")).asString();
 ````
 
 ###extract data to map
@@ -25,42 +25,51 @@ String name = WebDataExtractor.of(html).selector("tr:contains(名称) td", "0").
 ````java
     @Test
     public void testToMap() throws Exception {
-        Map<String, String> dataMap = WebDataExtractor.of(html).asMap(
-                Extractors.nameOf("number").selector("tr:contains(注册号) td", "0"),
-                Extractors.nameOf("name").selector("tr:contains(名称) td", "1"),
-                Extractors.nameOf("type").selector("tr:contains(类型) td", "0"),
-                Extractors.nameOf("legalPersion").selector("tr:contains(法定代表人) td", "1"),
-                Extractors.nameOf("address").selector("tr:contains(住所) td", "0"),
-                Extractors.nameOf("money").selector("tr:contains(注册资本) td", "0").regex("\\d+.\\d+"));
-
-        Assert.assertEquals(dataMap.get("number"), "110000003277298");
-        Assert.assertEquals(dataMap.get("name"), "高德软件有限公司");
-        Assert.assertEquals(dataMap.get("type"), "有限责任公司(自然人投资或控股)");
-        Assert.assertEquals(dataMap.get("legalPersion"), "陆兆禧");
-        Assert.assertEquals(dataMap.get("address"), "北京市昌平区科技园区昌盛路18号B1座1-5层");
-        Assert.assertEquals(dataMap.get("money"), "24242.4242");
+        Map<String, String> dataMap = Extractors.on(baseHtml)
+                .extract("title", selector("a.title"))
+                .extract("followers", selector("div.followers")).with(regex("\\d+"))
+                .extract("description", selector("div.description"))
+                .asMap();
+        Assert.assertEquals("fivesmallq", dataMap.get("title"));
+        Assert.assertEquals("29671", dataMap.get("followers"));
+        Assert.assertEquals("Talk is cheap. Show me the code.", dataMap.get("description"));
     }
   ````
+  
+###extract data to map list
+
+````java
+
+    @Test
+    public void testToMapList() throws Exception {
+        List<Map<String, String>> languages = Extractors.on(listHtml).split(selectorToList("tr.item.html"))
+                .extract("type", selector("td.type"))
+                .extract("name", selector("td.name"))
+                .extract("url", selector("td.url"))
+                .asMapList();
+        Assert.assertNotNull(languages);
+        Map<String, String> second = languages.get(1);
+        Assert.assertEquals(languages.size(), 3);
+        Assert.assertEquals(second.get("type"), "dynamic");
+        Assert.assertEquals(second.get("name"), "Ruby");
+        Assert.assertEquals(second.get("url"), "https://www.ruby-lang.org");
+    }
+  ````
+  
   
 ###extract data to bean
 
 ````java
-  @Test
+    @Test
     public void testToBean() throws Exception {
-        Basic basic = WebDataExtractor.of(html).asBean(Basic.class,
-                Extractors.nameOf("number").selector("tr:contains(注册号) td", "0"),
-                Extractors.nameOf("name").selector("tr:contains(名称) td", "1"),
-                Extractors.nameOf("type").selector("tr:contains(类型) td", "0"),
-                Extractors.nameOf("legalPersion").selector("tr:contains(法定代表人) td", "1"),
-                Extractors.nameOf("address").selector("tr:contains(住所) td", "0"),
-                Extractors.nameOf("money").selector("tr:contains(注册资本) td", "0").regex("\\d+.\\d+"));
-
-        Assert.assertEquals(basic.getNumber(), "110000003277298");
-        Assert.assertEquals(basic.getName(), "高德软件有限公司");
-        Assert.assertEquals(basic.getType(), "有限责任公司(自然人投资或控股)");
-        Assert.assertEquals(basic.getLegalPersion(), "陆兆禧");
-        Assert.assertEquals(basic.getAddress(), "北京市昌平区科技园区昌盛路18号B1座1-5层");
-        Assert.assertEquals(basic.getMoney(), "24242.4242");
+        Base base = Extractors.on(baseHtml)
+                .extract("title", selector("a.title"))
+                .extract("followers", selector("div.followers")).with(regex("\\d+"))
+                .extract("description", selector("div.description"))
+                .asBean(Base.class);
+        Assert.assertEquals("fivesmallq", base.getTitle());
+        Assert.assertEquals("29671", base.getFollowers());
+        Assert.assertEquals("Talk is cheap. Show me the code.", base.getDescription());
     }
 ````
 
@@ -69,17 +78,18 @@ String name = WebDataExtractor.of(html).selector("tr:contains(名称) td", "0").
 ````java
     @Test
     public void testToBeanList() throws Exception {
-        List<Website> websites = WebDataExtractor.of(listHtml).split(new SelectorExtractor("tr:has(td)")).asBeanList(Website.class,
-                Extractors.nameOf("type").selector("td", "0"),
-                Extractors.nameOf("name").selector("td", "1"),
-                Extractors.nameOf("url").selector("td", "2"));
-        Assert.assertNotNull(websites);
-        Website first = websites.get(0);
-        Assert.assertEquals(websites.size(), 3);
-        Assert.assertEquals(first.getType(), "网站");
-        Assert.assertEquals(first.getName(), "高德导航");
-        Assert.assertEquals(first.getUrl(), "www.anav.com");
+        List<Language> languages = Extractors.on(listHtml).split(selectorToList("tr.item.html"))
+                .extract("type", selector("td.type"))
+                .extract("name", selector("td.name"))
+                .extract("url", selector("td.url"))
+                .asBeanList(Language.class);
+        Assert.assertNotNull(languages);
+        Language second = languages.get(1);
+        Assert.assertEquals(languages.size(), 3);
+        Assert.assertEquals(second.getType(), "dynamic");
+        Assert.assertEquals(second.getName(), "Ruby");
+        Assert.assertEquals(second.getUrl(), "https://www.ruby-lang.org");
     }
 ````
 
-see [Example](https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/im/nll/data/extractor/WebDataExtractorsTest.java)
+see [Example](https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/im/nll/data/extractor/ExtractorsTest.java)
