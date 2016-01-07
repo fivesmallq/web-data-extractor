@@ -60,8 +60,12 @@ public class Extractors {
      * @param listableExtractor
      * @return
      */
-    public Extractors split(ListableExtractor listableExtractor) {
-        this.htmlList = listableExtractor.extractList(html);
+    public Extractors split(Extractor listableExtractor) {
+        try {
+            this.htmlList = ((ListableExtractor) listableExtractor).extractList(html);
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException("split must implement ListableExtractor. " + listableExtractor.getClass().getSimpleName() + " can't be used");
+        }
         return this;
     }
 
@@ -151,10 +155,6 @@ public class Extractors {
             entityList.add(entity);
         }
         return entityList;
-    }
-
-    public static ListableExtractor selectorToList(String query) {
-        return new SelectorExtractor(query);
     }
 
     public static Extractor selector(String query) {
