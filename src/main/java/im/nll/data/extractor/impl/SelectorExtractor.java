@@ -27,23 +27,25 @@ import java.util.List;
  * @date 15/12/25 下午9:25
  */
 public class SelectorExtractor implements ListableExtractor {
-    private final static int TYPE_TEXT = 0;
-    private final static int TYPE_HTML = 1;
+    private final static String TYPE_TEXT = "text";
+    private final static String TYPE_HTML = "html";
+    /**
+     * css selector
+     */
     private String query;
     /**
      * 元素序号,0代表第一个(默认第一个元素)
      */
     private int eq = 0;
     /**
-     * 输出类型 <li>0 只输出文本.</li> <li>1 输出带有html格式.</li><li>
+     * 输出类型 <li>text 只输出文本.</li> <li>html 输出带有html格式.</li><li>
      * 如果想获取其他属性,直接写属性名,比如'href'则输出元素的href属性值</li>
      */
-    private int outType = 0;
-    private String attr;
+    private String outType = "text";
 
     public SelectorExtractor(String query) {
         if (query.endsWith(".html")) {
-            this.outType = 1;
+            this.outType = "html";
             this.query = StringUtils.substringBeforeLast(query, ".html");
         } else {
             this.query = query;
@@ -62,7 +64,7 @@ public class SelectorExtractor implements ListableExtractor {
                 result = document.select(query).eq(eq).html();
                 break;
             default:
-                result = document.select(query).eq(eq).attr(attr);
+                result = document.select(query).eq(eq).attr(outType);
                 break;
         }
         return result;
@@ -82,7 +84,7 @@ public class SelectorExtractor implements ListableExtractor {
                     strings.add(element.html());
                     break;
                 default:
-                    strings.add(element.attr(attr));
+                    strings.add(element.attr(outType));
                     break;
             }
         }
