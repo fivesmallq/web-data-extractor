@@ -61,11 +61,8 @@ public class Extractors {
      * @return
      */
     public Extractors split(Extractor listableExtractor) {
-        try {
-            this.htmlList = ((ListableExtractor) listableExtractor).extractList(html);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException("split must implement ListableExtractor. " + listableExtractor.getClass().getSimpleName() + " can't be used");
-        }
+        Validate.isTrue(listableExtractor instanceof ListableExtractor, "split parameter must implement ListableExtractor." + listableExtractor.getClass().getSimpleName() + " can't be used.");
+        this.htmlList = ((ListableExtractor) listableExtractor).extractList(html);
         return this;
     }
 
