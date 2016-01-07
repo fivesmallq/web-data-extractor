@@ -4,7 +4,7 @@
 
     <groupId>im.nll.data</groupId>
     <artifactId>extractor</artifactId>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>0.9.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>name>${project.groupId}-${project.artifactId}</name>
