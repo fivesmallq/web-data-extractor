@@ -45,6 +45,5 @@ public class JSONPathExtractorTest {
         Assert.assertNotNull(listBeanString);
         Assert.assertEquals(listBeanString.size(), 2);
         Assert.assertEquals("{category=reference, author=Nigel Rees, title=Sayings of the Century, price=8.95}", listBeanString.get(0));
-        System.out.println(listBeanString);
     }
 }
