@@ -1,5 +1,6 @@
 package im.nll.data.extractor.impl;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import im.nll.data.extractor.ListableExtractor;
 import im.nll.data.extractor.utils.StringUtils;
@@ -44,11 +45,14 @@ public class SelectorExtractor implements ListableExtractor {
     private String outType = "text";
 
     public SelectorExtractor(String query) {
-        if (query.endsWith(".html")) {
-            this.outType = "html";
-            this.query = StringUtils.substringBeforeLast(query, ".html");
-        } else {
-            this.query = query;
+        List<String> stringList = Splitter.on(",")
+                .splitToList(query);
+        this.query = stringList.get(0);
+        if (stringList.size() > 1 && StringUtils.isNotNullOrEmpty(stringList.get(1))) {
+            this.eq = StringUtils.tryParseInt(stringList.get(1), 0);
+        }
+        if (stringList.size() > 2 && StringUtils.isNotNullOrEmpty(stringList.get(2))) {
+            this.outType = stringList.get(2);
         }
     }
 
