@@ -5,8 +5,11 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import im.nll.data.extractor.ListableExtractor;
+import im.nll.data.extractor.utils.TypeUtils;
+import net.minidev.json.JSONObject;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * json extractor<p>impl by <a href=https://github.com/jayway/JsonPath>https://github.com/jayway/JsonPath</a></p>
@@ -29,7 +32,7 @@ public class JSONPathExtractor implements ListableExtractor {
         if (list.get(0) == null) {
             return "";
         } else {
-            return list.get(0);
+            return TypeUtils.castToString(list.get(0));
         }
     }
 
@@ -38,7 +41,12 @@ public class JSONPathExtractor implements ListableExtractor {
         List<Object> list = JsonPath.using(conf).parse(data).read(jsonpath);
         List<String> stringList = Lists.newLinkedList();
         for (Object one : list) {
-            stringList.add(String.valueOf(one));
+            if (one instanceof Map) {
+                JSONObject jsonObject = new JSONObject((Map<String, ?>) one);
+                stringList.add(jsonObject.toJSONString());
+            } else {
+                stringList.add(TypeUtils.castToString(one));
+            }
         }
         return stringList;
     }

@@ -47,7 +47,7 @@ import java.util.Map;
  * An example of using <code>Reflect</code> is <code><pre>
  * // Static import all reflection methods to decrease verbosity
  * import static org.joor.Reflect.*;
- *
+ * <p>
  * // Wrap an Object / Class / class name with the on() method:
  * on("java.lang.String")
  * // Invoke constructors using the create() method:
@@ -55,7 +55,7 @@ import java.util.Map;
  * // Invoke methods using the call() method:
  * .call("toString")
  * // Retrieve the wrapped object
- *
+ * <p>
  * @author Lukas Eder
  * @author Irek Matysiewicz
  */
@@ -85,9 +85,9 @@ public class Reflect {
      * This is the same as calling
      * <code>on(Class.forName(name, classLoader))</code>
      *
-     * @param name A fully qualified class name.
+     * @param name        A fully qualified class name.
      * @param classLoader The class loader in whose context the class should be
-     *            loaded.
+     *                    loaded.
      * @return A wrapped class object, to be used for further reflection.
      * @throws ReflectException If any reflection exception occurred.
      * @see #on(Class)
@@ -207,18 +207,26 @@ public class Reflect {
      * member field. If the wrapped object is any other {@link Object}, then
      * this will set a value to an instance member field.
      *
-     * @param name The field name
+     * @param name  The field name
      * @param value The new field value
      * @return The same wrapped object, to be used for further reflection.
      * @throws ReflectException If any reflection exception occurred.
      */
     public Reflect set(String name, Object value) throws ReflectException {
+        Field field = null;
         try {
-            Field field = field0(name);
+            field = field0(name);
             field.set(object, unwrap(value));
             return this;
         } catch (Exception e) {
-            throw new ReflectException(e);
+            // Try again, cast value type
+            try {
+                Object valueCast = TypeUtils.cast(value, field.getType());
+                field.set(object, unwrap(valueCast));
+                return this;
+            } catch (Exception e2) {
+                throw new ReflectException(e2);
+            }
         }
     }
 
@@ -331,8 +339,8 @@ public class Reflect {
      *
      * @param name The method name
      * @return The wrapped method result or the same wrapped object if the
-     *         method returns <code>void</code>, to be used for further
-     *         reflection.
+     * method returns <code>void</code>, to be used for further
+     * reflection.
      * @throws ReflectException If any reflection exception occurred.
      * @see #call(String, Object...)
      */
@@ -373,8 +381,8 @@ public class Reflect {
      * @param name The method name
      * @param args The method arguments
      * @return The wrapped method result or the same wrapped object if the
-     *         method returns <code>void</code>, to be used for further
-     *         reflection.
+     * method returns <code>void</code>, to be used for further
+     * reflection.
      * @throws ReflectException If any reflection exception occurred.
      */
     public Reflect call(String name, Object... args) throws ReflectException {

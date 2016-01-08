@@ -3,6 +3,7 @@ package im.nll.data.extractor;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import im.nll.data.extractor.entity.Base;
+import im.nll.data.extractor.entity.Book;
 import im.nll.data.extractor.entity.Language;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,8 +13,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static im.nll.data.extractor.Extractors.regex;
-import static im.nll.data.extractor.Extractors.selector;
+import static im.nll.data.extractor.Extractors.*;
 
 /**
  * @author <a href="mailto:fivesmallq@gmail.com">fivesmallq</a>
@@ -23,6 +23,7 @@ import static im.nll.data.extractor.Extractors.selector;
 public class ExtractorsTest {
     private String baseHtml;
     private String listHtml;
+    private String jsonString;
 
 
     @Before
@@ -30,6 +31,7 @@ public class ExtractorsTest {
         try {
             baseHtml = Resources.toString(Resources.getResource("base.html"), Charsets.UTF_8);
             listHtml = Resources.toString(Resources.getResource("list.html"), Charsets.UTF_8);
+            jsonString = Resources.toString(Resources.getResource("example.json"), Charsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,6 +99,23 @@ public class ExtractorsTest {
         Assert.assertEquals(second.getType(), "dynamic");
         Assert.assertEquals(second.getName(), "Ruby");
         Assert.assertEquals(second.getUrl(), "https://www.ruby-lang.org");
+    }
+
+    @Test
+    public void testToBeanListByJson() throws Exception {
+        List<Book> books = Extractors.on(jsonString).split(json("$..book.*"))
+                .extract("category", json("$..category"))
+                .extract("author", json("$..author"))
+                .extract("title", json("$..title"))
+                .extract("price", json("$..price"))
+                .asBeanList(Book.class);
+        Assert.assertNotNull(books);
+        Book second = books.get(1);
+        Assert.assertEquals(books.size(), 4);
+        Assert.assertEquals(second.getCategory(), "fiction");
+        Assert.assertEquals(second.getAuthor(), "Evelyn Waugh");
+        Assert.assertEquals(second.getTitle(), "Sword of Honour");
+        Assert.assertEquals(second.getPrice(), new Double(12.99));
     }
 
     @Test(expected = IllegalArgumentException.class)
