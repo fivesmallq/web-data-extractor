@@ -2,9 +2,7 @@ package im.nll.data.extractor;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import im.nll.data.extractor.entity.Base;
-import im.nll.data.extractor.entity.Book;
-import im.nll.data.extractor.entity.Language;
+import im.nll.data.extractor.entity.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -109,6 +107,49 @@ public class ExtractorsTest {
                 .extract("title", json("$..title"))
                 .extract("price", json("$..price"))
                 .asBeanList(Book.class);
+        Assert.assertNotNull(books);
+        Book second = books.get(1);
+        Assert.assertEquals(books.size(), 4);
+        Assert.assertEquals(second.getCategory(), "fiction");
+        Assert.assertEquals(second.getAuthor(), "Evelyn Waugh");
+        Assert.assertEquals(second.getTitle(), "Sword of Honour");
+        Assert.assertEquals(second.getPrice(), new Double(12.99));
+    }
+
+    @Test
+    public void testToBeanListByEntityExtractor() throws Exception {
+        List<Book> books = Extractors.on(jsonString).split(json("$..book.*")).asBeanList(new EntityExtractor<Book>() {
+            @Override
+            public Book extract(String data) {
+                return Extractors.on(data)
+                        .extract("category", json("$..category"))
+                        .extract("author", json("$..author"))
+                        .extract("title", json("$..title"))
+                        .extract("price", json("$..price")).asBean(Book.class);
+            }
+        });
+        Assert.assertNotNull(books);
+        Book second = books.get(1);
+        Assert.assertEquals(books.size(), 4);
+        Assert.assertEquals(second.getCategory(), "fiction");
+        Assert.assertEquals(second.getAuthor(), "Evelyn Waugh");
+        Assert.assertEquals(second.getTitle(), "Sword of Honour");
+        Assert.assertEquals(second.getPrice(), new Double(12.99));
+    }
+
+    @Test
+    public void testToBeanListByEntityListExtractor() throws Exception {
+        List<Book> books = Extractors.on(jsonString).asBeanList(new EntityListExtractor<Book>() {
+            @Override
+            public List<Book> extractList(String data) {
+                return Extractors.on(jsonString).split(json("$..book.*"))
+                        .extract("category", json("$..category"))
+                        .extract("author", json("$..author"))
+                        .extract("title", json("$..title"))
+                        .extract("price", json("$..price"))
+                        .asBeanList(Book.class);
+            }
+        });
         Assert.assertNotNull(books);
         Book second = books.get(1);
         Assert.assertEquals(books.size(), 4);
