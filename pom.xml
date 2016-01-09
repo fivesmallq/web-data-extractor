@@ -7,7 +7,7 @@
     <version>0.9.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>name>${project.groupId}-${project.artifactId}</name>
+    <name>${project.groupId}-${project.artifactId}</name>
     <description>Web Data Extractor - Extract data from common web format. like HTML,XML,JSON.</description>
     <url>https://github.com/fivesmallq/web-data-extractor</url>
     <inceptionYear>2015</inceptionYear>
@@ -127,6 +127,7 @@
                             </execution>
                         </executions>
                         <configuration>
+                            <excludePackageNames>jodd.*</excludePackageNames>
                             <maxmemory>1024</maxmemory>
                             <skip>false</skip>
                             <show>public</show>
@@ -203,6 +204,51 @@
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.7</version>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <id>bundle-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludePackageNames>jodd.*</excludePackageNames>
+                    <maxmemory>1024</maxmemory>
+                    <skip>false</skip>
+                    <show>public</show>
+                    <charset>UTF-8</charset>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <links>
+                        <link>http://docs.oracle.com/javase/8/docs/api</link>
+                    </links>
+                    <!-- Avoid running into Java 8's very restrictive doclint issues -->
+                    <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
             </plugin>
             <plugin>
