@@ -31,14 +31,23 @@ public class SelectorExtractorTest {
     public void testExtract() throws Exception {
         selectorExtractor = new SelectorExtractor("th.title");
         String title = selectorExtractor.extract(html);
-        Assert.assertEquals(title, "languages");
+        Assert.assertEquals("languages", title);
+    }
+
+    @Test
+    public void testExtractHtml() throws Exception {
+        selectorExtractor = new SelectorExtractor("tr,1,html");
+        String title = selectorExtractor.extract(html);
+        Assert.assertEquals("<th>type</th> \n" +
+                "<th>name</th> \n" +
+                "<th>website</th>", title);
     }
 
     @Test
     public void testExtractList() throws Exception {
         selectorExtractor = new SelectorExtractor("tr:has(td)");
         List<String> datas = selectorExtractor.extractList(html);
-        Assert.assertEquals(datas.size(), 3);
-        Assert.assertEquals(datas.get(0), "static Java https://www.java.com");
+        Assert.assertEquals(3, datas.size());
+        Assert.assertEquals("static Java https://www.java.com", datas.get(0));
     }
 }
