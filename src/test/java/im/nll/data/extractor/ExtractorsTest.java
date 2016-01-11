@@ -100,6 +100,21 @@ public class ExtractorsTest {
     }
 
     @Test
+    public void testToBeanListByXPath() throws Exception {
+        List<Language> languages = Extractors.on(listHtml).split(xpath("//tr[@class='item']"))
+                .extract("type", xpath("//td[1]/text()"))
+                .extract("name", xpath("//td[2]/text()"))
+                .extract("url", xpath("//td[3]/text()"))
+                .asBeanList(Language.class);
+        Assert.assertNotNull(languages);
+        Language second = languages.get(1);
+        Assert.assertEquals(languages.size(), 3);
+        Assert.assertEquals(second.getType(), "dynamic");
+        Assert.assertEquals(second.getName(), "Ruby");
+        Assert.assertEquals(second.getUrl(), "https://www.ruby-lang.org");
+    }
+
+    @Test
     public void testToBeanListByJson() throws Exception {
         List<Book> books = Extractors.on(jsonString).split(json("$..book.*"))
                 .extract("category", json("$..category"))
