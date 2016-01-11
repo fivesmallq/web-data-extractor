@@ -46,6 +46,17 @@ public class ExtractorsTest {
     }
 
     @Test
+    public void testGetWithFilter() throws Exception {
+        String title = Extractors.on(baseHtml).extract(selector("a.title")).asString();
+        String followers = Extractors.on(baseHtml).extract(selector("div.followers")).with(regex("\\d+")).asString();
+        //use filter to process value
+        String description = Extractors.on(baseHtml).extract(selector("div.description")).filter(value -> value.toLowerCase()).asString();
+        Assert.assertEquals("fivesmallq", title);
+        Assert.assertEquals("29671", followers);
+        Assert.assertEquals("talk is cheap. show me the code.", description);
+    }
+
+    @Test
     public void testToMap() throws Exception {
         Map<String, String> dataMap = Extractors.on(baseHtml)
                 .extract("title", selector("a.title"))
@@ -112,6 +123,21 @@ public class ExtractorsTest {
         Assert.assertEquals(second.getType(), "dynamic");
         Assert.assertEquals(second.getName(), "Ruby");
         Assert.assertEquals(second.getUrl(), "https://www.ruby-lang.org");
+    }
+
+    @Test
+    public void testToBeanListFilter() throws Exception {
+        List<Language> languages = Extractors.on(listHtml).split(xpath("//tr[@class='item']"))
+                .extract("type", xpath("//td[1]/text()")).filter(value -> "type:" + value)
+                .extract("name", xpath("//td[2]/text()")).filter(value -> "name:" + value)
+                .extract("url", xpath("//td[3]/text()")).filter(value -> "url:" + value)
+                .asBeanList(Language.class);
+        Assert.assertNotNull(languages);
+        Language second = languages.get(1);
+        Assert.assertEquals(languages.size(), 3);
+        Assert.assertEquals(second.getType(), "type:dynamic");
+        Assert.assertEquals(second.getName(), "name:Ruby");
+        Assert.assertEquals(second.getUrl(), "url:https://www.ruby-lang.org");
     }
 
     @Test

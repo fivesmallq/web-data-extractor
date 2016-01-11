@@ -24,6 +24,7 @@ public class Extractors {
     private String html;
     private List<String> htmlList;
     private Map<String, List<Extractor>> extractorsMap = Maps.newLinkedHashMap();
+    private Map<String, List<Filter>> filtersMap = Maps.newLinkedHashMap();
     private String prevField;
 
     public Extractors(String html) {
@@ -55,6 +56,14 @@ public class Extractors {
         return this;
     }
 
+    public Extractors filter(Filter filter) {
+        Validate.notNull(prevField, "must call extract method first!");
+        List<Filter> filters = filtersMap.getOrDefault(prevField, Lists.newLinkedList());
+        filters.add(filter);
+        filtersMap.put(prevField, filters);
+        return this;
+    }
+
 
     /**
      * split html use listable extractor
@@ -74,6 +83,10 @@ public class Extractors {
         for (Extractor extractor : extractors) {
             result = extractor.extract(result);
         }
+        List<Filter> filters = filtersMap.getOrDefault(DEFAULT_FIELD, Lists.newLinkedList());
+        for (Filter filter : filters) {
+            result = filter.process(result);
+        }
         return result;
     }
 
@@ -85,6 +98,10 @@ public class Extractors {
             String result = html;
             for (Extractor extractor : extractors) {
                 result = extractor.extract(result);
+            }
+            List<Filter> filters = filtersMap.getOrDefault(name, Lists.newLinkedList());
+            for (Filter filter : filters) {
+                result = filter.process(result);
             }
             try {
                 map.put(name, result);
@@ -107,6 +124,10 @@ public class Extractors {
                 for (Extractor extractor : extractors) {
                     result = extractor.extract(result);
                 }
+                List<Filter> filters = filtersMap.getOrDefault(name, Lists.newLinkedList());
+                for (Filter filter : filters) {
+                    result = filter.process(result);
+                }
                 map.put(name, result);
             }
             mapList.add(map);
@@ -123,6 +144,10 @@ public class Extractors {
             String result = html;
             for (Extractor extractor : extractors) {
                 result = extractor.extract(result);
+            }
+            List<Filter> filters = filtersMap.getOrDefault(name, Lists.newLinkedList());
+            for (Filter filter : filters) {
+                result = filter.process(result);
             }
             try {
                 Reflect.on(entity).set(name, result);
@@ -149,6 +174,10 @@ public class Extractors {
                 String result = input;
                 for (Extractor extractor : extractors) {
                     result = extractor.extract(result);
+                }
+                List<Filter> filters = filtersMap.getOrDefault(name, Lists.newLinkedList());
+                for (Filter filter : filters) {
+                    result = filter.process(result);
                 }
                 try {
                     Reflect.on(entity).set(name, result);
