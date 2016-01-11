@@ -39,22 +39,16 @@ public class JerryExtractorTest {
     public void testExtractHtml() throws Exception {
         selectorExtractor = new JerryExtractor("tr:eq(1).html");
         String title = selectorExtractor.extract(html);
-        Assert.assertEquals("\n" +
-                "        <th>type</th>\n" +
-                "        <th>name</th>\n" +
-                "        <th>website</th>\n" +
-                "    ", title);
+        Assert.assertEquals("<th>type</th> \n" +
+                "<th>name</th> \n" +
+                "<th>website</th>", title);
     }
 
     @Test
     public void testExtractText() throws Exception {
         selectorExtractor = new JerryExtractor("tr:eq(1).text");
         String title = selectorExtractor.extract(html);
-        Assert.assertEquals("\n" +
-                "        type\n" +
-                "        name\n" +
-                "        website\n" +
-                "    ", title);
+        Assert.assertEquals("type name website", title);
     }
 
     @Test
@@ -76,11 +70,7 @@ public class JerryExtractorTest {
         selectorExtractor = new JerryExtractor("tr:eq(1)");
         List<String> datas = selectorExtractor.extractList(html);
         Assert.assertEquals(1, datas.size());
-        Assert.assertEquals("\n" +
-                "        type\n" +
-                "        name\n" +
-                "        website\n" +
-                "    ", datas.get(0));
+        Assert.assertEquals("type name website", datas.get(0));
     }
 
     @Test
@@ -88,11 +78,7 @@ public class JerryExtractorTest {
         selectorExtractor = new JerryExtractor("tr.item.text");
         List<String> datas = selectorExtractor.extractList(html);
         Assert.assertEquals(3, datas.size());
-        Assert.assertEquals("\n" +
-                "        static\n" +
-                "        Java\n" +
-                "        https://www.java.com\n" +
-                "    ", datas.get(0));
+        Assert.assertEquals("static Java https://www.java.com", datas.get(0));
     }
 
     @Test
@@ -100,11 +86,11 @@ public class JerryExtractorTest {
         selectorExtractor = new JerryExtractor("tr.item.html");
         List<String> datas = selectorExtractor.extractList(html);
         Assert.assertEquals(3, datas.size());
-        Assert.assertEquals("<tr class=\"item\">\n" +
-                "        <td class=\"type\">static</td>\n" +
-                "        <td class=\"name\">Java</td>\n" +
-                "        <td class=\"url\">https://www.java.com</td>\n" +
-                "    </tr>", datas.get(0));
+        Assert.assertEquals("<tr class=\"item\"> \n" +
+                " <td class=\"type\">static</td> \n" +
+                " <td class=\"name\">Java</td> \n" +
+                " <td class=\"url\">https://www.java.com</td> \n" +
+                "</tr>", datas.get(0));
     }
 
     @Test

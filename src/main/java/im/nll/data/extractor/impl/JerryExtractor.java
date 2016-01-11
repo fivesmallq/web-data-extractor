@@ -5,6 +5,9 @@ import im.nll.data.extractor.ListableExtractor;
 import im.nll.data.extractor.utils.StringUtils;
 import jodd.jerry.Jerry;
 import jodd.lagarto.dom.Node;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.parser.Parser;
 
 import java.util.List;
 
@@ -57,13 +60,13 @@ public class JerryExtractor implements ListableExtractor {
         String result = "";
         switch (outType) {
             case TYPE_TEXT:
-                result = doc.$(query).first().text();
+                result = parse(doc.$(query).first().text());
                 break;
             case TYPE_HTML:
-                result = doc.$(query).first().html();
+                result = parse(doc.$(query).first().html());
                 break;
             default:
-                result = doc.$(query).first().attr(outType);
+                result = parse(doc.$(query).first().attr(outType));
                 break;
         }
         return result;
@@ -77,16 +80,33 @@ public class JerryExtractor implements ListableExtractor {
         for (Node node : nodes) {
             switch (outType) {
                 case TYPE_TEXT:
-                    strings.add(node.getTextContent());
+                    strings.add(parse(node.getTextContent()));
                     break;
                 case TYPE_HTML:
-                    strings.add(node.getHtml());
+                    strings.add(parse(node.getHtml()));
                     break;
                 default:
-                    strings.add(node.getAttribute(outType));
+                    strings.add(parse(node.getAttribute(outType)));
                     break;
             }
         }
         return strings;
+    }
+
+    private String parse(String str) {
+        Document document = Jsoup.parse(str, "", Parser.xmlParser());
+        String result = "";
+        switch (outType) {
+            case TYPE_TEXT:
+                result = document.text();
+                break;
+            case TYPE_HTML:
+                result = document.html();
+                break;
+            default:
+                result = document.text();
+                break;
+        }
+        return result;
     }
 }
