@@ -43,7 +43,12 @@ public class ExtractorsTest {
         String followers = Extractors.on(baseHtml).extract(selector("div.followers")).with(regex("\\d+")).asString();
         //use filter method to process value
         String description = Extractors.on(baseHtml).extract(selector("div.description")).filter(value -> value.toLowerCase()).asString();
-        String year = Extractors.on("<div> Talk is cheap. Show me the code. - Fri, 25 Aug 2000 </div>").extract(selector("div")).filter(value -> value.trim()).with(regex("20\\d{2}")).filter(value -> "from " + value).asString();
+        String year = Extractors.on("<div> Talk is cheap. Show me the code. - Fri, 25 Aug 2000 </div>")
+                .extract(selector("div")) // extract with selector
+                .filter(value -> value.trim()) // trim result
+                .with(regex("20\\d{2}")) // get year with regex
+                .filter(value -> "from " + value) // append 'form' string
+                .asString();
         Assert.assertEquals("fivesmallq", title);
         Assert.assertEquals("29671", followers);
         Assert.assertEquals("talk is cheap. show me the code.", description);
