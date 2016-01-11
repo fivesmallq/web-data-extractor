@@ -37,23 +37,17 @@ public class ExtractorsTest {
 
     @Test
     public void testGet() throws Exception {
+        //use extract method to extract data
         String title = Extractors.on(baseHtml).extract(selector("a.title")).asString();
+        //use with method to extend value extractor
         String followers = Extractors.on(baseHtml).extract(selector("div.followers")).with(regex("\\d+")).asString();
-        String description = Extractors.on(baseHtml).extract(selector("div.description")).asString();
-        Assert.assertEquals("fivesmallq", title);
-        Assert.assertEquals("29671", followers);
-        Assert.assertEquals("Talk is cheap. Show me the code.", description);
-    }
-
-    @Test
-    public void testGetWithFilter() throws Exception {
-        String title = Extractors.on(baseHtml).extract(selector("a.title")).asString();
-        String followers = Extractors.on(baseHtml).extract(selector("div.followers")).with(regex("\\d+")).asString();
-        //use filter to process value
+        //use filter method to process value
         String description = Extractors.on(baseHtml).extract(selector("div.description")).filter(value -> value.toLowerCase()).asString();
+        String year = Extractors.on("<div> Talk is cheap. Show me the code. - Fri, 25 Aug 2000 </div>").extract(selector("div")).filter(value -> value.trim()).with(regex("20\\d{2}")).filter(value -> "from " + value).asString();
         Assert.assertEquals("fivesmallq", title);
         Assert.assertEquals("29671", followers);
         Assert.assertEquals("talk is cheap. show me the code.", description);
+        Assert.assertEquals("from 2000", year);
     }
 
     @Test
