@@ -8,7 +8,9 @@
     <packaging>jar</packaging>
 
     <name>${project.groupId}-${project.artifactId}</name>
-    <description>Web Data Extractor - Extract data from common web format. like HTML,XML,JSON.</description>
+    <description>Web Data Extractor - Extract data with Jquery Selector, XPath or JsonPath from common web format. like
+        HTML, XML, JSON.
+    </description>
     <url>https://github.com/fivesmallq/web-data-extractor</url>
     <inceptionYear>2015</inceptionYear>
 
