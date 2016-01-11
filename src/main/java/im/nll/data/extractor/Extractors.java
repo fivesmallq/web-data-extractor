@@ -179,6 +179,10 @@ public class Extractors {
         return new SelectorExtractor(query);
     }
 
+    public static Extractor jerry(String query) {
+        return new JerryExtractor(query);
+    }
+
     public static Extractor json(String query) {
         return new JSONPathExtractor(query);
     }
