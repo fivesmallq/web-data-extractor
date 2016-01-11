@@ -56,7 +56,7 @@ public class StringRangeExtractorTest {
         Assert.assertEquals("<tr class=\"item\">\n" +
                 "        <td class=\"type\">dynamic</td>\n" +
                 "        <td class=\"name\">Python</td>\n" +
-                "        <td class=\"url\">>https://www.python.org</td>\n" +
+                "        <td class=\"url\">https://www.python.org</td>\n" +
                 "    </tr>", stringList.get(2));
         stringRangeExtractor = new StringRangeExtractor("<tr class=\"item\">", "</tr>", "false");
         stringList = stringRangeExtractor.extractList(html);
@@ -65,7 +65,7 @@ public class StringRangeExtractorTest {
         Assert.assertEquals("\n" +
                 "        <td class=\"type\">dynamic</td>\n" +
                 "        <td class=\"name\">Python</td>\n" +
-                "        <td class=\"url\">>https://www.python.org</td>\n" +
+                "        <td class=\"url\">https://www.python.org</td>\n" +
                 "    ", stringList.get(2));
 
     }
