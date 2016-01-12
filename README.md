@@ -19,6 +19,17 @@ or use static method
 ````java
     String followers = Extractors.on(baseHtml).extract(selector("div.followers")).with(regex("\\d+")).asString();
 ````
+more method
+
+````
+ String year = Extractors.on("<div> Talk is cheap. Show me the code. - Fri, 25 Aug 2000 </div>")
+                .extract(selector("div")) // extract with selector
+                .filter(value -> value.trim()) // trim result
+                .with(regex("20\\d{2}")) // get year with regex
+                .filter(value -> "from " + value) // append 'form' string
+                .asString();
+        Assert.assertEquals("from 2000", year);
+````
 
 ###extract data to map
 
