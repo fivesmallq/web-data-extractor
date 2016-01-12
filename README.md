@@ -12,6 +12,27 @@ Implements:
  * XPath -  [Jdom2](https://github.com/hunterhacker/jdom/)
  * JsonPath - [JsonPath](https://github.com/jayway/JsonPath)
 
+
+###Usage
+To add a dependency on Web-Data-Extractor using Maven, use the following:
+
+```xml
+<dependency>
+    <groupId>im.nll.data</groupId>
+    <artifactId>extractor</artifactId>
+    <version>0.9.3</version>
+</dependency>
+```
+
+To add a dependency using Gradle:
+
+```
+dependencies {
+  compile 'im.nll.data:extractor:0.9.3'
+}
+```
+
+
 ##Examples
 
 ###extract single data
