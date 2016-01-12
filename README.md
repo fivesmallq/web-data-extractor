@@ -21,7 +21,7 @@ or use static method
 ````
 more method
 
-````
+````java
  String year = Extractors.on("<div> Talk is cheap. Show me the code. - Fri, 25 Aug 2000 </div>")
                 .extract(selector("div")) // extract with selector
                 .filter(value -> value.trim()) // trim result
