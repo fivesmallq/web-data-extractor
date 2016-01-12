@@ -6,6 +6,12 @@
 
 Extracting data with Jquery Selector, XPath or JsonPath from common web format like HTML, XML and JSON.
 
+Implements:
+
+ * Jquery Selector - [Jsoup](https://github.com/jhy/jsoup) and [Jerry](http://jodd.org/doc/jerry/index.html)
+ * XPath -  [Jdom2](https://github.com/hunterhacker/jdom/)
+ * JsonPath - [JsonPath](https://github.com/jayway/JsonPath)
+
 ##Examples
 
 ###extract single data
