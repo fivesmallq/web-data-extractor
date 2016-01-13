@@ -38,19 +38,19 @@ dependencies {
 ###extract single data
 
 ````java
-    String followers = Extractors.on(baseHtml)
-    .extract(new SelectorExtractor("div.followers"))
-    .with(new RegexExtractor("\\d+"))
-    .asString();
+String followers = Extractors.on(baseHtml)
+                   .extract(new SelectorExtractor("div.followers"))
+                   .with(new RegexExtractor("\\d+"))
+                   .asString();
 ````
 
 or use static method
 
 ````java
-    String followers = Extractors.on(baseHtml)
-    .extract(selector("div.followers"))
-    .with(regex("\\d+"))
-    .asString();
+String followers = Extractors.on(baseHtml)
+                   .extract(selector("div.followers"))
+                   .with(regex("\\d+"))
+                   .asString();
 ````
 more method
 
