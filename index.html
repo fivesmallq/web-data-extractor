@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Web-data-extractor by fivesmallq</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Web-data-extractor</h1>
+      <h2 class="project-tagline">web-data-extractor:Extracting structured data with Jquery Selector, XPath or JsonPath from common web format like HTML, XML and JSON.</h2>
+      <a href="https://github.com/fivesmallq/web-data-extractor" class="btn">View on GitHub</a>
+      <a href="https://github.com/fivesmallq/web-data-extractor/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/fivesmallq/web-data-extractor/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="web-data-extractor" class="anchor" href="#web-data-extractor" aria-hidden="true"><span class="octicon octicon-link"></span></a>web-data-extractor</h1>
+
+<p><a href="https://maven-badges.herokuapp.com/maven-central/im.nll.data/extractor/"><img src="https://maven-badges.herokuapp.com/maven-central/im.nll.data/extractor/badge.svg" alt="Maven Central"></a>
+<a href="https://travis-ci.org/fivesmallq/web-data-extractor"><img src="https://travis-ci.org/fivesmallq/web-data-extractor.svg" alt="Build Status"></a>
+<a href="http://codecov.io/github/fivesmallq/web-data-extractor?branch=master"><img src="http://codecov.io/github/fivesmallq/web-data-extractor/coverage.svg?branch=master" alt="codecov.io"></a>
+<a href="https://www.apache.org/licenses/LICENSE-2.0.html"><img src="https://img.shields.io/badge/license-Apache%202-4EB1BA.svg" alt="License"></a></p>
+
+<p>Extracting structured data with Jquery Selector, XPath or JsonPath from common web format like HTML, XML and JSON.</p>
+
+<p>Implements:</p>
+
+<ul>
+<li>Jquery Selector - <a href="https://github.com/jhy/jsoup">Jsoup</a> and <a href="http://jodd.org/doc/jerry/index.html">Jerry</a>
+</li>
+<li>XPath -  <a href="https://github.com/hunterhacker/jdom/">Jdom2</a>
+</li>
+<li>JsonPath - <a href="https://github.com/jayway/JsonPath">JsonPath</a>
+</li>
+</ul>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<p>To add a dependency on Web-Data-Extractor using Maven, use the following:</p>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">dependency</span>&gt;
+    &lt;<span class="pl-ent">groupId</span>&gt;im.nll.data&lt;/<span class="pl-ent">groupId</span>&gt;
+    &lt;<span class="pl-ent">artifactId</span>&gt;extractor&lt;/<span class="pl-ent">artifactId</span>&gt;
+    &lt;<span class="pl-ent">version</span>&gt;0.9.3&lt;/<span class="pl-ent">version</span>&gt;
+&lt;/<span class="pl-ent">dependency</span>&gt;</pre></div>
+
+<p>To add a dependency using Gradle:</p>
+
+<pre><code>dependencies {
+  compile 'im.nll.data:extractor:0.9.3'
+}
+</code></pre>
+
+<h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<h3>
+<a id="extract-single-data" class="anchor" href="#extract-single-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>extract single data</h3>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">String</span> followers <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(baseHtml)
+                   .extract(<span class="pl-k">new</span> <span class="pl-smi">SelectorExtractor</span>(<span class="pl-s"><span class="pl-pds">"</span>div.followers<span class="pl-pds">"</span></span>))
+                   .with(<span class="pl-k">new</span> <span class="pl-smi">RegexExtractor</span>(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>d+<span class="pl-pds">"</span></span>))
+                   .asString();</pre></div>
+
+<p>or use static method</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">String</span> followers <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(baseHtml)
+                   .extract(selector(<span class="pl-s"><span class="pl-pds">"</span>div.followers<span class="pl-pds">"</span></span>))
+                   .with(regex(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>d+<span class="pl-pds">"</span></span>))
+                   .asString();</pre></div>
+
+<p>more method</p>
+
+<div class="highlight highlight-source-java"><pre> <span class="pl-smi">String</span> year <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(<span class="pl-s"><span class="pl-pds">"</span>&lt;div&gt; Talk is cheap. Show me the code. - Fri, 25 Aug 2000 &lt;/div&gt;<span class="pl-pds">"</span></span>)
+                .extract(selector(<span class="pl-s"><span class="pl-pds">"</span>div<span class="pl-pds">"</span></span>)) <span class="pl-c">// extract with selector</span>
+                .filter(value <span class="pl-k">-</span><span class="pl-k">&gt;</span> value<span class="pl-k">.</span>trim()) <span class="pl-c">// trim result</span>
+                .with(regex(<span class="pl-s"><span class="pl-pds">"</span>20<span class="pl-cce">\\</span>d{2}<span class="pl-pds">"</span></span>)) <span class="pl-c">// get year with regex</span>
+                .filter(value <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>from <span class="pl-pds">"</span></span> <span class="pl-k">+</span> value) <span class="pl-c">// append 'form' string</span>
+                .asString();
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(<span class="pl-s"><span class="pl-pds">"</span>from 2000<span class="pl-pds">"</span></span>, year);</pre></div>
+
+<h3>
+<a id="extract-data-to-map" class="anchor" href="#extract-data-to-map" aria-hidden="true"><span class="octicon octicon-link"></span></a>extract data to map</h3>
+
+<div class="highlight highlight-source-java"><pre>    @<span class="pl-smi">Test</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> testToMap() throws <span class="pl-smi">Exception</span> {
+        <span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">String</span>&gt;</span> dataMap <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(baseHtml)
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>a.title<span class="pl-pds">"</span></span>))
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>followers<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>div.followers<span class="pl-pds">"</span></span>))<span class="pl-k">.</span>with(regex(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>d+<span class="pl-pds">"</span></span>))
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>div.description<span class="pl-pds">"</span></span>))
+                .asMap();
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(<span class="pl-s"><span class="pl-pds">"</span>fivesmallq<span class="pl-pds">"</span></span>, dataMap<span class="pl-k">.</span>get(<span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>));
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(<span class="pl-s"><span class="pl-pds">"</span>29671<span class="pl-pds">"</span></span>, dataMap<span class="pl-k">.</span>get(<span class="pl-s"><span class="pl-pds">"</span>followers<span class="pl-pds">"</span></span>));
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(<span class="pl-s"><span class="pl-pds">"</span>Talk is cheap. Show me the code.<span class="pl-pds">"</span></span>, dataMap<span class="pl-k">.</span>get(<span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>));
+    }</pre></div>
+
+<h3>
+<a id="extract-data-to-map-list" class="anchor" href="#extract-data-to-map-list" aria-hidden="true"><span class="octicon octicon-link"></span></a>extract data to map list</h3>
+
+<div class="highlight highlight-source-java"><pre>
+    @<span class="pl-smi">Test</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> testToMapList() throws <span class="pl-smi">Exception</span> {
+        <span class="pl-c">//split param must implements ListableExtractor</span>
+        <span class="pl-k">List&lt;<span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">String</span>&gt;</span>&gt;</span> languages <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(listHtml)
+            .split(jerry(<span class="pl-s"><span class="pl-pds">"</span>tr.item.html<span class="pl-pds">"</span></span>))
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>td.type<span class="pl-pds">"</span></span>))
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>td.name<span class="pl-pds">"</span></span>))
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>td.url<span class="pl-pds">"</span></span>))
+                .asMapList();
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertNotNull(languages);
+        <span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">String</span>&gt;</span> second <span class="pl-k">=</span> languages<span class="pl-k">.</span>get(<span class="pl-c1">1</span>);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(languages<span class="pl-k">.</span>size(), <span class="pl-c1">3</span>);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(second<span class="pl-k">.</span>get(<span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>), <span class="pl-s"><span class="pl-pds">"</span>dynamic<span class="pl-pds">"</span></span>);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(second<span class="pl-k">.</span>get(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>), <span class="pl-s"><span class="pl-pds">"</span>Ruby<span class="pl-pds">"</span></span>);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(second<span class="pl-k">.</span>get(<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>), <span class="pl-s"><span class="pl-pds">"</span>https://www.ruby-lang.org<span class="pl-pds">"</span></span>);
+    }</pre></div>
+
+<h3>
+<a id="extract-data-to-bean" class="anchor" href="#extract-data-to-bean" aria-hidden="true"><span class="octicon octicon-link"></span></a>extract data to bean</h3>
+
+<div class="highlight highlight-source-java"><pre>    @<span class="pl-smi">Test</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> testToBean() throws <span class="pl-smi">Exception</span> {
+        <span class="pl-smi">Base</span> base <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(baseHtml)
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>a.title<span class="pl-pds">"</span></span>))
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>followers<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>div.followers<span class="pl-pds">"</span></span>))<span class="pl-k">.</span>with(regex(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>d+<span class="pl-pds">"</span></span>))
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>div.description<span class="pl-pds">"</span></span>))
+                .asBean(<span class="pl-smi">Base</span><span class="pl-k">.</span>class);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(<span class="pl-s"><span class="pl-pds">"</span>fivesmallq<span class="pl-pds">"</span></span>, base<span class="pl-k">.</span>getTitle());
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(<span class="pl-s"><span class="pl-pds">"</span>29671<span class="pl-pds">"</span></span>, base<span class="pl-k">.</span>getFollowers());
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(<span class="pl-s"><span class="pl-pds">"</span>Talk is cheap. Show me the code.<span class="pl-pds">"</span></span>, base<span class="pl-k">.</span>getDescription());
+    }</pre></div>
+
+<h3>
+<a id="extract-data-to-bean-list" class="anchor" href="#extract-data-to-bean-list" aria-hidden="true"><span class="octicon octicon-link"></span></a>extract data to bean list</h3>
+
+<div class="highlight highlight-source-java"><pre>    @<span class="pl-smi">Test</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> testToBeanList() throws <span class="pl-smi">Exception</span> {
+        <span class="pl-k">List&lt;<span class="pl-smi">Language</span>&gt;</span> languages <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(listHtml)
+            .split(jerry(<span class="pl-s"><span class="pl-pds">"</span>tr.item.html<span class="pl-pds">"</span></span>))
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>td.type<span class="pl-pds">"</span></span>))
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>td.name<span class="pl-pds">"</span></span>))
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>td.url<span class="pl-pds">"</span></span>))
+                .asBeanList(<span class="pl-smi">Language</span><span class="pl-k">.</span>class);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertNotNull(languages);
+        <span class="pl-smi">Language</span> second <span class="pl-k">=</span> languages<span class="pl-k">.</span>get(<span class="pl-c1">1</span>);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(languages<span class="pl-k">.</span>size(), <span class="pl-c1">3</span>);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(second<span class="pl-k">.</span>getType(), <span class="pl-s"><span class="pl-pds">"</span>dynamic<span class="pl-pds">"</span></span>);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(second<span class="pl-k">.</span>getName(), <span class="pl-s"><span class="pl-pds">"</span>Ruby<span class="pl-pds">"</span></span>);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(second<span class="pl-k">.</span>getUrl(), <span class="pl-s"><span class="pl-pds">"</span>https://www.ruby-lang.org<span class="pl-pds">"</span></span>);
+    }</pre></div>
+
+<p>see <a href="https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/im/nll/data/extractor/ExtractorsTest.java">Example</a></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/fivesmallq/web-data-extractor">Web-data-extractor</a> is maintained by <a href="https://github.com/fivesmallq">fivesmallq</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
