@@ -38,13 +38,19 @@ dependencies {
 ###extract single data
 
 ````java
-    String followers = Extractors.on(baseHtml).extract(new SelectorExtractor("div.followers")).with(new RegexExtractor("\\d+")).asString();
+    String followers = Extractors.on(baseHtml)
+    .extract(new SelectorExtractor("div.followers"))
+    .with(new RegexExtractor("\\d+"))
+    .asString();
 ````
 
 or use static method
 
 ````java
-    String followers = Extractors.on(baseHtml).extract(selector("div.followers")).with(regex("\\d+")).asString();
+    String followers = Extractors.on(baseHtml)
+    .extract(selector("div.followers"))
+    .with(regex("\\d+"))
+    .asString();
 ````
 more method
 
@@ -81,7 +87,8 @@ more method
     @Test
     public void testToMapList() throws Exception {
         //split param must implements ListableExtractor
-        List<Map<String, String>> languages = Extractors.on(listHtml).split(jerry("tr.item.html"))
+        List<Map<String, String>> languages = Extractors.on(listHtml)
+            .split(jerry("tr.item.html"))
                 .extract("type", selector("td.type"))
                 .extract("name", selector("td.name"))
                 .extract("url", selector("td.url"))
@@ -117,7 +124,8 @@ more method
 ````java
     @Test
     public void testToBeanList() throws Exception {
-        List<Language> languages = Extractors.on(listHtml).split(jerry("tr.item.html"))
+        List<Language> languages = Extractors.on(listHtml)
+            .split(jerry("tr.item.html"))
                 .extract("type", selector("td.type"))
                 .extract("name", selector("td.name"))
                 .extract("url", selector("td.url"))
