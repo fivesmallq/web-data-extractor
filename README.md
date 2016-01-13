@@ -20,7 +20,7 @@ To add a dependency on Web-Data-Extractor using Maven, use the following:
 <dependency>
     <groupId>im.nll.data</groupId>
     <artifactId>extractor</artifactId>
-    <version>0.9.3</version>
+    <version>0.9.4</version>
 </dependency>
 ```
 
@@ -28,7 +28,7 @@ To add a dependency using Gradle:
 
 ```
 dependencies {
-  compile 'im.nll.data:extractor:0.9.3'
+  compile 'im.nll.data:extractor:0.9.4'
 }
 ```
 
