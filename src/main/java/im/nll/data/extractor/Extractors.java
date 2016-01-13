@@ -115,6 +115,29 @@ public class Extractors {
         return entityList;
     }
 
+    //------------ custom process --------------//
+
+    public <T> T asBean(EntityExtractor<T> entityExtractor) {
+        T entity = entityExtractor.extract(html);
+        return entity;
+    }
+
+    public <T> List<T> asBeanList(EntityExtractor<T> entityExtractor) {
+        Validate.notNull(htmlList, "must split first!");
+        List<T> entityList = Lists.newLinkedList();
+        for (String input : htmlList) {
+            T entity = entityExtractor.extract(input);
+            entityList.add(entity);
+        }
+        return entityList;
+    }
+
+    public <T> List<T> asBeanList(EntityListExtractor<T> entityListExtractor) {
+        return entityListExtractor.extractList(html);
+    }
+    //------------ custom process --------------//
+
+
     //------------ internal --------------//
 
     private <T> T extractBean(String html, Class<T> clazz) {
@@ -164,29 +187,6 @@ public class Extractors {
     }
 
     //------------ internal --------------//
-
-
-    //------------ custom process --------------//
-
-    public <T> T asBean(EntityExtractor<T> entityExtractor) {
-        T entity = entityExtractor.extract(html);
-        return entity;
-    }
-
-    public <T> List<T> asBeanList(EntityExtractor<T> entityExtractor) {
-        Validate.notNull(htmlList, "must split first!");
-        List<T> entityList = Lists.newLinkedList();
-        for (String input : htmlList) {
-            T entity = entityExtractor.extract(input);
-            entityList.add(entity);
-        }
-        return entityList;
-    }
-
-    public <T> List<T> asBeanList(EntityListExtractor<T> entityListExtractor) {
-        return entityListExtractor.extractList(html);
-    }
-    //------------ custom process --------------//
 
 
     public static Extractor selector(String query) {
