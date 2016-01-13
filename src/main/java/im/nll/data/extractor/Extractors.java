@@ -83,60 +83,41 @@ public class Extractors {
         for (Extractor extractor : extractors) {
             result = extractor.extract(result);
         }
-        List<Filter> filters = filtersMap.getOrDefault(DEFAULT_FIELD, Lists.newLinkedList());
-        for (Filter filter : filters) {
-            result = filter.process(result);
-        }
+        result = filter(DEFAULT_FIELD, result);
         return result;
     }
 
     public Map<String, String> asMap() {
-        Map<String, String> map = Maps.newLinkedHashMap();
-        for (Map.Entry<String, List<Extractor>> one : extractorsMap.entrySet()) {
-            String name = one.getKey();
-            List<Extractor> extractors = one.getValue();
-            String result = html;
-            for (Extractor extractor : extractors) {
-                result = extractor.extract(result);
-            }
-            List<Filter> filters = filtersMap.getOrDefault(name, Lists.newLinkedList());
-            for (Filter filter : filters) {
-                result = filter.process(result);
-            }
-            try {
-                map.put(name, result);
-            } catch (Exception e) {
-                LOGGER.error("convert to map error! can't set '{}' with '{}'", name, result, e);
-            }
-        }
-        return map;
+        return extractMap(html);
     }
+
 
     public List<Map<String, String>> asMapList() {
         Validate.notNull(htmlList, "must split first!");
         List<Map<String, String>> mapList = Lists.newLinkedList();
         for (String input : htmlList) {
-            Map<String, String> map = Maps.newLinkedHashMap();
-            for (Map.Entry<String, List<Extractor>> one : extractorsMap.entrySet()) {
-                String name = one.getKey();
-                List<Extractor> extractors = one.getValue();
-                String result = input;
-                for (Extractor extractor : extractors) {
-                    result = extractor.extract(result);
-                }
-                List<Filter> filters = filtersMap.getOrDefault(name, Lists.newLinkedList());
-                for (Filter filter : filters) {
-                    result = filter.process(result);
-                }
-                map.put(name, result);
-            }
-            mapList.add(map);
+            mapList.add(extractMap(input));
         }
         return mapList;
     }
 
 
     public <T> T asBean(Class<T> clazz) {
+        return extractBean(html, clazz);
+    }
+
+    public <T> List<T> asBeanList(Class<T> clazz) {
+        Validate.notNull(htmlList, "must split first!");
+        List<T> entityList = Lists.newLinkedList();
+        for (String input : htmlList) {
+            entityList.add(extractBean(input, clazz));
+        }
+        return entityList;
+    }
+
+    //------------ internal --------------//
+
+    private <T> T extractBean(String html, Class<T> clazz) {
         T entity = Reflect.on(clazz).create().get();
         for (Map.Entry<String, List<Extractor>> one : extractorsMap.entrySet()) {
             String name = one.getKey();
@@ -145,10 +126,7 @@ public class Extractors {
             for (Extractor extractor : extractors) {
                 result = extractor.extract(result);
             }
-            List<Filter> filters = filtersMap.getOrDefault(name, Lists.newLinkedList());
-            for (Filter filter : filters) {
-                result = filter.process(result);
-            }
+            result = filter(name, result);
             try {
                 Reflect.on(entity).set(name, result);
             } catch (Exception e) {
@@ -158,36 +136,41 @@ public class Extractors {
         return entity;
     }
 
+    private Map<String, String> extractMap(String html) {
+        Map<String, String> map = Maps.newLinkedHashMap();
+        for (Map.Entry<String, List<Extractor>> one : extractorsMap.entrySet()) {
+            String name = one.getKey();
+            List<Extractor> extractors = one.getValue();
+            String result = html;
+            for (Extractor extractor : extractors) {
+                result = extractor.extract(result);
+            }
+            result = filter(name, result);
+            try {
+                map.put(name, result);
+            } catch (Exception e) {
+                LOGGER.error("convert to map error! can't set '{}' with '{}'", name, result, e);
+            }
+        }
+        return map;
+    }
+
+    private String filter(String name, String result) {
+        List<Filter> filters = filtersMap.getOrDefault(name, Lists.newLinkedList());
+        for (Filter filter : filters) {
+            result = filter.process(result);
+        }
+        return result;
+    }
+
+    //------------ internal --------------//
+
+
+    //------------ custom process --------------//
+
     public <T> T asBean(EntityExtractor<T> entityExtractor) {
         T entity = entityExtractor.extract(html);
         return entity;
-    }
-
-    public <T> List<T> asBeanList(Class<T> clazz) {
-        Validate.notNull(htmlList, "must split first!");
-        List<T> entityList = Lists.newLinkedList();
-        for (String input : htmlList) {
-            T entity = Reflect.on(clazz).create().get();
-            for (Map.Entry<String, List<Extractor>> one : extractorsMap.entrySet()) {
-                String name = one.getKey();
-                List<Extractor> extractors = one.getValue();
-                String result = input;
-                for (Extractor extractor : extractors) {
-                    result = extractor.extract(result);
-                }
-                List<Filter> filters = filtersMap.getOrDefault(name, Lists.newLinkedList());
-                for (Filter filter : filters) {
-                    result = filter.process(result);
-                }
-                try {
-                    Reflect.on(entity).set(name, result);
-                } catch (Exception e) {
-                    LOGGER.error("convert to bean error! can't set '{}' with '{}'", name, result, e);
-                }
-            }
-            entityList.add(entity);
-        }
-        return entityList;
     }
 
     public <T> List<T> asBeanList(EntityExtractor<T> entityExtractor) {
@@ -203,6 +186,8 @@ public class Extractors {
     public <T> List<T> asBeanList(EntityListExtractor<T> entityListExtractor) {
         return entityListExtractor.extractList(html);
     }
+    //------------ custom process --------------//
+
 
     public static Extractor selector(String query) {
         return new SelectorExtractor(query);
