@@ -47,7 +47,7 @@ public class ExtractorsTest {
                 .extract(selector("div")) // extract with selector
                 .filter(value -> value.trim()) // trim result
                 .with(regex("20\\d{2}")) // get year with regex
-                .filter(value -> "from " + value) // append 'form' string
+                .filter(value -> "from " + value) // append 'from' string
                 .asString();
         Assert.assertEquals("fivesmallq", title);
         Assert.assertEquals("29671", followers);
