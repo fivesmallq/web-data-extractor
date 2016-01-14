@@ -82,7 +82,7 @@
                 .extract(selector(<span class="pl-s"><span class="pl-pds">"</span>div<span class="pl-pds">"</span></span>)) <span class="pl-c">// extract with selector</span>
                 .filter(value <span class="pl-k">-</span><span class="pl-k">&gt;</span> value<span class="pl-k">.</span>trim()) <span class="pl-c">// trim result</span>
                 .with(regex(<span class="pl-s"><span class="pl-pds">"</span>20<span class="pl-cce">\\</span>d{2}<span class="pl-pds">"</span></span>)) <span class="pl-c">// get year with regex</span>
-                .filter(value <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>from <span class="pl-pds">"</span></span> <span class="pl-k">+</span> value) <span class="pl-c">// append 'form' string</span>
+                .filter(value <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>from <span class="pl-pds">"</span></span> <span class="pl-k">+</span> value) <span class="pl-c">// append 'from' string</span>
                 .asString();
         <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(<span class="pl-s"><span class="pl-pds">"</span>from 2000<span class="pl-pds">"</span></span>, year);</pre></div>
 
