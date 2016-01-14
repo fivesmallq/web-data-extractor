@@ -16,6 +16,8 @@ package im.nll.data.extractor.utils;
  * limitations under the License.
  */
 
+import im.nll.data.extractor.exception.TypeException;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

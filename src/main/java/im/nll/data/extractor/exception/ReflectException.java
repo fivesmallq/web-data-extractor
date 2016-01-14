@@ -33,7 +33,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package im.nll.data.extractor.utils;
+package im.nll.data.extractor.exception;
 
 import java.lang.reflect.InvocationTargetException;
 

@@ -35,6 +35,8 @@
  */
 package im.nll.data.extractor.utils;
 
+import im.nll.data.extractor.exception.ReflectException;
+
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.LinkedHashMap;

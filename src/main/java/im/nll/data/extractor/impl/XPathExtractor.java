@@ -2,6 +2,7 @@ package im.nll.data.extractor.impl;
 
 import com.google.common.collect.Lists;
 import im.nll.data.extractor.ListableExtractor;
+import im.nll.data.extractor.exception.ExtractException;
 import im.nll.data.extractor.utils.Logs;
 import org.jdom2.*;
 import org.jdom2.filter.Filters;
@@ -12,7 +13,6 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 import org.slf4j.Logger;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
@@ -39,11 +39,8 @@ public class XPathExtractor implements ListableExtractor {
             XPathExpression xp = xpfac.compile(xpath, Filters.fpassthrough());
             Object text = xp.evaluateFirst(doc);
             result = wrap(text);
-            return result;
-        } catch (JDOMException e) {
-            LOGGER.error("extract data error. xpath:{} html:{}", xpath, data, e);
-        } catch (IOException e) {
-            LOGGER.error("extract data error. xpath:{} html:{}", xpath, data, e);
+        } catch (Exception e) {
+            throw new ExtractException(e);
         }
         return result;
     }
@@ -61,11 +58,8 @@ public class XPathExtractor implements ListableExtractor {
                 String result = wrap(text);
                 stringList.add(result);
             }
-            return stringList;
-        } catch (JDOMException e) {
-            LOGGER.error("extract data error. xpath:{} html:{}", xpath, data, e);
-        } catch (IOException e) {
-            LOGGER.error("extract data error. xpath:{} html:{}", xpath, data, e);
+        } catch (Exception e) {
+            throw new ExtractException(e);
         }
         return stringList;
     }
