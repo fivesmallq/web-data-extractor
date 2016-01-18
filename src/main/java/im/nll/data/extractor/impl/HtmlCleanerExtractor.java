@@ -5,12 +5,6 @@ import im.nll.data.extractor.exception.ExtractException;
 import im.nll.data.extractor.utils.Logs;
 import im.nll.data.extractor.utils.TypeUtils;
 import org.htmlcleaner.*;
-import org.jdom2.Attribute;
-import org.jdom2.Content;
-import org.jdom2.Element;
-import org.jdom2.Text;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -33,11 +27,7 @@ public class HtmlCleanerExtractor implements ListableExtractor {
     public String extract(String content) {
         String result = "";
         try {
-            HtmlCleaner htmlCleaner = new HtmlCleaner();
-            htmlCleaner.getProperties().setUseCdataForScriptAndStyle(false);
-            htmlCleaner.getProperties().setPruneTags("script,style");
-            htmlCleaner.getProperties().setTreatUnknownTagsAsContent(true);
-            htmlCleaner.getProperties().setOmitUnknownTags(true);
+            HtmlCleaner htmlCleaner = getHtmlCleaner();
             TagNode node = htmlCleaner.clean(content);
             Object[] objects = node.evaluateXPath(xpath);
             if (objects != null && objects.length > 0) {
@@ -56,11 +46,7 @@ public class HtmlCleanerExtractor implements ListableExtractor {
     public List<String> extractList(String content) {
         List<String> list = new ArrayList<>();
         try {
-            HtmlCleaner htmlCleaner = new HtmlCleaner();
-            htmlCleaner.getProperties().setUseCdataForScriptAndStyle(false);
-            htmlCleaner.getProperties().setPruneTags("script,style");
-            htmlCleaner.getProperties().setTreatUnknownTagsAsContent(true);
-            htmlCleaner.getProperties().setOmitUnknownTags(true);
+            HtmlCleaner htmlCleaner = getHtmlCleaner();
             TagNode node = htmlCleaner.clean(content);
             Object[] objects = node.evaluateXPath(xpath);
             if (objects != null && objects.length > 0) {
@@ -78,23 +64,13 @@ public class HtmlCleanerExtractor implements ListableExtractor {
         return list;
     }
 
-    private String wrap(Object text) {
-        if (text != null) {
-            if (text instanceof Attribute) {
-                return ((Attribute) text).getValue();
-            } else if (text instanceof Content) {
-                XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
-                if (text instanceof Element) {
-                    return xout.outputString((Element) text);
-                }
-                if (text instanceof Text) {
-                    return xout.outputString((Text) text);
-                }
-            } else {
-                logger.error("unsupported document type", text.getClass());
-            }
-        }
-        return "";
+    private HtmlCleaner getHtmlCleaner() {
+        HtmlCleaner htmlCleaner = new HtmlCleaner();
+        htmlCleaner.getProperties().setUseCdataForScriptAndStyle(false);
+        htmlCleaner.getProperties().setPruneTags("script,style");
+        htmlCleaner.getProperties().setTreatUnknownTagsAsContent(true);
+        htmlCleaner.getProperties().setOmitUnknownTags(true);
+        return htmlCleaner;
     }
 
     private String wrap(Object text, HtmlCleaner htmlCleaner) {
