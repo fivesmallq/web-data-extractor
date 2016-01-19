@@ -32,15 +32,34 @@ public class Extractors {
         this.html = html;
     }
 
+    /**
+     * set the html to extract
+     *
+     * @param html
+     * @return
+     */
     public static Extractors on(String html) {
         return new Extractors(html);
     }
 
+    /**
+     * extract data by extractor
+     *
+     * @param extractor
+     * @return
+     */
     public Extractors extract(Extractor extractor) {
         extract(DEFAULT_FIELD, extractor);
         return this;
     }
 
+    /**
+     * extract data by extractor and set to field
+     *
+     * @param field
+     * @param extractor
+     * @return
+     */
     public Extractors extract(String field, Extractor extractor) {
         List<Extractor> extractors = extractorsMap.getOrDefault(field, Lists.newLinkedList());
         extractors.add(extractor);
@@ -49,11 +68,24 @@ public class Extractors {
         return this;
     }
 
+    /**
+     * extract data by extractor string and set to field.
+     * <p>
+     * current support:
+     * <li>xpath : {@link XPathExtractor}</li>
+     * <li>jerry : {@link JerryExtractor}</li>
+     * <li>regex : {@link RegexExtractor}</li>
+     * <li>string : {@link StringRangeExtractor}</li>
+     * <li>json:{@link JSONPathExtractor} </li>
+     * </p>
+     *
+     * @param field
+     * @param extractorString
+     * @return
+     */
     public Extractors extract(String field, String extractorString) {
-        List<Extractor> extractors = extractorsMap.getOrDefault(field, Lists.newLinkedList());
-        extractors.add(ExtractorParser.parse(extractorString));
-        extractorsMap.put(field, extractors);
-        this.prevField = field;
+        Extractor extractor = ExtractorParser.parse(extractorString);
+        extract(field, extractor);
         return this;
     }
 
@@ -62,6 +94,27 @@ public class Extractors {
         List<Extractor> extractors = extractorsMap.getOrDefault(prevField, Lists.newLinkedList());
         extractors.add(extractor);
         extractorsMap.put(prevField, extractors);
+        return this;
+    }
+
+    /**
+     * extract data by extractor string and set to prev field.
+     * <p>
+     * current support:
+     * <li>xpath : {@link XPathExtractor}</li>
+     * <li>jerry : {@link JerryExtractor}</li>
+     * <li>regex : {@link RegexExtractor}</li>
+     * <li>string : {@link StringRangeExtractor}</li>
+     * <li>json:{@link JSONPathExtractor} </li>
+     * </p>
+     *
+     * @param extractorString
+     * @return
+     */
+    public Extractors with(String extractorString) {
+        Validate.notNull(prevField, "must call extract method first!");
+        Extractor extractor = ExtractorParser.parse(extractorString);
+        with(extractor);
         return this;
     }
 
@@ -88,14 +141,21 @@ public class Extractors {
 
     /**
      * split html use listable extractor string
+     * <p>
+     * current support:
+     * <li>xpath : {@link XPathExtractor}</li>
+     * <li>jerry : {@link JerryExtractor}</li>
+     * <li>regex : {@link RegexExtractor}</li>
+     * <li>string : {@link StringRangeExtractor}</li>
+     * <li>json:{@link JSONPathExtractor} </li>
+     * </p>
      *
      * @param listExtractorString
      * @return
      */
     public Extractors split(String listExtractorString) {
         Extractor listableExtractor = ExtractorParser.parse(listExtractorString);
-        Validate.isTrue(listableExtractor instanceof ListableExtractor, "split parameter must implement ListableExtractor." + listableExtractor.getClass().getSimpleName() + " can't be used.");
-        this.htmlList = ((ListableExtractor) listableExtractor).extractList(html);
+        split(listableExtractor);
         return this;
     }
 
