@@ -109,12 +109,43 @@ public class ExtractorsTest {
         Assert.assertEquals(second.getUrl(), "https://www.ruby-lang.org");
     }
 
+
+    @Test
+    public void testToBeanListByJerryString() throws Exception {
+        List<Language> languages = Extractors.on(listHtml).split("jerry:tr.item.html")
+                .extract("type", "jerry:td.type")
+                .extract("name", "jerry:td.name")
+                .extract("url", "jerry:td.url")
+                .asBeanList(Language.class);
+        Assert.assertNotNull(languages);
+        Language second = languages.get(1);
+        Assert.assertEquals(languages.size(), 3);
+        Assert.assertEquals(second.getType(), "dynamic");
+        Assert.assertEquals(second.getName(), "Ruby");
+        Assert.assertEquals(second.getUrl(), "https://www.ruby-lang.org");
+    }
+
     @Test
     public void testToBeanListByXPath() throws Exception {
         List<Language> languages = Extractors.on(listHtml).split(xpath("//tr[@class='item']"))
                 .extract("type", xpath("//td[1]/text()"))
                 .extract("name", xpath("//td[2]/text()"))
                 .extract("url", xpath("//td[3]/text()"))
+                .asBeanList(Language.class);
+        Assert.assertNotNull(languages);
+        Language second = languages.get(1);
+        Assert.assertEquals(languages.size(), 3);
+        Assert.assertEquals(second.getType(), "dynamic");
+        Assert.assertEquals(second.getName(), "Ruby");
+        Assert.assertEquals(second.getUrl(), "https://www.ruby-lang.org");
+    }
+
+    @Test
+    public void testToBeanListByXPathString() throws Exception {
+        List<Language> languages = Extractors.on(listHtml).split("xpath://tr[@class='item']")
+                .extract("type", "xpath://td[1]/text()")
+                .extract("name", "xpath://td[2]/text()")
+                .extract("url", "xpath://td[3]/text()")
                 .asBeanList(Language.class);
         Assert.assertNotNull(languages);
         Language second = languages.get(1);
@@ -146,6 +177,23 @@ public class ExtractorsTest {
                 .extract("author", json("$..author"))
                 .extract("title", json("$..title"))
                 .extract("price", json("$..price"))
+                .asBeanList(Book.class);
+        Assert.assertNotNull(books);
+        Book second = books.get(1);
+        Assert.assertEquals(books.size(), 4);
+        Assert.assertEquals(second.getCategory(), "fiction");
+        Assert.assertEquals(second.getAuthor(), "Evelyn Waugh");
+        Assert.assertEquals(second.getTitle(), "Sword of Honour");
+        Assert.assertEquals(second.getPrice(), new Double(12.99));
+    }
+
+    @Test
+    public void testToBeanListByJsonString() throws Exception {
+        List<Book> books = Extractors.on(jsonString).split("json:$..book.*")
+                .extract("category", "json:$..category")
+                .extract("author", "json:$..author")
+                .extract("title", "json:$..title")
+                .extract("price", "json:$..price")
                 .asBeanList(Book.class);
         Assert.assertNotNull(books);
         Book second = books.get(1);

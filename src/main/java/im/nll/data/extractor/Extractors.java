@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import im.nll.data.extractor.entity.EntityExtractor;
 import im.nll.data.extractor.entity.EntityListExtractor;
 import im.nll.data.extractor.impl.*;
+import im.nll.data.extractor.parser.ExtractorParser;
 import im.nll.data.extractor.utils.Logs;
 import im.nll.data.extractor.utils.Reflect;
 import im.nll.data.extractor.utils.Validate;
@@ -48,6 +49,14 @@ public class Extractors {
         return this;
     }
 
+    public Extractors extract(String field, String extractorString) {
+        List<Extractor> extractors = extractorsMap.getOrDefault(field, Lists.newLinkedList());
+        extractors.add(ExtractorParser.parse(extractorString));
+        extractorsMap.put(field, extractors);
+        this.prevField = field;
+        return this;
+    }
+
     public Extractors with(Extractor extractor) {
         Validate.notNull(prevField, "must call extract method first!");
         List<Extractor> extractors = extractorsMap.getOrDefault(prevField, Lists.newLinkedList());
@@ -72,6 +81,19 @@ public class Extractors {
      * @return
      */
     public Extractors split(Extractor listableExtractor) {
+        Validate.isTrue(listableExtractor instanceof ListableExtractor, "split parameter must implement ListableExtractor." + listableExtractor.getClass().getSimpleName() + " can't be used.");
+        this.htmlList = ((ListableExtractor) listableExtractor).extractList(html);
+        return this;
+    }
+
+    /**
+     * split html use listable extractor string
+     *
+     * @param listExtractorString
+     * @return
+     */
+    public Extractors split(String listExtractorString) {
+        Extractor listableExtractor = ExtractorParser.parse(listExtractorString);
         Validate.isTrue(listableExtractor instanceof ListableExtractor, "split parameter must implement ListableExtractor." + listableExtractor.getClass().getSimpleName() + " can't be used.");
         this.htmlList = ((ListableExtractor) listableExtractor).extractList(html);
         return this;
