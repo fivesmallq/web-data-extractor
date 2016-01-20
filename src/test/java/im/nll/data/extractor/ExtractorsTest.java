@@ -74,6 +74,7 @@ public class ExtractorsTest {
         Assert.assertEquals("fivesmallq", dataMap.get("title"));
         Assert.assertEquals("29671", dataMap.get("followers"));
         Assert.assertEquals("Talk is cheap. Show me the code.", dataMap.get("description"));
+        Assert.assertEquals("{title=fivesmallq, followers=29671, description=Talk is cheap. Show me the code.}", dataMap.toString());
     }
 
     @Test
@@ -89,6 +90,9 @@ public class ExtractorsTest {
         Assert.assertEquals(second.get("type"), "dynamic");
         Assert.assertEquals(second.get("name"), "Ruby");
         Assert.assertEquals(second.get("url"), "https://www.ruby-lang.org");
+        Assert.assertEquals("[{type=static, name=Java, url=https://www.java.com}," +
+                " {type=dynamic, name=Ruby, url=https://www.ruby-lang.org}," +
+                " {type=dynamic, name=Python, url=https://www.python.org}]", languages.toString());
     }
 
     @Test
