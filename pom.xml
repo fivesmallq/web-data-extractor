@@ -259,6 +259,12 @@
                 <version>0.7.5.201505241946</version>
                 <executions>
                     <execution>
+                        <configuration>
+                            <excludes>
+                                <exclude>jodd.*</exclude>
+                                <exclude>org.htmlcleaner.*</exclude>
+                            </excludes>
+                        </configuration>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
