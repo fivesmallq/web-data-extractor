@@ -161,6 +161,7 @@ public class Extractors {
 
     public String asString() {
         List<Extractor> extractors = extractorsMap.get(DEFAULT_FIELD);
+        Validate.notNull(extractors, "extract data is not string type.");
         String result = html;
         for (Extractor extractor : extractors) {
             result = extractor.extract(result);

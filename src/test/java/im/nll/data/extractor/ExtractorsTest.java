@@ -55,6 +55,15 @@ public class ExtractorsTest {
         Assert.assertEquals("from 2000", year);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testAsString() throws Exception {
+        String s = Extractors.on(baseHtml)
+                .extract("title", selector("a.title"))
+                .extract("followers", selector("div.followers")).with(regex("\\d+"))
+                .extract("description", selector("div.description"))
+                .asString();
+    }
+
     @Test
     public void testToMap() throws Exception {
         Map<String, String> dataMap = Extractors.on(baseHtml)
