@@ -89,6 +89,12 @@ public class Extractors {
         return this;
     }
 
+    /**
+     * extract data by extractor and set to prev field.
+     *
+     * @param extractor
+     * @return
+     */
     public Extractors with(Extractor extractor) {
         Validate.notNull(prevField, "must call extract method first!");
         List<Extractor> extractors = extractorsMap.getOrDefault(prevField, Lists.newLinkedList());
@@ -118,6 +124,12 @@ public class Extractors {
         return this;
     }
 
+    /**
+     * process value use filter
+     *
+     * @param filter
+     * @return
+     */
     public Extractors filter(Filter filter) {
         Validate.notNull(prevField, "must call extract method first!");
         List<Filter> filters = filtersMap.getOrDefault(prevField, Lists.newLinkedList());
@@ -159,6 +171,11 @@ public class Extractors {
         return this;
     }
 
+    /**
+     * extract data as string
+     *
+     * @return
+     */
     public String asString() {
         List<Extractor> extractors = extractorsMap.get(DEFAULT_FIELD);
         Validate.notNull(extractors, "extract data is not string type.");
@@ -170,11 +187,22 @@ public class Extractors {
         return result;
     }
 
+    /**
+     * extract data as a map. key set by {@link #extract(String, Extractor)}
+     *
+     * @return
+     */
     public Map<String, String> asMap() {
         return extractMap(html);
     }
 
 
+    /**
+     * extract data to a map list. key set by {@link #extract(String, Extractor)}
+     * must split html by {@link #split(Extractor)} before asMapList.
+     *
+     * @return
+     */
     public List<Map<String, String>> asMapList() {
         Validate.notNull(htmlList, "must split first!");
         List<Map<String, String>> mapList = Lists.newLinkedList();
@@ -184,11 +212,21 @@ public class Extractors {
         return mapList;
     }
 
-
+    /**
+     * convert extract data to bean. field name set by {@link #extract(String, Extractor)}
+     *
+     * @return
+     */
     public <T> T asBean(Class<T> clazz) {
         return extractBean(html, clazz);
     }
 
+    /**
+     * extract data as a bean list. field name set by {@link #extract(String, Extractor)}
+     * must split html by {@link #split(Extractor)} before call this method.
+     *
+     * @return
+     */
     public <T> List<T> asBeanList(Class<T> clazz) {
         Validate.notNull(htmlList, "must split first!");
         List<T> entityList = Lists.newLinkedList();
@@ -200,11 +238,26 @@ public class Extractors {
 
     //------------ custom process --------------//
 
+    /**
+     * extract data by custom entity extractor as bean
+     *
+     * @param entityExtractor
+     * @param <T>
+     * @return
+     */
     public <T> T asBean(EntityExtractor<T> entityExtractor) {
         T entity = entityExtractor.extract(html);
         return entity;
     }
 
+    /**
+     * extract data by custom entity extractor as bean list.
+     * must split html by {@link #split(Extractor)} before call this method.
+     *
+     * @param entityExtractor
+     * @param <T>
+     * @return
+     */
     public <T> List<T> asBeanList(EntityExtractor<T> entityExtractor) {
         Validate.notNull(htmlList, "must split first!");
         List<T> entityList = Lists.newLinkedList();
@@ -215,6 +268,13 @@ public class Extractors {
         return entityList;
     }
 
+    /**
+     * extract data by custom entity extractor as bean list
+     *
+     * @param entityListExtractor
+     * @param <T>
+     * @return
+     */
     public <T> List<T> asBeanList(EntityListExtractor<T> entityListExtractor) {
         return entityListExtractor.extractList(html);
     }
@@ -272,26 +332,62 @@ public class Extractors {
     //------------ internal --------------//
 
 
+    /**
+     * return a selector extractor.
+     *
+     * @param query
+     * @return
+     */
     public static Extractor selector(String query) {
         return new SelectorExtractor(query);
     }
 
+    /**
+     * return a jerry extractor.
+     *
+     * @param query
+     * @return
+     */
     public static Extractor jerry(String query) {
         return new JerryExtractor(query);
     }
 
+    /**
+     * return a json extractor.
+     *
+     * @param query
+     * @return
+     */
     public static Extractor json(String query) {
         return new JSONPathExtractor(query);
     }
 
+    /**
+     * return a xpath extractor.
+     *
+     * @param query
+     * @return
+     */
     public static Extractor xpath(String query) {
         return new XPathExtractor(query);
     }
 
+    /**
+     * return a regex extractor.
+     *
+     * @param query
+     * @return
+     */
     public static Extractor regex(String query) {
         return new RegexExtractor(query);
     }
 
+    /**
+     * return a string range extractor.
+     *
+     * @param query
+     * @return
+     */
     public static Extractor stringRange(String query) {
         return new StringRangeExtractor(query);
     }
