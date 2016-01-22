@@ -28,6 +28,12 @@ public class SelectorExtractorTest {
     }
 
     @Test
+    public void testExtractEscaped() throws Exception {
+        selectorExtractor = new SelectorExtractor("th:contains(hello\\,w),0,html");
+        String title = selectorExtractor.extract(html);
+        Assert.assertEquals("hello,world", title);
+    }
+    @Test
     public void testExtract() throws Exception {
         selectorExtractor = new SelectorExtractor("th.title");
         String title = selectorExtractor.extract(html);

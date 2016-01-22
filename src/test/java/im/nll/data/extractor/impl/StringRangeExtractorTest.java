@@ -29,10 +29,14 @@ public class StringRangeExtractorTest {
 
     @Test
     public void testExtractEscaped() throws Exception {
-        String demoHtml = "<td>www.baidu.com</t,d>";
-        stringRangeExtractor = new StringRangeExtractor("<td>,</t,d>,true");
+        String demoHtml = "<td>www.baidu.com ,, www.google.com</a></td>";
+        stringRangeExtractor = new StringRangeExtractor("<td>,\\,\\,,true");
         String result = stringRangeExtractor.extract(demoHtml);
-        Assert.assertEquals(result, "www.baidu.com");
+        Assert.assertEquals("<td>www.baidu.com ,,", result);
+
+        stringRangeExtractor = new StringRangeExtractor("<td>,\\,\\,,false");
+        result = stringRangeExtractor.extract(demoHtml);
+        Assert.assertEquals("www.baidu.com ", result);
     }
 
     @Test
