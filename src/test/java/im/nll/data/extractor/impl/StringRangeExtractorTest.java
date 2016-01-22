@@ -28,28 +28,37 @@ public class StringRangeExtractorTest {
     }
 
     @Test
-    public void testExtract() throws Exception {
-        String demoHtml = "<td>www.baidu.com</td>";
-        stringRangeExtractor = new StringRangeExtractor("<td>", "</td>");
+    public void testExtractEscaped() throws Exception {
+        String demoHtml = "<td>www.baidu.com</t,d>";
+        stringRangeExtractor = new StringRangeExtractor("<td>,</t,d>,true");
         String result = stringRangeExtractor.extract(demoHtml);
-        Assert.assertEquals(result, "www.baidu.com");
-
-        stringRangeExtractor = new StringRangeExtractor("x", "xx");
-        result = stringRangeExtractor.extract(demoHtml);
-        Assert.assertEquals(result, "");
-
-        stringRangeExtractor = new StringRangeExtractor("<td>", "</td>", "true");
-        result = stringRangeExtractor.extract(demoHtml);
-        Assert.assertEquals(result, "<td>www.baidu.com</td>");
-
-        stringRangeExtractor = new StringRangeExtractor("<td>", "</td>", "false");
-        result = stringRangeExtractor.extract(demoHtml);
         Assert.assertEquals(result, "www.baidu.com");
     }
 
     @Test
+    public void testExtract() throws Exception {
+        String demoHtml = "<td>www.baidu.com</td>";
+        stringRangeExtractor = new StringRangeExtractor("<td>,</td>");
+        String result = stringRangeExtractor.extract(demoHtml);
+        Assert.assertEquals(result, "www.baidu.com");
+
+        stringRangeExtractor = new StringRangeExtractor("x,xx");
+        result = stringRangeExtractor.extract(demoHtml);
+        Assert.assertEquals(result, "");
+
+        stringRangeExtractor = new StringRangeExtractor("<td>,</td>,true");
+        result = stringRangeExtractor.extract(demoHtml);
+        Assert.assertEquals(result, "<td>www.baidu.com</td>");
+
+        stringRangeExtractor = new StringRangeExtractor("<td>,</td>,false");
+        result = stringRangeExtractor.extract(demoHtml);
+        Assert.assertEquals(result, "www.baidu.com");
+
+    }
+
+    @Test
     public void testExtractList() throws Exception {
-        stringRangeExtractor = new StringRangeExtractor("<tr class=\"item\">", "</tr>", "true");
+        stringRangeExtractor = new StringRangeExtractor("<tr class=\"item\">,</tr>,true");
         List<String> stringList = stringRangeExtractor.extractList(html);
         Assert.assertNotNull(stringList);
         Assert.assertEquals(stringList.size(), 3);
@@ -58,7 +67,7 @@ public class StringRangeExtractorTest {
                 "        <td class=\"name\">Python</td>\n" +
                 "        <td class=\"url\">https://www.python.org</td>\n" +
                 "    </tr>", stringList.get(2));
-        stringRangeExtractor = new StringRangeExtractor("<tr class=\"item\">", "</tr>", "false");
+        stringRangeExtractor = new StringRangeExtractor("<tr class=\"item\">,</tr>,false");
         stringList = stringRangeExtractor.extractList(html);
         Assert.assertNotNull(stringList);
         Assert.assertEquals(stringList.size(), 3);

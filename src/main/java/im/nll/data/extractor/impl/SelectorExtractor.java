@@ -44,25 +44,15 @@ public class SelectorExtractor implements ListableExtractor {
      */
     private String outType = "text";
 
-    public SelectorExtractor(String... params) {
-        if (params.length == 1) {
-            List<String> stringList = Splitter.on(",")
-                    .splitToList(params[0]);
-            this.query = stringList.get(0);
-            if (stringList.size() > 1 && StringUtils.isNotNullOrEmpty(stringList.get(1))) {
-                this.eq = StringUtils.tryParseInt(stringList.get(1), 0);
-            }
-            if (stringList.size() > 2 && StringUtils.isNotNullOrEmpty(stringList.get(2))) {
-                this.outType = stringList.get(2);
-            }
-        } else {
-            this.query = params[0];
-            if (params.length > 1 && StringUtils.isNotNullOrEmpty(params[1])) {
-                this.eq = StringUtils.tryParseInt(params[1], 0);
-            }
-            if (params.length > 2 && StringUtils.isNotNullOrEmpty(params[2])) {
-                this.outType = params[2];
-            }
+    public SelectorExtractor(String query) {
+        List<String> stringList = Splitter.on(",")
+                .splitToList(query);
+        this.query = stringList.get(0);
+        if (stringList.size() > 1 && StringUtils.isNotNullOrEmpty(stringList.get(1))) {
+            this.eq = StringUtils.tryParseInt(stringList.get(1), 0);
+        }
+        if (stringList.size() > 2 && StringUtils.isNotNullOrEmpty(stringList.get(2))) {
+            this.outType = stringList.get(2);
         }
     }
 
