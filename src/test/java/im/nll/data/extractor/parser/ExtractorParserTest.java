@@ -1,10 +1,7 @@
 package im.nll.data.extractor.parser;
 
 import im.nll.data.extractor.Extractor;
-import im.nll.data.extractor.impl.JSONPathExtractor;
-import im.nll.data.extractor.impl.JerryExtractor;
-import im.nll.data.extractor.impl.RegexExtractor;
-import im.nll.data.extractor.impl.XPathExtractor;
+import im.nll.data.extractor.impl.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,5 +43,17 @@ public class ExtractorParserTest {
         extractor = ExtractorParser.parse(string);
         Assert.assertNotNull(extractor);
         Assert.assertEquals(XPathExtractor.class, extractor.getClass());
+
+        //htmlcleaner
+        string = "htmlcleaner://td";
+        extractor = ExtractorParser.parse(string);
+        Assert.assertNotNull(extractor);
+        Assert.assertEquals(HtmlCleanerExtractor.class, extractor.getClass());
+
+        //stringRange
+        string = "stringRange:open,close";
+        extractor = ExtractorParser.parse(string);
+        Assert.assertNotNull(extractor);
+        Assert.assertEquals(StringRangeExtractor.class, extractor.getClass());
     }
 }

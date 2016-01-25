@@ -3,10 +3,7 @@ package im.nll.data.extractor.parser;
 import com.google.common.collect.Maps;
 import im.nll.data.extractor.Extractor;
 import im.nll.data.extractor.exception.ParseException;
-import im.nll.data.extractor.impl.JSONPathExtractor;
-import im.nll.data.extractor.impl.JerryExtractor;
-import im.nll.data.extractor.impl.RegexExtractor;
-import im.nll.data.extractor.impl.XPathExtractor;
+import im.nll.data.extractor.impl.*;
 import im.nll.data.extractor.utils.Reflect;
 import im.nll.data.extractor.utils.StringUtils;
 
@@ -28,6 +25,9 @@ public class ExtractorParser {
         extractorMap.put("jerry", JerryExtractor.class);
         extractorMap.put("xpath", XPathExtractor.class);
         extractorMap.put("regex", RegexExtractor.class);
+        extractorMap.put("selector", SelectorExtractor.class);
+        extractorMap.put("stringRange", StringRangeExtractor.class);
+        extractorMap.put("htmlcleaner", HtmlCleanerExtractor.class);
     }
 
     public static Extractor parse(String shortString) {

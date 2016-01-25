@@ -1,6 +1,7 @@
 package im.nll.data.extractor.impl;
 
 import im.nll.data.extractor.ListableExtractor;
+import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.utils.StringUtils;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  * @version Revision: 1.0
  * @date 15/12/30 下午3:38
  */
+@Name("stringRange")
 public class StringRangeExtractor implements ListableExtractor {
     private String open;
     private String close;

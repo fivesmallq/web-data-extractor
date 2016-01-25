@@ -2,6 +2,7 @@ package im.nll.data.extractor.impl;
 
 import com.google.common.collect.Lists;
 import im.nll.data.extractor.ListableExtractor;
+import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.utils.StringUtils;
 import jodd.jerry.Jerry;
 import jodd.lagarto.dom.Node;
@@ -20,6 +21,7 @@ import static jodd.jerry.Jerry.jerry;
  * @version Revision: 1.0
  * @date 16/1/8 下午4:17
  */
+@Name("jerry")
 public class JerryExtractor implements ListableExtractor {
     private final static String TYPE_TEXT = "text";
     private final static String TYPE_HTML = "html";

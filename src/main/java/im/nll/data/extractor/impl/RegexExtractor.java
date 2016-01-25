@@ -1,6 +1,7 @@
 package im.nll.data.extractor.impl;
 
 import im.nll.data.extractor.Extractor;
+import im.nll.data.extractor.annotation.Name;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,6 +12,7 @@ import java.util.regex.Pattern;
  * @version Revision: 1.0
  * @date 15/12/28 下午4:24
  */
+@Name("regex")
 public class RegexExtractor implements Extractor {
     private String regex;
     private int group = 0;

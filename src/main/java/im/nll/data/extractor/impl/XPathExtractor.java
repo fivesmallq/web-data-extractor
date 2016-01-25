@@ -2,6 +2,7 @@ package im.nll.data.extractor.impl;
 
 import com.google.common.collect.Lists;
 import im.nll.data.extractor.ListableExtractor;
+import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.exception.ExtractException;
 import im.nll.data.extractor.utils.Logs;
 import org.jdom2.*;
@@ -21,6 +22,7 @@ import java.util.List;
  * @version Revision: 1.0
  * @date 15/12/25 下午9:26
  */
+@Name("xpath")
 public class XPathExtractor implements ListableExtractor {
     private static final Logger LOGGER = Logs.get();
     private String xpath;

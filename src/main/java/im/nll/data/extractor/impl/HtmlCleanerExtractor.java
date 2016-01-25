@@ -1,6 +1,7 @@
 package im.nll.data.extractor.impl;
 
 import im.nll.data.extractor.ListableExtractor;
+import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.exception.ExtractException;
 import im.nll.data.extractor.utils.Logs;
 import im.nll.data.extractor.utils.TypeUtils;
@@ -15,6 +16,7 @@ import java.util.List;
  * @version Revision: 1.0
  * @date 15/12/25 下午9:26
  */
+@Name("htmlcleaner")
 public class HtmlCleanerExtractor implements ListableExtractor {
     private static final Logger logger = Logs.get();
     private String xpath;

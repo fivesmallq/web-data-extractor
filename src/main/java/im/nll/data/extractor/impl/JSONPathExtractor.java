@@ -5,6 +5,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import im.nll.data.extractor.ListableExtractor;
+import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.utils.TypeUtils;
 import net.minidev.json.JSONObject;
 
@@ -18,6 +19,7 @@ import java.util.Map;
  * @version Revision: 1.0
  * @date 15/12/25 下午9:24
  */
+@Name("json")
 public class JSONPathExtractor implements ListableExtractor {
     static final Configuration conf = Configuration.defaultConfiguration().addOptions(Option.ALWAYS_RETURN_LIST, Option.DEFAULT_PATH_LEAF_TO_NULL, Option.SUPPRESS_EXCEPTIONS);
     private String jsonpath;

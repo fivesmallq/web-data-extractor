@@ -2,6 +2,7 @@ package im.nll.data.extractor.impl;
 
 import com.google.common.collect.Lists;
 import im.nll.data.extractor.ListableExtractor;
+import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.utils.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,6 +27,7 @@ import java.util.List;
  * @version Revision: 1.0
  * @date 15/12/25 下午9:25
  */
+@Name("selector")
 public class SelectorExtractor implements ListableExtractor {
     private final static String TYPE_TEXT = "text";
     private final static String TYPE_HTML = "html";
