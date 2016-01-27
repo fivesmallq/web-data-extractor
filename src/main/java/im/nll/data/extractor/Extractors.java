@@ -177,13 +177,20 @@ public class Extractors {
      * @return
      */
     public String asString() {
-        List<Extractor> extractors = extractorsMap.get(DEFAULT_FIELD);
-        Validate.notNull(extractors, "extract data is not string type.");
         String result = html;
-        for (Extractor extractor : extractors) {
-            result = extractor.extract(result);
+        List<Extractor> extractors = extractorsMap.get(DEFAULT_FIELD);
+        if (extractors == null) {
+            if (htmlList != null) {
+                result = asMapList().toString();
+            } else {
+                result = asMap().toString();
+            }
+        } else {
+            for (Extractor extractor : extractors) {
+                result = extractor.extract(result);
+            }
+            result = filter(DEFAULT_FIELD, result);
         }
-        result = filter(DEFAULT_FIELD, result);
         return result;
     }
 

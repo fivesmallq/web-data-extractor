@@ -55,13 +55,42 @@ public class ExtractorsTest {
         Assert.assertEquals("from 2000", year);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testAsString() throws Exception {
-        String s = Extractors.on(baseHtml)
+    @Test
+    public void testAsStringNoName() throws Exception {
+        String result = Extractors.on(baseHtml)
+                .extract(selector("a.title"))
+                .asString();
+        Assert.assertEquals("fivesmallq", result);
+    }
+
+    @Test
+    public void testAsStringWithName() throws Exception {
+        String result = Extractors.on(baseHtml)
+                .extract("title", selector("a.title"))
+                .asString();
+        Assert.assertEquals("{title=fivesmallq}", result);
+    }
+
+    @Test
+    public void testAsStringMap() throws Exception {
+        String result = Extractors.on(baseHtml)
                 .extract("title", selector("a.title"))
                 .extract("followers", selector("div.followers")).with(regex("\\d+"))
                 .extract("description", selector("div.description"))
                 .asString();
+        Assert.assertEquals("{title=fivesmallq, followers=29671, description=Talk is cheap. Show me the code.}", result);
+    }
+
+    @Test
+    public void testAsStringMapList() throws Exception {
+        String result = Extractors.on(listHtml).split(jerry("tr.item.html"))
+                .extract("type", selector("td.type"))
+                .extract("name", selector("td.name"))
+                .extract("url", selector("td.url")).asString();
+        Assert.assertEquals("" +
+                "[{type=static, name=Java, url=https://www.java.com}, " +
+                "{type=dynamic, name=Ruby, url=https://www.ruby-lang.org}, " +
+                "{type=dynamic, name=Python, url=https://www.python.org}]", result);
     }
 
     @Test
