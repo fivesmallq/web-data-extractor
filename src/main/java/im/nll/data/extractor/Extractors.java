@@ -345,7 +345,7 @@ public class Extractors {
      * @param query
      * @return
      */
-    public static Extractor selector(String query) {
+    public static SelectorExtractor selector(String query) {
         return new SelectorExtractor(query);
     }
 
@@ -355,7 +355,7 @@ public class Extractors {
      * @param query
      * @return
      */
-    public static Extractor jerry(String query) {
+    public static JerryExtractor jerry(String query) {
         return new JerryExtractor(query);
     }
 
@@ -365,7 +365,7 @@ public class Extractors {
      * @param query
      * @return
      */
-    public static Extractor json(String query) {
+    public static JSONPathExtractor json(String query) {
         return new JSONPathExtractor(query);
     }
 
@@ -375,7 +375,7 @@ public class Extractors {
      * @param query
      * @return
      */
-    public static Extractor xpath(String query) {
+    public static XPathExtractor xpath(String query) {
         return new XPathExtractor(query);
     }
 
@@ -385,7 +385,7 @@ public class Extractors {
      * @param query
      * @return
      */
-    public static Extractor regex(String query) {
+    public static RegexExtractor regex(String query) {
         return new RegexExtractor(query);
     }
 
@@ -395,7 +395,7 @@ public class Extractors {
      * @param query
      * @return
      */
-    public static Extractor stringRange(String query) {
+    public static StringRangeExtractor stringRange(String query) {
         return new StringRangeExtractor(query);
     }
 }

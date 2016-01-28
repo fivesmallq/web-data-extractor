@@ -20,6 +20,7 @@ import static im.nll.data.extractor.Extractors.*;
  */
 public class ExtractorsTest {
     private String baseHtml;
+    private String base4Html;
     private String listHtml;
     private String jsonString;
 
@@ -28,6 +29,7 @@ public class ExtractorsTest {
     public void before() {
         try {
             baseHtml = Resources.toString(Resources.getResource("base.html"), Charsets.UTF_8);
+            base4Html = Resources.toString(Resources.getResource("demo4.xml"), Charsets.UTF_8);
             listHtml = Resources.toString(Resources.getResource("list.html"), Charsets.UTF_8);
             jsonString = Resources.toString(Resources.getResource("example.json"), Charsets.UTF_8);
         } catch (IOException e) {
@@ -200,6 +202,19 @@ public class ExtractorsTest {
         Assert.assertEquals(second.getName(), "Ruby");
         Assert.assertEquals(second.getUrl(), "https://www.ruby-lang.org");
     }
+
+    @Test
+    public void testToMapByXPathWithNameSpace() throws Exception {
+        Map<String, String> dataMap = Extractors.on(base4Html)
+                .extract("href", xpath("//oa:Task/@href").registerNamespace("oa", "http://www.xx.com/xx"))
+                .extract("task", xpath("//oa:Task/text()").registerNamespace("oa", "http://www.xx.com/xx"))
+                .extract("level", xpath("//oa:OrganisationLevel/text()").registerNamespace("oa", "http://www.xx.com/xx"))
+                .asMap();
+        Assert.assertEquals("/fivesmallq", dataMap.get("href"));
+        Assert.assertEquals("ReceiveKeeper", dataMap.get("task"));
+        Assert.assertEquals("50", dataMap.get("level"));
+    }
+
 
     @Test
     public void testToBeanListFilter() throws Exception {
