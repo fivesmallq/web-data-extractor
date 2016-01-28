@@ -61,6 +61,10 @@ public class ExtractorsTest {
                 .extract(selector("a.title"))
                 .asString();
         Assert.assertEquals("fivesmallq", result);
+        result = Extractors.on(baseHtml)
+                .extract(selector("a.title")).extract(selector("*"))
+                .asString();
+        Assert.assertEquals("fivesmallq", result);
     }
 
     @Test
