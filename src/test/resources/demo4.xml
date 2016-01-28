@@ -1,0 +1,12 @@
+<oa:ApplicationArea xmlns:oa="http://www.xx.com/xx">
+    <oa:Sender>
+        <oa:LogicalId>Volvo</oa:LogicalId>
+        <oa:Component>DVLA</oa:Component>
+        <oa:Task href="/fivesmallq">ReceiveKeeper</oa:Task>
+        <oa:MessageCode>MS1</oa:MessageCode>
+        <oa:AuthorizationId>SKARUPAI</oa:AuthorizationId>
+        <oa:OrganisationLevel>50</oa:OrganisationLevel>
+    </oa:Sender>
+    <oa:CreationDateTime>2013-08-31T12:00:00</oa:CreationDateTime>
+    <oa:BODId>123456789</oa:BODId>
+</oa:ApplicationArea>

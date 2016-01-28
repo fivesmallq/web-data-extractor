@@ -18,11 +18,47 @@ public class XPathExtractorTest {
     XPathExtractor xPathExtractor;
     private String baseHtml;
     private String base2Html;
+    private String base3Html;
+    private String base4Html;
 
     @Before
     public void setUp() throws Exception {
         baseHtml = Resources.toString(Resources.getResource("base.html"), Charsets.UTF_8);
         base2Html = Resources.toString(Resources.getResource("base2.html"), Charsets.UTF_8);
+        base4Html = Resources.toString(Resources.getResource("demo4.xml"), Charsets.UTF_8);
+    }
+
+    @Test(expected = ExtractException.class)
+    public void testRemoveNamespaceError() {
+        //attribute
+        xPathExtractor = new XPathExtractor("//div/a[1]/@href").removeNamespace();
+        //FIXME xml remove namespace is broken
+        String s = xPathExtractor.extract(baseHtml);
+        Assert.assertEquals("/fivesmallq", s);
+        //element
+        xPathExtractor = new XPathExtractor("//div/a[1]").removeNamespace();
+        s = xPathExtractor.extract(baseHtml);
+        Assert.assertEquals("<a href=\"/fivesmallq\" class=\"title\">fivesmallq</a>", s);
+        //text
+        xPathExtractor = new XPathExtractor("//div/a[1]/text()").removeNamespace();
+        s = xPathExtractor.extract(baseHtml);
+        Assert.assertEquals("fivesmallq", s);
+    }
+
+    @Test
+    public void testRigisterNameSpace() {
+        //attribute
+        xPathExtractor = new XPathExtractor("//oa:Task/@href").registerNamespace("oa", "http://www.xx.com/xx");
+        String s = xPathExtractor.extract(base4Html);
+        Assert.assertEquals("/fivesmallq", s);
+        //element
+        xPathExtractor = new XPathExtractor("//oa:Task").registerNamespace("oa", "http://www.xx.com/xx");
+        s = xPathExtractor.extract(base4Html);
+        Assert.assertEquals("<oa:Task xmlns:oa=\"http://www.xx.com/xx\" href=\"/fivesmallq\">ReceiveKeeper</oa:Task>", s);
+        //text
+        xPathExtractor = new XPathExtractor("//oa:Task/text()").registerNamespace("oa", "http://www.xx.com/xx");
+        s = xPathExtractor.extract(base4Html);
+        Assert.assertEquals("ReceiveKeeper", s);
     }
 
     @Test(expected = ExtractException.class)
@@ -41,6 +77,7 @@ public class XPathExtractorTest {
         s = xPathExtractor.extract(baseHtml);
         Assert.assertEquals("fivesmallq", s);
     }
+
     @Test
     public void testExtract() throws Exception {
         //attribute

@@ -1,10 +1,12 @@
 package im.nll.data.extractor.impl;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import im.nll.data.extractor.ListableExtractor;
 import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.exception.ExtractException;
 import im.nll.data.extractor.utils.Logs;
+import im.nll.data.extractor.utils.XmlUtils;
 import org.jdom2.*;
 import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
@@ -26,19 +28,39 @@ import java.util.List;
 public class XPathExtractor implements ListableExtractor {
     private static final Logger LOGGER = Logs.get();
     private String xpath;
+    private boolean removeNamespace = false;
+    List<Namespace> namespaces = Lists.newArrayList();
 
     public XPathExtractor(String xpath) {
         this.xpath = xpath;
     }
 
+    /**
+     * keep xml name space
+     *
+     * @return
+     */
+    public XPathExtractor removeNamespace() {
+        this.removeNamespace = true;
+        return this;
+    }
+
+    /**
+     * keep xml name space
+     *
+     * @return
+     */
+    public XPathExtractor registerNamespace(String prefix, String url) {
+        this.namespaces.add(Namespace.getNamespace(prefix, url));
+        return this;
+    }
+
     @Override
     public String extract(String data) {
-        SAXBuilder sax = new SAXBuilder();
         String result = "";
         try {
-            Document doc = sax.build(new StringReader(data));
-            XPathFactory xpfac = XPathFactory.instance();
-            XPathExpression xp = xpfac.compile(xpath, Filters.fpassthrough());
+            Document doc = createDom(data);
+            XPathExpression xp = createXpathExpression();
             Object text = xp.evaluateFirst(doc);
             result = wrap(text);
         } catch (Exception e) {
@@ -49,12 +71,10 @@ public class XPathExtractor implements ListableExtractor {
 
     @Override
     public List<String> extractList(String data) {
-        SAXBuilder sax = new SAXBuilder();
         List<String> stringList = Lists.newLinkedList();
         try {
-            Document doc = sax.build(new StringReader(data));
-            XPathFactory xpfac = XPathFactory.instance();
-            XPathExpression xp = xpfac.compile(xpath, Filters.fpassthrough());
+            Document doc = createDom(data);
+            XPathExpression xp = createXpathExpression();
             List<Object> texts = xp.evaluate(doc);
             for (Object text : texts) {
                 String result = wrap(text);
@@ -64,6 +84,30 @@ public class XPathExtractor implements ListableExtractor {
             throw new ExtractException(e);
         }
         return stringList;
+    }
+
+    private Document createDom(String data) {
+        SAXBuilder sax = new SAXBuilder();
+        try {
+            if (removeNamespace) {
+                data = XmlUtils.removeNamespace(data);
+            }
+            Document doc = sax.build(new StringReader(data));
+            return doc;
+        } catch (Exception e) {
+            throw new ExtractException(e);
+        }
+    }
+
+    private XPathExpression createXpathExpression() {
+        XPathFactory xpfac = XPathFactory.instance();
+        XPathExpression xp = null;
+        if (namespaces.isEmpty()) {
+            xp = xpfac.compile(xpath, Filters.fpassthrough());
+        } else {
+            xp = xpfac.compile(xpath, Filters.fpassthrough(), Maps.newLinkedHashMap(), namespaces.toArray(new Namespace[namespaces.size()]));
+        }
+        return xp;
     }
 
     private String wrap(Object text) {
@@ -84,6 +128,4 @@ public class XPathExtractor implements ListableExtractor {
         }
         return "";
     }
-
-
 }
