@@ -2,12 +2,16 @@ package im.nll.data.extractor.parser;
 
 import com.google.common.collect.Maps;
 import im.nll.data.extractor.Extractor;
+import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.exception.ParseException;
-import im.nll.data.extractor.impl.*;
+import im.nll.data.extractor.utils.AnnotationClassScanner;
+import im.nll.data.extractor.utils.Logs;
 import im.nll.data.extractor.utils.Reflect;
 import im.nll.data.extractor.utils.StringUtils;
+import org.slf4j.Logger;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * parse extractor from string.
@@ -17,17 +21,30 @@ import java.util.Map;
  * @date 16/1/19 上午11:32
  */
 public class ExtractorParser {
+    private static Logger LOGGER = Logs.get();
     private static Map<String, Class<? extends Extractor>> extractorMap = Maps.newHashMap();
     private static final String SPLIT_CHAR = ":";
 
     static {
-        extractorMap.put("json", JSONPathExtractor.class);
-        extractorMap.put("jerry", JerryExtractor.class);
-        extractorMap.put("xpath", XPathExtractor.class);
-        extractorMap.put("regex", RegexExtractor.class);
-        extractorMap.put("selector", SelectorExtractor.class);
-        extractorMap.put("stringRange", StringRangeExtractor.class);
-        extractorMap.put("htmlcleaner", HtmlCleanerExtractor.class);
+        String packageName = Extractor.class.getPackage().getName() + ".impl";
+        LOGGER.debug("scan package:{}", packageName);
+        Set<Class<?>> classes = AnnotationClassScanner.scan(Name.class, packageName);
+        for (Class<?> clazz : classes) {
+            // 不是接口的才一起玩.
+            if (!clazz.isInterface()) {
+                Name cityAnnotation = clazz.getAnnotation(Name.class);
+                String[] cities = cityAnnotation.value();
+                if (cities != null) {
+                    for (String city : cities) {
+                        LOGGER.debug("added '{}' extractor implement.", city);
+                        extractorMap.put(city, (Class<? extends Extractor>) clazz);
+                    }
+                }
+            }
+        }
+        if (classes.isEmpty()) {
+            LOGGER.error("no extractor implement find");
+        }
     }
 
     public static Extractor parse(String shortString) {
