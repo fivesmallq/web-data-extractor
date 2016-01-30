@@ -139,4 +139,18 @@ more method
     }
 ````
 
+###def extractor
+
+```java
+extract(new XPathSelector("//td"))
+
+//or use static method
+import static im.nll.data.extractor.Extractors.selector;
+...
+extract(selector("//td"))
+
+//or use short string
+extract("xpath://td")
+```
+
 see [Example](https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/im/nll/data/extractor/ExtractorsTest.java)
