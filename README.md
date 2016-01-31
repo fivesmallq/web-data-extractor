@@ -139,7 +139,7 @@ more method
     }
 ````
 
-###def extractor
+###define extractor
 
 ```java
 extract(new XPathSelector("//td"))
