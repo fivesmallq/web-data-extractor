@@ -52,6 +52,16 @@ String followers = Extractors.on(baseHtml)
                    .with(regex("\\d+"))
                    .asString();
 ````
+
+or short string
+
+````java
+String followers = Extractors.on(baseHtml)
+                   .extract("selector:div.followers"))
+                   .with(regex("\\d+"))
+                   .asString();
+````
+
 more method
 
 ````java
@@ -138,19 +148,5 @@ more method
         Assert.assertEquals(second.getUrl(), "https://www.ruby-lang.org");
     }
 ````
-
-###define extractor
-
-```java
-extract(new XPathSelector("//td"))
-
-//or use static method
-import static im.nll.data.extractor.Extractors.selector;
-...
-extract(selector("//td"))
-
-//or use short string
-extract("xpath://td")
-```
 
 see [Example](https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/im/nll/data/extractor/ExtractorsTest.java)
