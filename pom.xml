@@ -149,11 +149,6 @@
     </profiles>
     <dependencies>
         <dependency>
-            <groupId>eu.infomas</groupId>
-            <artifactId>annotation-detector</artifactId>
-            <version>3.0.5</version>
-        </dependency>
-        <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.8.3</version>
@@ -182,6 +177,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-vfs</artifactId>
+            <version>3.2.10.Final</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
