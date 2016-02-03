@@ -129,7 +129,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <excludePackageNames>jodd.*:org.htmlcleaner:en.*</excludePackageNames>
+                            <excludePackageNames>jodd.*:org.htmlcleaner:eu.*</excludePackageNames>
                             <maxmemory>1024</maxmemory>
                             <skip>false</skip>
                             <show>public</show>
@@ -240,6 +240,7 @@
                             <excludes>
                                 <exclude>jodd.*</exclude>
                                 <exclude>org.htmlcleaner.*</exclude>
+                                <exclude>eu.*</exclude>
                             </excludes>
                         </configuration>
                         <goals>
