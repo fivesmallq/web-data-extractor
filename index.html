@@ -20,7 +20,7 @@
 
     <section class="main-content">
       <h1>
-<a id="web-data-extractor" class="anchor" href="#web-data-extractor" aria-hidden="true"><span class="octicon octicon-link"></span></a>web-data-extractor</h1>
+<a id="web-data-extractor" class="anchor" href="#web-data-extractor" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>web-data-extractor</h1>
 
 <p><a href="https://maven-badges.herokuapp.com/maven-central/im.nll.data/extractor/"><img src="https://maven-badges.herokuapp.com/maven-central/im.nll.data/extractor/badge.svg" alt="Maven Central"></a>
 <a href="https://travis-ci.org/fivesmallq/web-data-extractor"><img src="https://travis-ci.org/fivesmallq/web-data-extractor.svg" alt="Build Status"></a>
@@ -41,7 +41,7 @@
 </ul>
 
 <h3>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h3>
 
 <p>To add a dependency on Web-Data-Extractor using Maven, use the following:</p>
 
@@ -59,10 +59,10 @@
 </code></pre>
 
 <h2>
-<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h2>
 
 <h3>
-<a id="extract-single-data" class="anchor" href="#extract-single-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>extract single data</h3>
+<a id="extract-single-data" class="anchor" href="#extract-single-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>extract single data</h3>
 
 <div class="highlight highlight-source-java"><pre><span class="pl-smi">String</span> followers <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(baseHtml)
                    .extract(<span class="pl-k">new</span> <span class="pl-smi">SelectorExtractor</span>(<span class="pl-s"><span class="pl-pds">"</span>div.followers<span class="pl-pds">"</span></span>))
@@ -73,6 +73,13 @@
 
 <div class="highlight highlight-source-java"><pre><span class="pl-smi">String</span> followers <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(baseHtml)
                    .extract(selector(<span class="pl-s"><span class="pl-pds">"</span>div.followers<span class="pl-pds">"</span></span>))
+                   .with(regex(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>d+<span class="pl-pds">"</span></span>))
+                   .asString();</pre></div>
+
+<p>or short string</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">String</span> followers <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(baseHtml)
+                   .extract(<span class="pl-s"><span class="pl-pds">"</span>selector:div.followers<span class="pl-pds">"</span></span>))
                    .with(regex(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>d+<span class="pl-pds">"</span></span>))
                    .asString();</pre></div>
 
@@ -87,7 +94,7 @@
         <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(<span class="pl-s"><span class="pl-pds">"</span>from 2000<span class="pl-pds">"</span></span>, year);</pre></div>
 
 <h3>
-<a id="extract-data-to-map" class="anchor" href="#extract-data-to-map" aria-hidden="true"><span class="octicon octicon-link"></span></a>extract data to map</h3>
+<a id="extract-data-to-map" class="anchor" href="#extract-data-to-map" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>extract data to map</h3>
 
 <div class="highlight highlight-source-java"><pre>    @<span class="pl-smi">Test</span>
     <span class="pl-k">public</span> <span class="pl-k">void</span> testToMap() throws <span class="pl-smi">Exception</span> {
@@ -102,7 +109,7 @@
     }</pre></div>
 
 <h3>
-<a id="extract-data-to-map-list" class="anchor" href="#extract-data-to-map-list" aria-hidden="true"><span class="octicon octicon-link"></span></a>extract data to map list</h3>
+<a id="extract-data-to-map-list" class="anchor" href="#extract-data-to-map-list" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>extract data to map list</h3>
 
 <div class="highlight highlight-source-java"><pre>
     @<span class="pl-smi">Test</span>
@@ -123,7 +130,7 @@
     }</pre></div>
 
 <h3>
-<a id="extract-data-to-bean" class="anchor" href="#extract-data-to-bean" aria-hidden="true"><span class="octicon octicon-link"></span></a>extract data to bean</h3>
+<a id="extract-data-to-bean" class="anchor" href="#extract-data-to-bean" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>extract data to bean</h3>
 
 <div class="highlight highlight-source-java"><pre>    @<span class="pl-smi">Test</span>
     <span class="pl-k">public</span> <span class="pl-k">void</span> testToBean() throws <span class="pl-smi">Exception</span> {
@@ -138,7 +145,7 @@
     }</pre></div>
 
 <h3>
-<a id="extract-data-to-bean-list" class="anchor" href="#extract-data-to-bean-list" aria-hidden="true"><span class="octicon octicon-link"></span></a>extract data to bean list</h3>
+<a id="extract-data-to-bean-list" class="anchor" href="#extract-data-to-bean-list" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>extract data to bean list</h3>
 
 <div class="highlight highlight-source-java"><pre>    @<span class="pl-smi">Test</span>
     <span class="pl-k">public</span> <span class="pl-k">void</span> testToBeanList() throws <span class="pl-smi">Exception</span> {
