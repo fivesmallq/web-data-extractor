@@ -6,6 +6,7 @@ import im.nll.data.extractor.entity.EntityExtractor;
 import im.nll.data.extractor.entity.EntityListExtractor;
 import im.nll.data.extractor.impl.*;
 import im.nll.data.extractor.parser.ExtractorParser;
+import im.nll.data.extractor.rule.ExtractRule;
 import im.nll.data.extractor.utils.Logs;
 import im.nll.data.extractor.utils.Reflect;
 import im.nll.data.extractor.utils.Validate;
@@ -41,6 +42,18 @@ public class Extractors {
     public static Extractors on(String html) {
         return new Extractors(html);
     }
+
+    /**
+     * extract data by extract rule
+     *
+     * @param rule
+     * @return
+     */
+    public Extractors extract(ExtractRule rule) {
+        //TODO convert rule to extractor
+        return this;
+    }
+
 
     /**
      * extract data by extractor
