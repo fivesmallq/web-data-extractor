@@ -4,7 +4,7 @@
 [![codecov.io](http://codecov.io/github/fivesmallq/web-data-extractor/coverage.svg?branch=master)](http://codecov.io/github/fivesmallq/web-data-extractor?branch=master)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-Extracting structured data with Jquery Selector, XPath or JsonPath from common web format like HTML, XML and JSON.
+Extracting and parsing structured data with Jquery Selector, XPath or JsonPath from common web format like HTML, XML and JSON.
 
 Implements:
 
