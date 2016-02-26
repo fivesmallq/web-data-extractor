@@ -7,8 +7,14 @@ import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.exception.ExtractException;
 import im.nll.data.extractor.utils.Logs;
 import im.nll.data.extractor.utils.XmlUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.htmlcleaner.CleanerProperties;
+import org.htmlcleaner.DomSerializer;
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.TagNode;
 import org.jdom2.*;
 import org.jdom2.filter.Filters;
+import org.jdom2.input.DOMBuilder;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
@@ -16,6 +22,7 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 import org.slf4j.Logger;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.StringReader;
 import java.util.List;
 
@@ -29,6 +36,7 @@ public class XPathExtractor implements ListableExtractor {
     private static final Logger LOGGER = Logs.get();
     private String xpath;
     private boolean removeNamespace = false;
+    private boolean fixhtml = false;
     List<Namespace> namespaces = Lists.newArrayList();
 
     public XPathExtractor(String xpath) {
@@ -36,7 +44,7 @@ public class XPathExtractor implements ListableExtractor {
     }
 
     /**
-     * keep xml name space
+     * remove xml namespace
      *
      * @return
      */
@@ -46,12 +54,22 @@ public class XPathExtractor implements ListableExtractor {
     }
 
     /**
-     * keep xml name space
+     * register xml namespace
      *
      * @return
      */
     public XPathExtractor registerNamespace(String prefix, String url) {
         this.namespaces.add(Namespace.getNamespace(prefix, url));
+        return this;
+    }
+
+    /**
+     * fix html to standard xml<p><font color=red>WARN: this option will change attribute order. </font></p>
+     *
+     * @return
+     */
+    public XPathExtractor fixhtml() {
+        this.fixhtml = true;
         return this;
     }
 
@@ -87,15 +105,47 @@ public class XPathExtractor implements ListableExtractor {
     }
 
     private Document createDom(String data) {
-        SAXBuilder sax = new SAXBuilder();
-        try {
-            if (removeNamespace) {
-                data = XmlUtils.removeNamespace(data);
+        // clean html use htmlcleaner
+        if (fixhtml) {
+            HtmlCleaner cleaner = new HtmlCleaner();
+            CleanerProperties props = cleaner.getProperties();
+            props.setUseCdataForScriptAndStyle(false);
+            props.setRecognizeUnicodeChars(true);
+            props.setUseEmptyElementTags(true);
+            props.setAdvancedXmlEscape(true);
+            props.setTranslateSpecialEntities(false);
+            props.setBooleanAttributeValues("empty");
+            props.setAllowHtmlInsideAttributes(true);
+            props.setPruneTags("script,style");
+
+            try {
+                if (removeNamespace) {
+                    data = XmlUtils.removeNamespace(data);
+                }
+                TagNode tagNode = cleaner.clean(data);
+                org.w3c.dom.Document doc = null;
+                try {
+                    doc = new DomSerializer(props, false).createDOM(tagNode);
+                } catch (ParserConfigurationException e) {
+                    LOGGER.error("conver dom error!", e);
+                }
+                DOMBuilder in = new DOMBuilder();
+                Document jdomDoc = in.build(doc);
+                return jdomDoc;
+            } catch (Exception e) {
+                throw new ExtractException(e);
             }
-            Document doc = sax.build(new StringReader(data));
-            return doc;
-        } catch (Exception e) {
-            throw new ExtractException(e);
+        } else {
+            SAXBuilder sax = new SAXBuilder();
+            try {
+                if (removeNamespace) {
+                    data = XmlUtils.removeNamespace(data);
+                }
+                Document doc = sax.build(new StringReader(data));
+                return doc;
+            } catch (Exception e) {
+                throw new ExtractException(e);
+            }
         }
     }
 
@@ -113,14 +163,14 @@ public class XPathExtractor implements ListableExtractor {
     private String wrap(Object text) {
         if (text != null) {
             if (text instanceof Attribute) {
-                return ((Attribute) text).getValue();
+                return StringEscapeUtils.unescapeHtml4(((Attribute) text).getValue());
             } else if (text instanceof Content) {
                 XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
                 if (text instanceof Element) {
-                    return xout.outputString((Element) text);
+                    return StringEscapeUtils.unescapeHtml4(xout.outputString((Element) text));
                 }
                 if (text instanceof Text) {
-                    return xout.outputString((Text) text);
+                    return StringEscapeUtils.unescapeHtml4(xout.outputString((Text) text));
                 }
             } else {
                 LOGGER.error("unsupported document type", text.getClass());

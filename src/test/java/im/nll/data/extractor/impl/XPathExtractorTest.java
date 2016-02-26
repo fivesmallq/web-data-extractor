@@ -25,7 +25,16 @@ public class XPathExtractorTest {
     public void setUp() throws Exception {
         baseHtml = Resources.toString(Resources.getResource("base.html"), Charsets.UTF_8);
         base2Html = Resources.toString(Resources.getResource("base2.html"), Charsets.UTF_8);
+        base3Html = Resources.toString(Resources.getResource("base3.html"), Charsets.UTF_8);
         base4Html = Resources.toString(Resources.getResource("demo4.xml"), Charsets.UTF_8);
+    }
+
+
+    @Test
+    public void testOwnText() {
+        xPathExtractor = new XPathExtractor("//div[@class='contents']/div[1]/div[1]/text()").fixhtml();
+        String s = xPathExtractor.extract(base3Html);
+        Assert.assertEquals("&nbsp;  2013&nbsp;", s);
     }
 
     @Test(expected = ExtractException.class)
@@ -65,7 +74,7 @@ public class XPathExtractorTest {
     public void testExtractParseError() throws Exception {
         //attribute
         xPathExtractor = new XPathExtractor("//div/a[1]/@href");
-        //FIXME parse not standard html error.
+        // parse not standard xml error without fixhtml.
         String s = xPathExtractor.extract(base2Html);
         Assert.assertEquals("/fivesmallq", s);
         //element
@@ -74,6 +83,23 @@ public class XPathExtractorTest {
         Assert.assertEquals("<a href=\"/fivesmallq\" class=\"title\">fivesmallq</a>", s);
         //text
         xPathExtractor = new XPathExtractor("//div/a[1]/text()");
+        s = xPathExtractor.extract(baseHtml);
+        Assert.assertEquals("fivesmallq", s);
+    }
+
+    @Test
+    public void testFixhtml() throws Exception {
+        //attribute
+        xPathExtractor = new XPathExtractor("//div/a[1]/@href").fixhtml();
+        String s = xPathExtractor.extract(base2Html);
+        Assert.assertEquals("http://chat.stackoverflow.com", s);
+        //element
+        xPathExtractor = new XPathExtractor("//div/a[1]").fixhtml();
+        s = xPathExtractor.extract(baseHtml);
+        //XXX fixhtml option has changed the order of attributes.
+        Assert.assertEquals("<a class=\"title\" href=\"/fivesmallq\">fivesmallq</a>", s);
+        //text
+        xPathExtractor = new XPathExtractor("//div/a[1]/text()").fixhtml();
         s = xPathExtractor.extract(baseHtml);
         Assert.assertEquals("fivesmallq", s);
     }
