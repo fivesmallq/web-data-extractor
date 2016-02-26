@@ -34,7 +34,7 @@ public class XPathExtractorTest {
     public void testOwnText() {
         xPathExtractor = new XPathExtractor("//div[@class='contents']/div[1]/div[1]/text()").fixhtml();
         String s = xPathExtractor.extract(base3Html);
-        Assert.assertEquals("&nbsp;  2013&nbsp;", s);
+        Assert.assertEquals("&nbsp; 2013&nbsp;", s);
     }
 
     @Test(expected = ExtractException.class)
