@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * 注解类扫描工具.
  *
- * @author <a href="mailto:wuzhiqiang@ucfgroup.com">wuzq</a>
+ * @author <a href="mailto:fivesmallq@gmail.com">fivesmallq</a>
  * @version Revision: 1.5
  * @date 2013-6-8上午10:41:53
  */

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 集合操作工具类.
  *
- * @author <a href="mailto:wuzhiqiang@ucfgroup.com">wuzq</a>
+ * @author <a href="mailto:fivesmallq@gmail.com">fivesmallq</a>
  * @version Revision: 1.1
  * @date 2013-1-19下午12:39:15
  */
