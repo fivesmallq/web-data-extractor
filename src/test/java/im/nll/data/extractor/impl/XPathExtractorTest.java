@@ -23,9 +23,9 @@ public class XPathExtractorTest {
 
     @Before
     public void setUp() throws Exception {
-        baseHtml = Resources.toString(Resources.getResource("base.html"), Charsets.UTF_8);
-        base2Html = Resources.toString(Resources.getResource("base2.html"), Charsets.UTF_8);
-        base3Html = Resources.toString(Resources.getResource("base3.html"), Charsets.UTF_8);
+        baseHtml = Resources.toString(Resources.getResource("demo1.html"), Charsets.UTF_8);
+        base2Html = Resources.toString(Resources.getResource("demo2.html"), Charsets.UTF_8);
+        base3Html = Resources.toString(Resources.getResource("demo3.html"), Charsets.UTF_8);
         base4Html = Resources.toString(Resources.getResource("demo4.xml"), Charsets.UTF_8);
     }
 

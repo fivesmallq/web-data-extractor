@@ -19,7 +19,7 @@ public class HtmlCleanerExtractorTest {
 
     @Before
     public void setUp() throws Exception {
-        baseHtml = Resources.toString(Resources.getResource("base.html"), Charsets.UTF_8);
+        baseHtml = Resources.toString(Resources.getResource("demo1.html"), Charsets.UTF_8);
     }
 
     @Test

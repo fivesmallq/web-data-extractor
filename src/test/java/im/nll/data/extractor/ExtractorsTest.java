@@ -28,7 +28,7 @@ public class ExtractorsTest {
     @Before
     public void before() {
         try {
-            baseHtml = Resources.toString(Resources.getResource("base.html"), Charsets.UTF_8);
+            baseHtml = Resources.toString(Resources.getResource("demo1.html"), Charsets.UTF_8);
             base4Html = Resources.toString(Resources.getResource("demo4.xml"), Charsets.UTF_8);
             listHtml = Resources.toString(Resources.getResource("list.html"), Charsets.UTF_8);
             jsonString = Resources.toString(Resources.getResource("example.json"), Charsets.UTF_8);
