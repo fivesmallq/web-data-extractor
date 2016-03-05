@@ -42,7 +42,7 @@ public class SelectorExtractorTest {
 
     @Test
     public void testExtractHtml() throws Exception {
-        selectorExtractor = new SelectorExtractor("tr,1,html");
+        selectorExtractor = new SelectorExtractor("tr:nth-child(2).html");
         String title = selectorExtractor.extract(html);
         Assert.assertEquals("<th>type</th> \n" +
                 "<th>name</th> \n" +

@@ -46,13 +46,19 @@ public class SelectorExtractor implements ListableExtractor {
     private String outType = "text";
 
     public SelectorExtractor(String query) {
-        String[] stringList = query.split("(?<!\\\\),");
-        this.query = stringList[0].replace("\\,", ",");
-        if (stringList.length > 1 && StringUtils.isNotNullOrEmpty(stringList[1])) {
-            this.eq = StringUtils.tryParseInt(stringList[1].replace("\\,", ","), 0);
+        this.query = query;
+        String outType = StringUtils.substringAfterLast(query, ".");
+        if (outType.equalsIgnoreCase(TYPE_TEXT)) {
+            this.query = StringUtils.substringBeforeLast(query, ".text");
+            this.outType = TYPE_TEXT;
         }
-        if (stringList.length > 2 && StringUtils.isNotNullOrEmpty(stringList[2])) {
-            this.outType = stringList[2].replace("\\,", ",");
+        if (outType.equalsIgnoreCase(TYPE_HTML)) {
+            this.query = StringUtils.substringBeforeLast(query, ".html");
+            this.outType = TYPE_HTML;
+        }
+        if (outType.matches("attr\\(\\S+\\)")) {
+            this.query = StringUtils.substringBeforeLast(query, "." + outType);
+            this.outType = StringUtils.substringBetween(outType, "(", ")");
         }
     }
 
