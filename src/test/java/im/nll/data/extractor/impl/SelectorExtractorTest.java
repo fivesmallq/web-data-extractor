@@ -29,7 +29,7 @@ public class SelectorExtractorTest {
 
     @Test
     public void testExtractEscaped() throws Exception {
-        selectorExtractor = new SelectorExtractor("th:contains(hello\\,w),0,html");
+        selectorExtractor = new SelectorExtractor("th:contains(hello,w):nth-child(2).html");
         String title = selectorExtractor.extract(html);
         Assert.assertEquals("hello,world", title);
     }
