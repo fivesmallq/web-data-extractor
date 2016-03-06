@@ -15,13 +15,14 @@ import java.util.List;
 import static jodd.jerry.Jerry.jerry;
 
 /**
- * jquery selector impl by jerry
+ * jquery selector impl by jerry. please use {@link SelectorExtractor}
  *
  * @author <a href="mailto:fivesmallq@gmail.com">fivesmallq</a>
  * @version Revision: 1.0
  * @date 16/1/8 下午4:17
  */
 @Name("jerry")
+@Deprecated
 public class JerryExtractor implements ListableExtractor {
     private final static String TYPE_TEXT = "text";
     private final static String TYPE_HTML = "html";

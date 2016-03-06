@@ -89,7 +89,7 @@ public class ExtractorsTest {
 
     @Test
     public void testAsStringMapList() throws Exception {
-        String result = Extractors.on(listHtml).split(jerry("tr.item.html"))
+        String result = Extractors.on(listHtml).split(selector("tr.item.html"))
                 .extract("type", selector("td.type"))
                 .extract("name", selector("td.name"))
                 .extract("url", selector("td.url")).asString();
@@ -114,7 +114,7 @@ public class ExtractorsTest {
 
     @Test
     public void testToMapList() throws Exception {
-        List<Map<String, String>> languages = Extractors.on(listHtml).split(jerry("tr.item.html"))
+        List<Map<String, String>> languages = Extractors.on(listHtml).split(selector("tr.item.html"))
                 .extract("type", selector("td.type"))
                 .extract("name", selector("td.name"))
                 .extract("url", selector("td.url"))
@@ -144,7 +144,7 @@ public class ExtractorsTest {
 
     @Test
     public void testToBeanList() throws Exception {
-        List<Language> languages = Extractors.on(listHtml).split(jerry("tr.item.html"))
+        List<Language> languages = Extractors.on(listHtml).split(selector("tr.item.html"))
                 .extract("type", selector("td.type"))
                 .extract("name", selector("td.name"))
                 .extract("url", selector("td.url"))

@@ -363,11 +363,12 @@ public class Extractors {
     }
 
     /**
-     * return a jerry extractor.
+     * return a jerry extractor. please use {@link Extractors#selector(String)}
      *
      * @param query
      * @return
      */
+    @Deprecated
     public static JerryExtractor jerry(String query) {
         return new JerryExtractor(query);
     }
