@@ -16,7 +16,7 @@ public class ExtractRule {
         this.extractor = extractor;
     }
 
-    public static ExtractRule newRule(String field, String extractor) {
+    public static ExtractRule of(String field, String extractor) {
         return new ExtractRule(field, extractor);
     }
 

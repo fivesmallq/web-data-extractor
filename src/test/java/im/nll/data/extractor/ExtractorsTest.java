@@ -81,7 +81,7 @@ public class ExtractorsTest {
     @Test
     public void testExtractByRule() throws Exception {
         String result = Extractors.on(baseHtml)
-                .extract(ExtractRule.newRule("title", "selector:a.title"))
+                .extract(ExtractRule.of("title", "selector:a.title"))
                 .asString();
         Assert.assertEquals("{title=fivesmallq}", result);
     }
