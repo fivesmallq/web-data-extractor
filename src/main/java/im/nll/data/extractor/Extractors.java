@@ -50,7 +50,7 @@ public class Extractors {
      * @return
      */
     public Extractors extract(ExtractRule rule) {
-        //TODO convert rule to extractor
+        extract(rule.getField(), rule.getExtractor());
         return this;
     }
 

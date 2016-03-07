@@ -3,6 +3,7 @@ package im.nll.data.extractor;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import im.nll.data.extractor.entity.*;
+import im.nll.data.extractor.rule.ExtractRule;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,6 +74,14 @@ public class ExtractorsTest {
     public void testAsStringWithName() throws Exception {
         String result = Extractors.on(baseHtml)
                 .extract("title", selector("a.title"))
+                .asString();
+        Assert.assertEquals("{title=fivesmallq}", result);
+    }
+
+    @Test
+    public void testExtractByRule() throws Exception {
+        String result = Extractors.on(baseHtml)
+                .extract(ExtractRule.newRule("title", "selector:a.title"))
                 .asString();
         Assert.assertEquals("{title=fivesmallq}", result);
     }
@@ -307,6 +316,7 @@ public class ExtractorsTest {
         Assert.assertEquals(second.getTitle(), "Sword of Honour");
         Assert.assertEquals(second.getPrice(), new Double(12.99));
     }
+
 
     @Test(expected = IllegalArgumentException.class)
     public void testSplit() {

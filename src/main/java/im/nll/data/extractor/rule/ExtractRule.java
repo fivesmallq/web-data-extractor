@@ -11,6 +11,15 @@ public class ExtractRule {
     private String field;
     private String extractor;
 
+    public ExtractRule(String field, String extractor) {
+        this.field = field;
+        this.extractor = extractor;
+    }
+
+    public static ExtractRule newRule(String field, String extractor) {
+        return new ExtractRule(field, extractor);
+    }
+
     public String getField() {
         return field;
     }
