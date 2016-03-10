@@ -87,6 +87,18 @@ public class ExtractorsTest {
     }
 
     @Test
+    public void testExtractByMoreExtractor() throws Exception {
+        String result = Extractors.on(baseHtml)
+                .extract("title", selector("a.title"))
+                //extract support multiple extractor
+                .extract("followers", selector("div.followers"), (regex("\\d+")))
+                .extract("description", selector("div.description"))
+                .asString();
+        Assert.assertEquals("{title=fivesmallq, followers=29671, description=Talk is cheap. Show me the code.}", result);
+    }
+
+
+    @Test
     public void testAsStringMap() throws Exception {
         String result = Extractors.on(baseHtml)
                 .extract("title", selector("a.title"))

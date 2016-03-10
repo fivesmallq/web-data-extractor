@@ -12,6 +12,7 @@ import im.nll.data.extractor.utils.Reflect;
 import im.nll.data.extractor.utils.Validate;
 import org.slf4j.Logger;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -73,9 +74,9 @@ public class Extractors {
      * @param extractor
      * @return
      */
-    public Extractors extract(String field, Extractor extractor) {
+    public Extractors extract(String field, Extractor... extractor) {
         List<Extractor> extractors = extractorsMap.getOrDefault(field, Lists.newLinkedList());
-        extractors.add(extractor);
+        Collections.addAll(extractors, extractor);
         extractorsMap.put(field, extractors);
         this.prevField = field;
         return this;
@@ -208,7 +209,7 @@ public class Extractors {
     }
 
     /**
-     * extract data as a map. key set by {@link #extract(String, Extractor)}
+     * extract data as a map. key set by {@link #extract(String, Extractor...)}}
      *
      * @return
      */
@@ -218,7 +219,7 @@ public class Extractors {
 
 
     /**
-     * extract data to a map list. key set by {@link #extract(String, Extractor)}
+     * extract data to a map list. key set by {@link #extract(String, Extractor...)}}
      * must split html by {@link #split(Extractor)} before asMapList.
      *
      * @return
@@ -233,7 +234,7 @@ public class Extractors {
     }
 
     /**
-     * convert extract data to bean. field name set by {@link #extract(String, Extractor)}
+     * convert extract data to bean. field name set by {@link #extract(String, Extractor...)}}
      *
      * @return
      */
@@ -242,7 +243,7 @@ public class Extractors {
     }
 
     /**
-     * extract data as a bean list. field name set by {@link #extract(String, Extractor)}
+     * extract data as a bean list. field name set by {@link #extract(String, Extractor...)}}
      * must split html by {@link #split(Extractor)} before call this method.
      *
      * @return
