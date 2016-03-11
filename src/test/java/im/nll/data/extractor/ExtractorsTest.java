@@ -6,6 +6,7 @@ import im.nll.data.extractor.entity.*;
 import im.nll.data.extractor.rule.ExtractRule;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class ExtractorsTest {
     private String baseHtml;
     private String base4Html;
     private String listHtml;
+    private String listHtml2;
     private String jsonString;
 
 
@@ -32,6 +34,7 @@ public class ExtractorsTest {
             baseHtml = Resources.toString(Resources.getResource("demo1.html"), Charsets.UTF_8);
             base4Html = Resources.toString(Resources.getResource("demo4.xml"), Charsets.UTF_8);
             listHtml = Resources.toString(Resources.getResource("list.html"), Charsets.UTF_8);
+            listHtml2 = Resources.toString(Resources.getResource("list2.html"), Charsets.UTF_8);
             jsonString = Resources.toString(Resources.getResource("example.json"), Charsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
@@ -178,6 +181,60 @@ public class ExtractorsTest {
         Assert.assertEquals(second.getUrl(), "https://www.ruby-lang.org");
     }
 
+    @Test
+    @Ignore
+    public void testToBeanListString() throws Exception {
+        //TODO bean class can't be primitive class
+        List<String> languages = Extractors.on(listHtml2).split(selector("a.h4.attr(href)"))
+                .asBeanList(String.class);
+        Assert.assertNotNull(languages);
+        String second = languages.get(1);
+        Assert.assertEquals(languages.size(), 10);
+        Assert.assertEquals(second, "http://infect.dxy.cn/article/486796");
+    }
+
+    @Test
+    public void testAsListString() throws Exception {
+        List<String> languages = Extractors.on(listHtml2).split(selector("a.h4.attr(href)")).asStringList();
+        Assert.assertNotNull(languages);
+        String second = languages.get(1);
+        Assert.assertEquals(languages.size(), 10);
+        Assert.assertEquals(second, "http://infect.dxy.cn/article/486796");
+    }
+
+
+    @Test
+    public void testAsStringList2() throws Exception {
+        List<String> languages = Extractors.on(listHtml).split(selector("tr.item.html"))
+                .extract("type", selector("td.type"))
+                .extract("name", selector("td.name"))
+                .extract("url", selector("td.url"))
+                .asStringList();
+        Assert.assertNotNull(languages);
+        String second = languages.get(1);
+        Assert.assertEquals(second, "static,Java,https://www.java.com");
+    }
+
+    @Test
+    public void testAsStringListWithSeparator() throws Exception {
+        List<String> languages = Extractors.on(listHtml).split(selector("tr.item.html"))
+                .extract("type", selector("td.type"))
+                .extract("name", selector("td.name"))
+                .extract("url", selector("td.url"))
+                .asStringList("||");
+        Assert.assertNotNull(languages);
+        String second = languages.get(1);
+        Assert.assertEquals(second, "static||Java||https://www.java.com");
+    }
+
+    @Test
+    public void testAsStringList() throws Exception {
+        List<String> languages = Extractors.on(listHtml2).split(selector("a.h4.attr(href)")).asStringList();
+        Assert.assertNotNull(languages);
+        String second = languages.get(1);
+        Assert.assertEquals(languages.size(), 10);
+        Assert.assertEquals(second, "http://infect.dxy.cn/article/486796");
+    }
 
     @Test
     public void testToBeanListByJerryString() throws Exception {

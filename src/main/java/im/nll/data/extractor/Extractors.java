@@ -209,6 +209,45 @@ public class Extractors {
     }
 
     /**
+     * extract data as string list
+     *
+     * @return
+     */
+    public List<String> asStringList(String separator) {
+        List<String> stringList = Lists.newLinkedList();
+        for (String input : htmlList) {
+            if (extractorsMap == null || extractorsMap.isEmpty()) {
+                stringList.add(input);
+            } else {
+                StringBuffer stringBuffer = new StringBuffer();
+                for (Map.Entry<String, List<Extractor>> one : extractorsMap.entrySet()) {
+                    String name = one.getKey();
+                    List<Extractor> extractors = one.getValue();
+                    String result = html;
+                    for (Extractor extractor : extractors) {
+                        result = extractor.extract(result);
+                    }
+                    result = filter(name, result);
+                    stringBuffer.append(result).append(separator);
+                }
+                int length = stringBuffer.length();
+                stringBuffer.delete(length - separator.length(), length);
+                stringList.add(stringBuffer.toString());
+            }
+        }
+        return stringList;
+    }
+
+    /**
+     * extract data as string list, default separator is ','
+     *
+     * @return
+     */
+    public List<String> asStringList() {
+        return asStringList(",");
+    }
+
+    /**
      * extract data as a map. key set by {@link #extract(String, Extractor...)}}
      *
      * @return
