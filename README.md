@@ -98,7 +98,7 @@ more method
     public void testToMapList() throws Exception {
         //split param must implements ListableExtractor
         List<Map<String, String>> languages = Extractors.on(listHtml)
-            .split(jerry("tr.item.html"))
+            .split(selector("tr.item.html"))
                 .extract("type", selector("td.type"))
                 .extract("name", selector("td.name"))
                 .extract("url", selector("td.url"))
@@ -135,7 +135,7 @@ more method
     @Test
     public void testToBeanList() throws Exception {
         List<Language> languages = Extractors.on(listHtml)
-            .split(jerry("tr.item.html"))
+            .split(selector("tr.item.html"))
                 .extract("type", selector("td.type"))
                 .extract("name", selector("td.name"))
                 .extract("url", selector("td.url"))
