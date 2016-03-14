@@ -104,6 +104,28 @@ public class Extractors {
     }
 
     /**
+     * extract data by field and extractor string map.
+     * <p>
+     * current support:
+     * <li>xpath : {@link XPathExtractor}</li>
+     * <li>jerry : {@link JerryExtractor}</li>
+     * <li>regex : {@link RegexExtractor}</li>
+     * <li>string : {@link StringRangeExtractor}</li>
+     * <li>json:{@link JSONPathExtractor} </li>
+     * </p>
+     *
+     * @param extractors
+     * @return
+     */
+    public Extractors extract(Map<String, String> extractors) {
+        for (Map.Entry<String, String> one : extractors.entrySet()) {
+            Extractor extractor = ExtractorParser.parse(one.getValue());
+            extract(one.getKey(), extractor);
+        }
+        return this;
+    }
+
+    /**
      * extract data by extractor and set to prev field.
      *
      * @param extractor

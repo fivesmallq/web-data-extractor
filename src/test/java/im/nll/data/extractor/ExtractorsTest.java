@@ -1,6 +1,7 @@
 package im.nll.data.extractor;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
 import im.nll.data.extractor.entity.*;
 import im.nll.data.extractor.rule.ExtractRule;
@@ -172,6 +173,23 @@ public class ExtractorsTest {
                 .extract("type", selector("td.type"))
                 .extract("name", selector("td.name"))
                 .extract("url", selector("td.url"))
+                .asBeanList(Language.class);
+        Assert.assertNotNull(languages);
+        Language second = languages.get(1);
+        Assert.assertEquals(languages.size(), 3);
+        Assert.assertEquals(second.getType(), "dynamic");
+        Assert.assertEquals(second.getName(), "Ruby");
+        Assert.assertEquals(second.getUrl(), "https://www.ruby-lang.org");
+    }
+
+    @Test
+    public void testExtractByMapToBeanList() throws Exception {
+        Map<String, String> config = Maps.newHashMap();
+        config.put("type", "selector:td.type");
+        config.put("name", "selector:td.name");
+        config.put("url", "selector:td.url");
+        List<Language> languages = Extractors.on(listHtml).split(selector("tr.item.html"))
+                .extract(config)
                 .asBeanList(Language.class);
         Assert.assertNotNull(languages);
         Language second = languages.get(1);
