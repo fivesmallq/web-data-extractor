@@ -2,6 +2,7 @@ package im.nll.data.extractor;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.jayway.jsonpath.JsonPath;
 import im.nll.data.extractor.entity.EntityExtractor;
 import im.nll.data.extractor.entity.EntityListExtractor;
 import im.nll.data.extractor.impl.*;
@@ -242,6 +243,29 @@ public class Extractors {
                 result = asMapList().toString();
             } else {
                 result = asMap().toString();
+            }
+        } else {
+            for (Extractor extractor : extractors) {
+                result = extractor.extract(result);
+            }
+            result = filter(DEFAULT_FIELD, result);
+        }
+        return result;
+    }
+
+    /**
+     * extract data as string
+     *
+     * @return
+     */
+    public String asJSONString() {
+        String result = html;
+        List<Extractor> extractors = extractorsMap.get(DEFAULT_FIELD);
+        if (extractors == null) {
+            if (htmlList != null) {
+                result = JsonPath.parse(asMapList()).jsonString();
+            } else {
+                result = JsonPath.parse(asMap()).jsonString();
             }
         } else {
             for (Extractor extractor : extractors) {

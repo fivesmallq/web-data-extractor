@@ -125,6 +125,48 @@ public class ExtractorsTest {
     }
 
     @Test
+    public void testAsJSONStringNoName() throws Exception {
+        String result = Extractors.on(baseHtml)
+                .extract(selector("a.title"))
+                .asJSONString();
+        Assert.assertEquals("fivesmallq", result);
+        result = Extractors.on(baseHtml)
+                .extract(selector("a.title")).extract(selector("*"))
+                .asJSONString();
+        Assert.assertEquals("fivesmallq", result);
+    }
+
+    @Test
+    public void testAsJSONStringWithName() throws Exception {
+        String result = Extractors.on(baseHtml)
+                .extract("title", selector("a.title"))
+                .asJSONString();
+        Assert.assertEquals("{\"title\":\"fivesmallq\"}", result);
+    }
+
+    @Test
+    public void testAsJSONStringMap() throws Exception {
+        String result = Extractors.on(baseHtml)
+                .extract("title", selector("a.title"))
+                .extract("followers", selector("div.followers")).with(regex("\\d+"))
+                .extract("description", selector("div.description"))
+                .asJSONString();
+        Assert.assertEquals("{\"title\":\"fivesmallq\",\"followers\":\"29671\",\"description\":\"Talk is cheap. Show me the code.\"}", result);
+    }
+
+    @Test
+    public void testAsJSONStringMapList() throws Exception {
+        String result = Extractors.on(listHtml).split(selector("tr.item.html"))
+                .extract("type", selector("td.type"))
+                .extract("name", selector("td.name"))
+                .extract("url", selector("td.url")).asJSONString();
+        Assert.assertEquals("" +
+                "[{\"type\":\"static\",\"name\":\"Java\",\"url\":\"https://www.java.com\"}," +
+                "{\"type\":\"dynamic\",\"name\":\"Ruby\",\"url\":\"https://www.ruby-lang.org\"}," +
+                "{\"type\":\"dynamic\",\"name\":\"Python\",\"url\":\"https://www.python.org\"}]", result);
+    }
+
+    @Test
     public void testToMap() throws Exception {
         Map<String, String> dataMap = Extractors.on(baseHtml)
                 .extract("title", selector("a.title"))
