@@ -126,6 +126,28 @@ public class Extractors {
     }
 
     /**
+     * extract data by extract rule list.
+     * <p>
+     * current support:
+     * <li>xpath : {@link XPathExtractor}</li>
+     * <li>jerry : {@link JerryExtractor}</li>
+     * <li>regex : {@link RegexExtractor}</li>
+     * <li>string : {@link StringRangeExtractor}</li>
+     * <li>json:{@link JSONPathExtractor} </li>
+     * </p>
+     *
+     * @param extractRules
+     * @return
+     */
+    public Extractors extract(List<ExtractRule> extractRules) {
+        for (ExtractRule one : extractRules) {
+            Extractor extractor = ExtractorParser.parse(one.getExtractor());
+            extract(one.getField(), extractor);
+        }
+        return this;
+    }
+
+    /**
      * extract data by extractor and set to prev field.
      *
      * @param extractor
@@ -237,25 +259,30 @@ public class Extractors {
      */
     public List<String> asStringList(String separator) {
         List<String> stringList = Lists.newLinkedList();
-        for (String input : htmlList) {
-            if (extractorsMap == null || extractorsMap.isEmpty()) {
-                stringList.add(input);
-            } else {
-                StringBuffer stringBuffer = new StringBuffer();
-                for (Map.Entry<String, List<Extractor>> one : extractorsMap.entrySet()) {
-                    String name = one.getKey();
-                    List<Extractor> extractors = one.getValue();
-                    String result = html;
-                    for (Extractor extractor : extractors) {
-                        result = extractor.extract(result);
+        if (htmlList != null) {
+            for (String input : htmlList) {
+                if (extractorsMap == null || extractorsMap.isEmpty()) {
+                    stringList.add(input);
+                } else {
+                    StringBuffer stringBuffer = new StringBuffer();
+                    for (Map.Entry<String, List<Extractor>> one : extractorsMap.entrySet()) {
+                        String name = one.getKey();
+                        List<Extractor> extractors = one.getValue();
+                        String result = html;
+                        for (Extractor extractor : extractors) {
+                            result = extractor.extract(result);
+                        }
+                        result = filter(name, result);
+                        stringBuffer.append(result).append(separator);
                     }
-                    result = filter(name, result);
-                    stringBuffer.append(result).append(separator);
+                    int length = stringBuffer.length();
+                    stringBuffer.delete(length - separator.length(), length);
+                    stringList.add(stringBuffer.toString());
                 }
-                int length = stringBuffer.length();
-                stringBuffer.delete(length - separator.length(), length);
-                stringList.add(stringBuffer.toString());
             }
+        } else {
+            String result = asMap().toString();
+            stringList.add(result);
         }
         return stringList;
     }
