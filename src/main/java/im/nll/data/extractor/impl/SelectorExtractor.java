@@ -1,6 +1,5 @@
 package im.nll.data.extractor.impl;
 
-import com.google.common.collect.Lists;
 import im.nll.data.extractor.ListableExtractor;
 import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.utils.StringUtils;
@@ -10,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -82,7 +82,7 @@ public class SelectorExtractor implements ListableExtractor {
 
     @Override
     public List<String> extractList(String content) {
-        List<String> strings = Lists.newArrayList();
+        List<String> strings = new LinkedList<>();
         Document document = Jsoup.parse(content, "", Parser.xmlParser());
         Elements elements = document.select(query);
         for (Element element : elements) {

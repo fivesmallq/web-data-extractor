@@ -1,7 +1,5 @@
 package im.nll.data.extractor.impl;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import im.nll.data.extractor.ListableExtractor;
 import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.exception.ExtractException;
@@ -24,6 +22,9 @@ import org.slf4j.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class XPathExtractor implements ListableExtractor {
     private String xpath;
     private boolean removeNamespace = false;
     private boolean fixhtml = false;
-    List<Namespace> namespaces = Lists.newArrayList();
+    List<Namespace> namespaces = new ArrayList<>();
 
     public XPathExtractor(String xpath) {
         this.xpath = xpath;
@@ -89,7 +90,7 @@ public class XPathExtractor implements ListableExtractor {
 
     @Override
     public List<String> extractList(String data) {
-        List<String> stringList = Lists.newLinkedList();
+        List<String> stringList = new LinkedList<>();
         try {
             Document doc = createDom(data);
             XPathExpression xp = createXpathExpression();
@@ -155,7 +156,7 @@ public class XPathExtractor implements ListableExtractor {
         if (namespaces.isEmpty()) {
             xp = xpfac.compile(xpath, Filters.fpassthrough());
         } else {
-            xp = xpfac.compile(xpath, Filters.fpassthrough(), Maps.newLinkedHashMap(), namespaces.toArray(new Namespace[namespaces.size()]));
+            xp = xpfac.compile(xpath, Filters.fpassthrough(), new LinkedHashMap<String, Object>(), namespaces.toArray(new Namespace[namespaces.size()]));
         }
         return xp;
     }

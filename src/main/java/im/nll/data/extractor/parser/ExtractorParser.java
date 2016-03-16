@@ -1,6 +1,5 @@
 package im.nll.data.extractor.parser;
 
-import com.google.common.collect.Maps;
 import im.nll.data.extractor.Extractor;
 import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.exception.ParseException;
@@ -10,6 +9,7 @@ import im.nll.data.extractor.utils.Reflect;
 import im.nll.data.extractor.utils.StringUtils;
 import org.slf4j.Logger;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,7 +22,7 @@ import java.util.Set;
  */
 public class ExtractorParser {
     private static Logger LOGGER = Logs.get();
-    private static Map<String, Class<? extends Extractor>> extractorMap = Maps.newHashMap();
+    private static Map<String, Class<? extends Extractor>> extractorMap = new HashMap<>();
     private static final String SPLIT_CHAR = ":";
 
     static {

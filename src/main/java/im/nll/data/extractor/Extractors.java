@@ -1,7 +1,5 @@
 package im.nll.data.extractor;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.jayway.jsonpath.JsonPath;
 import im.nll.data.extractor.entity.EntityExtractor;
 import im.nll.data.extractor.entity.EntityListExtractor;
@@ -13,9 +11,7 @@ import im.nll.data.extractor.utils.Reflect;
 import im.nll.data.extractor.utils.Validate;
 import org.slf4j.Logger;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author <a href="mailto:fivesmallq@gmail.com">fivesmallq</a>
@@ -27,8 +23,8 @@ public class Extractors {
     private static final String DEFAULT_FIELD = "_default_field_";
     private String html;
     private List<String> htmlList;
-    private Map<String, List<Extractor>> extractorsMap = Maps.newLinkedHashMap();
-    private Map<String, List<Filter>> filtersMap = Maps.newLinkedHashMap();
+    private Map<String, List<Extractor>> extractorsMap = new LinkedHashMap<>();
+    private Map<String, List<Filter>> filtersMap = new LinkedHashMap();
     private String prevField;
 
     public Extractors(String html) {
@@ -76,7 +72,7 @@ public class Extractors {
      * @return
      */
     public Extractors extract(String field, Extractor... extractor) {
-        List<Extractor> extractors = extractorsMap.getOrDefault(field, Lists.newLinkedList());
+        List<Extractor> extractors = extractorsMap.getOrDefault(field, new LinkedList<>());
         Collections.addAll(extractors, extractor);
         extractorsMap.put(field, extractors);
         this.prevField = field;
@@ -156,7 +152,7 @@ public class Extractors {
      */
     public Extractors with(Extractor extractor) {
         Validate.notNull(prevField, "must call extract method first!");
-        List<Extractor> extractors = extractorsMap.getOrDefault(prevField, Lists.newLinkedList());
+        List<Extractor> extractors = extractorsMap.getOrDefault(prevField, new LinkedList<>());
         extractors.add(extractor);
         extractorsMap.put(prevField, extractors);
         return this;
@@ -191,7 +187,7 @@ public class Extractors {
      */
     public Extractors filter(Filter filter) {
         Validate.notNull(prevField, "must call extract method first!");
-        List<Filter> filters = filtersMap.getOrDefault(prevField, Lists.newLinkedList());
+        List<Filter> filters = filtersMap.getOrDefault(prevField, new LinkedList<>());
         filters.add(filter);
         filtersMap.put(prevField, filters);
         return this;
@@ -282,7 +278,7 @@ public class Extractors {
      * @return
      */
     public List<String> asStringList(String separator) {
-        List<String> stringList = Lists.newLinkedList();
+        List<String> stringList = new LinkedList<>();
         if (htmlList != null) {
             for (String input : htmlList) {
                 if (extractorsMap == null || extractorsMap.isEmpty()) {
@@ -338,7 +334,7 @@ public class Extractors {
      */
     public List<Map<String, String>> asMapList() {
         Validate.notNull(htmlList, "must split first!");
-        List<Map<String, String>> mapList = Lists.newLinkedList();
+        List<Map<String, String>> mapList = new LinkedList<>();
         for (String input : htmlList) {
             mapList.add(extractMap(input));
         }
@@ -362,7 +358,7 @@ public class Extractors {
      */
     public <T> List<T> asBeanList(Class<T> clazz) {
         Validate.notNull(htmlList, "must split first!");
-        List<T> entityList = Lists.newLinkedList();
+        List<T> entityList = new LinkedList<>();
         for (String input : htmlList) {
             entityList.add(extractBean(input, clazz));
         }
@@ -393,7 +389,7 @@ public class Extractors {
      */
     public <T> List<T> asBeanList(EntityExtractor<T> entityExtractor) {
         Validate.notNull(htmlList, "must split first!");
-        List<T> entityList = Lists.newLinkedList();
+        List<T> entityList = new LinkedList<>();
         for (String input : htmlList) {
             T entity = entityExtractor.extract(input);
             entityList.add(entity);
@@ -436,7 +432,7 @@ public class Extractors {
     }
 
     private Map<String, String> extractMap(String html) {
-        Map<String, String> map = Maps.newLinkedHashMap();
+        Map<String, String> map = new LinkedHashMap<>();
         for (Map.Entry<String, List<Extractor>> one : extractorsMap.entrySet()) {
             String name = one.getKey();
             List<Extractor> extractors = one.getValue();
@@ -455,7 +451,7 @@ public class Extractors {
     }
 
     private String filter(String name, String result) {
-        List<Filter> filters = filtersMap.getOrDefault(name, Lists.newLinkedList());
+        List<Filter> filters = filtersMap.getOrDefault(name, new LinkedList<>());
         for (Filter filter : filters) {
             result = filter.process(result);
         }

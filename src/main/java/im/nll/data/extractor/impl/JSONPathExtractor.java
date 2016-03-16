@@ -1,6 +1,5 @@
 package im.nll.data.extractor.impl;
 
-import com.google.common.collect.Lists;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
@@ -9,6 +8,7 @@ import im.nll.data.extractor.annotation.Name;
 import im.nll.data.extractor.utils.TypeUtils;
 import net.minidev.json.JSONObject;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +41,7 @@ public class JSONPathExtractor implements ListableExtractor {
     @Override
     public List<String> extractList(String data) {
         List<Object> list = JsonPath.using(conf).parse(data).read(jsonpath);
-        List<String> stringList = Lists.newLinkedList();
+        List<String> stringList = new LinkedList<>();
         for (Object one : list) {
             if (one instanceof Map) {
                 JSONObject jsonObject = new JSONObject((Map<String, ?>) one);

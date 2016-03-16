@@ -1,6 +1,5 @@
 package im.nll.data.extractor.utils;
 
-import com.google.common.collect.Lists;
 import eu.infomas.annotation.AnnotationDetector;
 import eu.infomas.annotation.AnnotationDetector.Reporter;
 import eu.infomas.annotation.AnnotationDetector.TypeReporter;
@@ -11,10 +10,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 注解类扫描工具.
@@ -71,7 +67,7 @@ public class AnnotationClassScanner {
                         return pathname.isDirectory() && !pathname.isHidden();
                     }
                 });
-                List<String> fileNames = Lists.newLinkedList();
+                List<String> fileNames = new LinkedList<>();
                 for (File one : files) {
                     fileNames.add(one.getName());
                 }

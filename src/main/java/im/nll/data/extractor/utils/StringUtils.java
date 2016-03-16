@@ -1,9 +1,5 @@
 package im.nll.data.extractor.utils;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hashing;
 import org.slf4j.Logger;
 
 import java.net.MalformedURLException;
@@ -86,20 +82,6 @@ public class StringUtils {
         return builder.toString();
     }
 
-    private static HashFunction hashFunction = Hashing.md5();
-
-    /**
-     * 求一个字符串的MD5,如果为空返回""
-     *
-     * @param str
-     * @return
-     */
-    public static String md5(String str) {
-        if (isNullOrEmpty(str)) {
-            return "";
-        }
-        return hashFunction.hashString(str, Charsets.UTF_8).toString();
-    }
 
     /**
      * 获取最后一个字符,如果为空返回"";
@@ -629,7 +611,7 @@ public class StringUtils {
      * @return
      */
     public static List<String> normalizeUrl(String baseUrl, List<String> urlList) {
-        List<String> newUrlList = Lists.newArrayList();
+        List<String> newUrlList = new ArrayList<>();
         for (String url : urlList) {
             newUrlList.add(normalizeUrl(baseUrl, url));
         }
@@ -646,7 +628,7 @@ public class StringUtils {
      */
     public static List<String> normalizeUrl(String baseUrl,
                                             List<String> urlList, String urlSuffix) {
-        List<String> newUrlList = Lists.newArrayList();
+        List<String> newUrlList = new ArrayList<>();
         for (String url : urlList) {
             newUrlList.add(normalizeUrl(baseUrl, url) + urlSuffix);
         }
@@ -2052,7 +2034,7 @@ public class StringUtils {
         }
         final int strLen = str.length();
         if (strLen == 0) {
-            return Lists.newArrayList();
+            return new ArrayList<>();
         }
         final int closeLen = close.length();
         final int openLen = open.length();
