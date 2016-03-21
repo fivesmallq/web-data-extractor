@@ -125,7 +125,7 @@
     <span class="pl-k">public</span> <span class="pl-k">void</span> testToMapList() throws <span class="pl-smi">Exception</span> {
         <span class="pl-c">//split param must implements ListableExtractor</span>
         <span class="pl-k">List&lt;<span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">String</span>&gt;</span>&gt;</span> languages <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(listHtml)
-            .split(jerry(<span class="pl-s"><span class="pl-pds">"</span>tr.item.html<span class="pl-pds">"</span></span>))
+            .split(selector(<span class="pl-s"><span class="pl-pds">"</span>tr.item.html<span class="pl-pds">"</span></span>))
                 .extract(<span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>td.type<span class="pl-pds">"</span></span>))
                 .extract(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>td.name<span class="pl-pds">"</span></span>))
                 .extract(<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>td.url<span class="pl-pds">"</span></span>))
@@ -159,7 +159,7 @@
 <div class="highlight highlight-source-java"><pre>    @<span class="pl-smi">Test</span>
     <span class="pl-k">public</span> <span class="pl-k">void</span> testToBeanList() throws <span class="pl-smi">Exception</span> {
         <span class="pl-k">List&lt;<span class="pl-smi">Language</span>&gt;</span> languages <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(listHtml)
-            .split(jerry(<span class="pl-s"><span class="pl-pds">"</span>tr.item.html<span class="pl-pds">"</span></span>))
+            .split(selector(<span class="pl-s"><span class="pl-pds">"</span>tr.item.html<span class="pl-pds">"</span></span>))
                 .extract(<span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>td.type<span class="pl-pds">"</span></span>))
                 .extract(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>td.name<span class="pl-pds">"</span></span>))
                 .extract(<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>, selector(<span class="pl-s"><span class="pl-pds">"</span>td.url<span class="pl-pds">"</span></span>))
