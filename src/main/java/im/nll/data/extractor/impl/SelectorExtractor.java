@@ -45,6 +45,31 @@ public class SelectorExtractor implements ListableExtractor {
      */
     private String outType = "text";
 
+    /**
+     * @param query
+     * @param eq
+     */
+    public SelectorExtractor(String query, int eq) {
+        this.query = query;
+        this.eq = eq;
+    }
+
+    /**
+     * @param query
+     * @param eq
+     * @param outType
+     */
+    public SelectorExtractor(String query, int eq, String outType) {
+        this.query = query;
+        this.eq = eq;
+        if (outType.equals("0")) {
+            this.outType = TYPE_TEXT;
+        } else if (outType.equals("1")) {
+            this.outType = TYPE_HTML;
+        } else {
+            this.outType = outType;
+        }
+    }
     public SelectorExtractor(String query) {
         this.query = query;
         String outType = StringUtils.substringAfterLast(query, ".");
@@ -64,7 +89,7 @@ public class SelectorExtractor implements ListableExtractor {
 
     @Override
     public String extract(String data) {
-        Document document = Jsoup.parse(data, "", Parser.xmlParser());
+        Document document = Jsoup.parse(data, "", Parser.htmlParser());
         String result = "";
         switch (outType) {
             case TYPE_TEXT:
