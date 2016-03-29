@@ -46,6 +46,11 @@ public class SelectorExtractor implements ListableExtractor {
     private String outType = "text";
 
     /**
+     * data parser. default xmlParser.
+     */
+    private Parser parser = Parser.xmlParser();
+
+    /**
      * @param query
      * @param eq
      */
@@ -70,6 +75,7 @@ public class SelectorExtractor implements ListableExtractor {
             this.outType = outType;
         }
     }
+
     public SelectorExtractor(String query) {
         this.query = query;
         String outType = StringUtils.substringAfterLast(query, ".");
@@ -87,9 +93,20 @@ public class SelectorExtractor implements ListableExtractor {
         }
     }
 
+    /**
+     * change parser to htmlParser.
+     *
+     * @return
+     */
+    public SelectorExtractor htmlParser() {
+        this.parser = Parser.htmlParser();
+        return this;
+    }
+
+
     @Override
     public String extract(String data) {
-        Document document = Jsoup.parse(data, "", Parser.htmlParser());
+        Document document = Jsoup.parse(data, "", parser);
         String result = "";
         switch (outType) {
             case TYPE_TEXT:
@@ -108,7 +125,7 @@ public class SelectorExtractor implements ListableExtractor {
     @Override
     public List<String> extractList(String content) {
         List<String> strings = new LinkedList<>();
-        Document document = Jsoup.parse(content, "", Parser.xmlParser());
+        Document document = Jsoup.parse(content, "", parser);
         Elements elements = document.select(query);
         for (Element element : elements) {
             switch (outType) {

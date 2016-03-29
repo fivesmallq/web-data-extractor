@@ -462,7 +462,7 @@ public class Extractors {
 
 
     /**
-     * return a selector extractor.
+     * return a selector extractor for xml.
      *
      * @param query
      * @return
@@ -470,6 +470,63 @@ public class Extractors {
     public static SelectorExtractor selector(String query) {
         return new SelectorExtractor(query);
     }
+
+    /**
+     * return a selector extractor for xml.
+     *
+     * @param query
+     * @param eq
+     * @return
+     */
+    public static SelectorExtractor selector(String query, int eq) {
+        return new SelectorExtractor(query, eq);
+    }
+
+    /**
+     * return a selector extractor for xml.
+     *
+     * @param query
+     * @param eq      element index
+     * @param outType
+     * @return
+     */
+    public static SelectorExtractor selector(String query, int eq, String outType) {
+        return new SelectorExtractor(query, eq, outType);
+    }
+
+    /**
+     * return a selector extractor for html.
+     *
+     * @param query
+     * @return
+     */
+    public static SelectorExtractor selectorh(String query) {
+        return new SelectorExtractor(query).htmlParser();
+    }
+
+    /**
+     * return a selector extractor for html.
+     *
+     * @param query
+     * @param eq    element index
+     * @return
+     */
+    public static SelectorExtractor selectorh(String query, int eq) {
+        return new SelectorExtractor(query, eq).htmlParser();
+    }
+
+    /**
+     * return a selector extractor for html.
+     *
+     * @param query
+     * @param eq      element index
+     * @param outType
+     * @return
+     */
+    public static SelectorExtractor selectorh(String query, int eq, String outType) {
+        return new SelectorExtractor(query, eq, outType).htmlParser();
+    }
+
 
     /**
      * return a jerry extractor. please use {@link Extractors#selector(String)}
