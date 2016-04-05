@@ -16,12 +16,14 @@ import java.util.List;
  */
 public class SelectorExtractorTest {
     private String html;
+    private String html2;
     SelectorExtractor selectorExtractor;
 
     @Before
     public void before() {
         try {
             html = Resources.toString(Resources.getResource("list.html"), Charsets.UTF_8);
+            html2 = Resources.toString(Resources.getResource("list2.html"), Charsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -33,11 +35,19 @@ public class SelectorExtractorTest {
         String title = selectorExtractor.extract(html);
         Assert.assertEquals("hello,world", title);
     }
+
     @Test
     public void testExtract() throws Exception {
         selectorExtractor = new SelectorExtractor("th.title");
         String title = selectorExtractor.extract(html);
         Assert.assertEquals("languages", title);
+    }
+
+    @Test
+    public void testExtractAttr() throws Exception {
+        selectorExtractor = new SelectorExtractor("a.attr(href)");
+        String href = selectorExtractor.extract("<a href=baidu.com >href</a>");
+        Assert.assertEquals("baidu.com", href);
     }
 
     @Test
@@ -55,5 +65,14 @@ public class SelectorExtractorTest {
         List<String> datas = selectorExtractor.extractList(html);
         Assert.assertEquals(3, datas.size());
         Assert.assertEquals("static Java https://www.java.com", datas.get(0));
+    }
+
+    @Test
+    public void testExtractList2() throws Exception {
+        // .html mehtod only return html in the element
+        selectorExtractor = new SelectorExtractor("a.h4.html");
+        List<String> datas = selectorExtractor.extractList(html2);
+        Assert.assertEquals(10, datas.size());
+        Assert.assertEquals("「咳咳咳」春季咳不停 这些药物要记牢", datas.get(0));
     }
 }
