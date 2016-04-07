@@ -60,6 +60,32 @@ public class SelectorExtractorTest {
     }
 
     @Test
+    public void testExtractHtmlEq() throws Exception {
+        selectorExtractor = new SelectorExtractor("tr", 1, "html");
+        String title = selectorExtractor.extract(html);
+        Assert.assertEquals("<th>type</th> \n" +
+                "<th>name</th> \n" +
+                "<th>website</th>", title);
+    }
+
+    @Test
+    public void testExtractTextEq() throws Exception {
+        selectorExtractor = new SelectorExtractor("tr", 1, "text");
+        String title = selectorExtractor.extract(html);
+        Assert.assertEquals("type name website", title);
+        selectorExtractor = new SelectorExtractor("tr", 1);
+        title = selectorExtractor.extract(html);
+        Assert.assertEquals("type name website", title);
+    }
+
+    @Test
+    public void testExtractText() throws Exception {
+        selectorExtractor = new SelectorExtractor("tr:nth-child(2).text");
+        String title = selectorExtractor.extract(html);
+        Assert.assertEquals("type name website", title);
+    }
+
+    @Test
     public void testExtractList() throws Exception {
         selectorExtractor = new SelectorExtractor("tr:has(td)");
         List<String> datas = selectorExtractor.extractList(html);
