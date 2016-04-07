@@ -1,5 +1,7 @@
 package im.nll.data.extractor.rule;
 
+import java.io.Serializable;
+
 /**
  * extract rule model.
  *
@@ -7,7 +9,7 @@ package im.nll.data.extractor.rule;
  * @version Revision: 1.0
  * @date 16/2/11 下午12:18
  */
-public class ExtractRule {
+public class ExtractRule implements Serializable {
     private String field;
     private String extractor;
 

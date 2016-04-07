@@ -1,5 +1,6 @@
 package im.nll.data.extractor.rule;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Map;
  * @version Revision: 1.0
  * @date 16/2/11 下午12:18
  */
-public class ExtractRules {
+public class ExtractRules implements Serializable {
     private ExtractRule split;
     private List<ExtractRule> extractRules;
 
