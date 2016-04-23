@@ -372,7 +372,7 @@ public class ExtractorsTest {
     @Test
     public void testToBeanListFilterAll() throws Exception {
         List<Language> languages = Extractors.on(listHtml)
-                .filterAll(value -> "all-" + value)
+                .before(value -> "all-" + value)
                 .split(xpath("//tr[@class='item']"))
                 .extract("type", xpath("//td[1]/text()")).filter(value -> "type:" + value)
                 .extract("name", xpath("//td[2]/text()")).filter(value -> "name:" + value)

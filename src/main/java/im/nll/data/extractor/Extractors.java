@@ -25,7 +25,8 @@ public class Extractors {
     private List<String> htmlList;
     private Map<String, List<Extractor>> extractorsMap = new LinkedHashMap<>();
     private Map<String, List<Filter>> filtersMap = new LinkedHashMap();
-    private List<Filter> globalFilter = new LinkedList<>();
+    private List<Filter> beforeFilter = new LinkedList<>();
+    private List<Filter> afterFilter = new LinkedList<>();
     private String prevField;
 
     public Extractors(String html) {
@@ -200,8 +201,19 @@ public class Extractors {
      * @param filter
      * @return
      */
-    public Extractors filterAll(Filter filter) {
-        globalFilter.add(filter);
+    public Extractors before(Filter filter) {
+        beforeFilter.add(filter);
+        return this;
+    }
+
+    /**
+     * process all values use filter after field filter
+     *
+     * @param filter
+     * @return
+     */
+    public Extractors after(Filter filter) {
+        beforeFilter.add(filter);
         return this;
     }
 
@@ -256,8 +268,9 @@ public class Extractors {
             for (Extractor extractor : extractors) {
                 result = extractor.extract(result);
             }
-            result = filterGlobal(result);
+            result = filterBefore(result);
             result = filter(DEFAULT_FIELD, result);
+            result = filterAfter(result);
         }
         return result;
     }
@@ -280,7 +293,9 @@ public class Extractors {
             for (Extractor extractor : extractors) {
                 result = extractor.extract(result);
             }
+            result = filterBefore(result);
             result = filter(DEFAULT_FIELD, result);
+            result = filterAfter(result);
         }
         return result;
     }
@@ -305,8 +320,9 @@ public class Extractors {
                         for (Extractor extractor : extractors) {
                             result = extractor.extract(result);
                         }
-                        result = filterGlobal(result);
+                        result = filterBefore(result);
                         result = filter(name, result);
+                        result = filterAfter(result);
                         stringBuffer.append(result).append(separator);
                     }
                     int length = stringBuffer.length();
@@ -435,8 +451,9 @@ public class Extractors {
             for (Extractor extractor : extractors) {
                 result = extractor.extract(result);
             }
-            result = filterGlobal(result);
+            result = filterBefore(result);
             result = filter(name, result);
+            result = filterAfter(result);
             try {
                 Reflect.on(entity).set(name, result);
             } catch (Exception e) {
@@ -455,9 +472,9 @@ public class Extractors {
             for (Extractor extractor : extractors) {
                 result = extractor.extract(result);
             }
-            //global filter all
-            result = filterGlobal(result);
+            result = filterBefore(result);
             result = filter(name, result);
+            result = filterAfter(result);
             try {
                 map.put(name, result);
             } catch (Exception e) {
@@ -475,8 +492,15 @@ public class Extractors {
         return result;
     }
 
-    private String filterGlobal(String result) {
-        for (Filter filter : globalFilter) {
+    private String filterBefore(String result) {
+        for (Filter filter : beforeFilter) {
+            result = filter.process(result);
+        }
+        return result;
+    }
+
+    private String filterAfter(String result) {
+        for (Filter filter : afterFilter) {
             result = filter.process(result);
         }
         return result;
