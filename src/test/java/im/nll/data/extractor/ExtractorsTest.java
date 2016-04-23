@@ -370,6 +370,23 @@ public class ExtractorsTest {
     }
 
     @Test
+    public void testToBeanListFilterAll() throws Exception {
+        List<Language> languages = Extractors.on(listHtml)
+                .filterAll(value -> "all-" + value)
+                .split(xpath("//tr[@class='item']"))
+                .extract("type", xpath("//td[1]/text()")).filter(value -> "type:" + value)
+                .extract("name", xpath("//td[2]/text()")).filter(value -> "name:" + value)
+                .extract("url", xpath("//td[3]/text()")).filter(value -> "url:" + value)
+                .asBeanList(Language.class);
+        Assert.assertNotNull(languages);
+        Language second = languages.get(1);
+        Assert.assertEquals(languages.size(), 3);
+        Assert.assertEquals(second.getType(), "type:all-dynamic");
+        Assert.assertEquals(second.getName(), "name:all-Ruby");
+        Assert.assertEquals(second.getUrl(), "url:all-https://www.ruby-lang.org");
+    }
+
+    @Test
     public void testToBeanListByJson() throws Exception {
         List<Book> books = Extractors.on(jsonString).split(json("$..book.*"))
                 .extract("category", json("$..category"))

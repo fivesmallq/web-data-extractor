@@ -25,6 +25,7 @@ public class Extractors {
     private List<String> htmlList;
     private Map<String, List<Extractor>> extractorsMap = new LinkedHashMap<>();
     private Map<String, List<Filter>> filtersMap = new LinkedHashMap();
+    private List<Filter> globalFilter = new LinkedList<>();
     private String prevField;
 
     public Extractors(String html) {
@@ -193,6 +194,17 @@ public class Extractors {
         return this;
     }
 
+    /**
+     * process all values use filter before field filter
+     *
+     * @param filter
+     * @return
+     */
+    public Extractors filterAll(Filter filter) {
+        globalFilter.add(filter);
+        return this;
+    }
+
 
     /**
      * split html use listable extractor
@@ -244,6 +256,7 @@ public class Extractors {
             for (Extractor extractor : extractors) {
                 result = extractor.extract(result);
             }
+            result = filterGlobal(result);
             result = filter(DEFAULT_FIELD, result);
         }
         return result;
@@ -292,6 +305,7 @@ public class Extractors {
                         for (Extractor extractor : extractors) {
                             result = extractor.extract(result);
                         }
+                        result = filterGlobal(result);
                         result = filter(name, result);
                         stringBuffer.append(result).append(separator);
                     }
@@ -421,6 +435,7 @@ public class Extractors {
             for (Extractor extractor : extractors) {
                 result = extractor.extract(result);
             }
+            result = filterGlobal(result);
             result = filter(name, result);
             try {
                 Reflect.on(entity).set(name, result);
@@ -440,6 +455,8 @@ public class Extractors {
             for (Extractor extractor : extractors) {
                 result = extractor.extract(result);
             }
+            //global filter all
+            result = filterGlobal(result);
             result = filter(name, result);
             try {
                 map.put(name, result);
@@ -453,6 +470,13 @@ public class Extractors {
     private String filter(String name, String result) {
         List<Filter> filters = filtersMap.getOrDefault(name, new LinkedList<>());
         for (Filter filter : filters) {
+            result = filter.process(result);
+        }
+        return result;
+    }
+
+    private String filterGlobal(String result) {
+        for (Filter filter : globalFilter) {
             result = filter.process(result);
         }
         return result;
