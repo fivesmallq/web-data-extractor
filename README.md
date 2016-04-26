@@ -1,7 +1,7 @@
 # web-data-extractor 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/im.nll.data/extractor/badge.svg)](https://maven-badges.herokuapp.com/maven-central/im.nll.data/extractor/)
 [![Build Status](https://travis-ci.org/fivesmallq/web-data-extractor.svg)](https://travis-ci.org/fivesmallq/web-data-extractor)
-[![codecov](https://codecov.io/gh/fivesmallq/web-data-extractor/branch/master/graph/badge.svg)](https://codecov.io/gh/fivesmallq/web-data-extractor)
+[![codecov.io](http://codecov.io/github/fivesmallq/web-data-extractor/coverage.svg?branch=master)](http://codecov.io/github/fivesmallq/web-data-extractor?branch=master)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 Extracting and parsing structured data with Jquery Selector, XPath or JsonPath from common web format like HTML, XML and JSON.
