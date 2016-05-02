@@ -30,6 +30,14 @@ public class SelectorExtractorTest {
     }
 
     @Test
+    public void testExtractEscapedChar() throws Exception {
+        String html = "<div id='Meebo.AdElement:Root'>text</div>";
+        selectorExtractor = new SelectorExtractor("div[id=Meebo.AdElement:Root]");
+        String text = selectorExtractor.extract(html);
+        Assert.assertEquals("text", text);
+    }
+
+    @Test
     public void testExtractEscaped() throws Exception {
         selectorExtractor = new SelectorExtractor("th:contains(hello,w):nth-child(2).html");
         String title = selectorExtractor.extract(html);
