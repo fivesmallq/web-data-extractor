@@ -389,19 +389,20 @@ public class ExtractorsTest {
     @Test
     public void testToBeanListFilterBeforeAndAfter() throws Exception {
         List<Language> languages = Extractors.on(listHtml)
-                .before(value -> "before-" + value)
-                .after(value -> value + "-after")
+                //before and after just process the last extract value.
+                .before(value -> "|before|" + value)
+                .after(value -> value + "|after|")
                 .split(xpath("//tr[@class='item']"))
-                .extract("type", xpath("//td[1]/text()")).filter(value -> "type:" + value)
-                .extract("name", xpath("//td[2]/text()")).filter(value -> "name:" + value)
-                .extract("url", xpath("//td[3]/text()")).filter(value -> "url:" + value)
+                .extract("type", xpath("//td[1]/text()")).filter(value -> "filter:" + value)
+                .extract("name", xpath("//td[2]/text()")).filter(value -> "filter:" + value)
+                .extract("url", xpath("//td[3]/text()")).filter(value -> "filter:" + value)
                 .asBeanList(Language.class);
         Assert.assertNotNull(languages);
         Language second = languages.get(1);
         Assert.assertEquals(languages.size(), 3);
-        Assert.assertEquals(second.getType(), "type:before-dynamic-after");
-        Assert.assertEquals(second.getName(), "name:before-Ruby-after");
-        Assert.assertEquals(second.getUrl(), "url:before-https://www.ruby-lang.org-after");
+        Assert.assertEquals(second.getType(), "filter:|before|dynamic|after|");
+        Assert.assertEquals(second.getName(), "filter:|before|Ruby|after|");
+        Assert.assertEquals(second.getUrl(), "filter:|before|https://www.ruby-lang.org|after|");
     }
 
     @Test
