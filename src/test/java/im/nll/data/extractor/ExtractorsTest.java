@@ -389,7 +389,7 @@ public class ExtractorsTest {
     @Test
     public void testToBeanListFilterBeforeAndAfter() throws Exception {
         List<Language> languages = Extractors.on(listHtml)
-                //before and after just process the last extract value.
+                //before and after just process the extract value, then execute the follow filter method.
                 .before(value -> "|before|" + value)
                 .after(value -> value + "|after|")
                 .split(xpath("//tr[@class='item']"))
