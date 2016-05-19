@@ -172,6 +172,30 @@
         <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(second<span class="pl-k">.</span>getUrl(), <span class="pl-s"><span class="pl-pds">"</span>https://www.ruby-lang.org<span class="pl-pds">"</span></span>);
     }</pre></div>
 
+<h3>
+<a id="filter" class="anchor" href="#filter" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>filter</h3>
+
+<p><code>before</code> and <code>after</code> is the global filter.</p>
+
+<div class="highlight highlight-source-java"><pre>    @<span class="pl-smi">Test</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> testToBeanListFilterBeforeAndAfter() throws <span class="pl-smi">Exception</span> {
+        <span class="pl-k">List&lt;<span class="pl-smi">Language</span>&gt;</span> languages <span class="pl-k">=</span> <span class="pl-smi">Extractors</span><span class="pl-k">.</span>on(listHtml)
+                <span class="pl-c">//before and after just process the extract value, then execute the follow filter method.</span>
+                .before(value <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>|before|<span class="pl-pds">"</span></span> <span class="pl-k">+</span> value)
+                .after(value <span class="pl-k">-</span><span class="pl-k">&gt;</span> value <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>|after|<span class="pl-pds">"</span></span>)
+                .split(xpath(<span class="pl-s"><span class="pl-pds">"</span>//tr[@class='item']<span class="pl-pds">"</span></span>))
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>, xpath(<span class="pl-s"><span class="pl-pds">"</span>//td[1]/text()<span class="pl-pds">"</span></span>))<span class="pl-k">.</span>filter(value <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>filter:<span class="pl-pds">"</span></span> <span class="pl-k">+</span> value)
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>, xpath(<span class="pl-s"><span class="pl-pds">"</span>//td[2]/text()<span class="pl-pds">"</span></span>))<span class="pl-k">.</span>filter(value <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>filter:<span class="pl-pds">"</span></span> <span class="pl-k">+</span> value)
+                .extract(<span class="pl-s"><span class="pl-pds">"</span>url<span class="pl-pds">"</span></span>, xpath(<span class="pl-s"><span class="pl-pds">"</span>//td[3]/text()<span class="pl-pds">"</span></span>))<span class="pl-k">.</span>filter(value <span class="pl-k">-</span><span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>filter:<span class="pl-pds">"</span></span> <span class="pl-k">+</span> value)
+                .asBeanList(<span class="pl-smi">Language</span><span class="pl-k">.</span>class);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertNotNull(languages);
+        <span class="pl-smi">Language</span> second <span class="pl-k">=</span> languages<span class="pl-k">.</span>get(<span class="pl-c1">1</span>);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(languages<span class="pl-k">.</span>size(), <span class="pl-c1">3</span>);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(second<span class="pl-k">.</span>getType(), <span class="pl-s"><span class="pl-pds">"</span>filter:|before|dynamic|after|<span class="pl-pds">"</span></span>);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(second<span class="pl-k">.</span>getName(), <span class="pl-s"><span class="pl-pds">"</span>filter:|before|Ruby|after|<span class="pl-pds">"</span></span>);
+        <span class="pl-smi">Assert</span><span class="pl-k">.</span>assertEquals(second<span class="pl-k">.</span>getUrl(), <span class="pl-s"><span class="pl-pds">"</span>filter:|before|https://www.ruby-lang.org|after|<span class="pl-pds">"</span></span>);
+    }</pre></div>
+
 <p>see <a href="https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/im/nll/data/extractor/ExtractorsTest.java">Example</a></p>
       </section>
       <footer>
