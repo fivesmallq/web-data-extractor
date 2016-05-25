@@ -443,6 +443,10 @@ public class Extractors {
     //------------ internal --------------//
 
     private <T> T extractBean(String html, Class<T> clazz) {
+        // only support String type
+        if (clazz.equals(String.class)) {
+            return (T) new String(html);
+        }
         T entity = Reflect.on(clazz).create().get();
         for (Map.Entry<String, List<Extractor>> one : extractorsMap.entrySet()) {
             String name = one.getKey();

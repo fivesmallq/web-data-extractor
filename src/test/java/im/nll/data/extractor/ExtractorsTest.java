@@ -7,7 +7,6 @@ import im.nll.data.extractor.entity.*;
 import im.nll.data.extractor.rule.ExtractRule;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -242,9 +241,8 @@ public class ExtractorsTest {
     }
 
     @Test
-    @Ignore
     public void testToBeanListString() throws Exception {
-        //TODO bean class can't be primitive class
+        //NOTE only support String type
         List<String> languages = Extractors.on(listHtml2).split(selector("a.h4.attr(href)"))
                 .asBeanList(String.class);
         Assert.assertNotNull(languages);
