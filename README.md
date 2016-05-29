@@ -13,7 +13,7 @@ Implements:
  * JsonPath - [JsonPath](https://github.com/jayway/JsonPath)
 
 
-###Usage
+##Usage
 To add a dependency on Web-Data-Extractor using Maven, use the following:
 
 ```xml
@@ -174,3 +174,7 @@ more method
 ```
 
 see [Example](https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/im/nll/data/extractor/ExtractorsTest.java)
+
+##Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/fivesmallq/web-data-extractor.
