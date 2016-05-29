@@ -1,4 +1,4 @@
-# web-data-extractor 
+#web-data-extractor 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/im.nll.data/extractor/badge.svg)](https://maven-badges.herokuapp.com/maven-central/im.nll.data/extractor/)
 [![Build Status](https://travis-ci.org/fivesmallq/web-data-extractor.svg)](https://travis-ci.org/fivesmallq/web-data-extractor)
 [![codecov.io](http://codecov.io/github/fivesmallq/web-data-extractor/coverage.svg?branch=master)](http://codecov.io/github/fivesmallq/web-data-extractor?branch=master)
@@ -13,7 +13,7 @@ Implements:
  * JsonPath - [JsonPath](https://github.com/jayway/JsonPath)
 
 
-##Usage
+#Usage
 To add a dependency on Web-Data-Extractor using Maven, use the following:
 
 ```xml
@@ -33,7 +33,7 @@ dependencies {
 ```
 
 
-##Examples
+#Examples
 
 ###extract single data
 
@@ -88,9 +88,10 @@ more method
         Assert.assertEquals("29671", dataMap.get("followers"));
         Assert.assertEquals("Talk is cheap. Show me the code.", dataMap.get("description"));
     }
-  ````
-  
-###extract data to map list
+````
+
+### extract data to map list
+
 
 ````java
 
@@ -110,7 +111,7 @@ more method
         Assert.assertEquals(second.get("name"), "Ruby");
         Assert.assertEquals(second.get("url"), "https://www.ruby-lang.org");
     }
-  ````
+````
   
   
 ###extract data to bean
@@ -175,6 +176,6 @@ more method
 
 see [Example](https://github.com/fivesmallq/web-data-extractor/blob/master/src/test/java/im/nll/data/extractor/ExtractorsTest.java)
 
-##Contributing
+#Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/fivesmallq/web-data-extractor.
