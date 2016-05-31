@@ -1,6 +1,7 @@
 package im.nll.data.extractor.parser;
 
 import im.nll.data.extractor.Extractor;
+import im.nll.data.extractor.exception.ParseException;
 import im.nll.data.extractor.impl.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -55,5 +56,11 @@ public class ExtractorParserTest {
         extractor = ExtractorParser.parse(string);
         Assert.assertNotNull(extractor);
         Assert.assertEquals(StringRangeExtractor.class, extractor.getClass());
+    }
+
+    @Test(expected = ParseException.class)
+    public void testParseError() throws Exception {
+        String string = "json2:$..books";
+        ExtractorParser.parse(string);
     }
 }

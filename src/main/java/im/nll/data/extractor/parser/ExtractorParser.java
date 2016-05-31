@@ -51,7 +51,7 @@ public class ExtractorParser {
         String type = StringUtils.substringBeforeLast(shortString, SPLIT_CHAR);
         Class extractorClass = extractorMap.get(type);
         if (extractorClass == null) {
-            throw new ParseException("parse extractor error! string:" + shortString);
+            throw new ParseException("parse extractor error! unsupport extractor:'" + type + "'. string:'" + shortString + "'");
         }
         Extractor extractor = Reflect.on(extractorClass)
                 .create(StringUtils.substringAfter(shortString, type + SPLIT_CHAR)).get();
