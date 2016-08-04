@@ -33,7 +33,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.joor;
+package im.nll.data.extractor.utils;
+
+import im.nll.data.extractor.exception.ReflectException;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
