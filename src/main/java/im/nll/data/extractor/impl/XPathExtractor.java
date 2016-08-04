@@ -57,6 +57,19 @@ public class XPathExtractor implements ListableExtractor {
     /**
      * register xml namespace
      *
+     * @param namespace
+     * @return
+     */
+    public XPathExtractor registerNamespace(Namespace namespace) {
+        this.namespaces.add(namespace);
+        return this;
+    }
+
+    /**
+     * register xml namespace
+     *
+     * @param prefix namespace prefix
+     * @param url    namespace url
      * @return
      */
     public XPathExtractor registerNamespace(String prefix, String url) {

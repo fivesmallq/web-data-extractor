@@ -1,5 +1,6 @@
 package im.nll.data.extractor;
 
+import com.google.common.collect.Maps;
 import com.jayway.jsonpath.JsonPath;
 import im.nll.data.extractor.entity.EntityExtractor;
 import im.nll.data.extractor.entity.EntityListExtractor;
@@ -8,9 +9,11 @@ import im.nll.data.extractor.parser.ExtractorParser;
 import im.nll.data.extractor.rule.ExtractRule;
 import im.nll.data.extractor.utils.Logs;
 import im.nll.data.extractor.utils.Reflect;
+import im.nll.data.extractor.utils.StringUtils;
 import im.nll.data.extractor.utils.Validate;
 import org.slf4j.Logger;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -448,6 +451,7 @@ public class Extractors {
             return (T) new String(html);
         }
         T entity = Reflect.on(clazz).create().get();
+        Map<String, Object> embeddables = Maps.newLinkedHashMap();
         for (Map.Entry<String, List<Extractor>> one : extractorsMap.entrySet()) {
             String name = one.getKey();
             List<Extractor> extractors = one.getValue();
@@ -459,7 +463,22 @@ public class Extractors {
             result = filter(name, result);
             result = filterAfter(result);
             try {
-                Reflect.on(entity).set(name, result);
+                //process embeddable
+                if (name.contains(".")) {
+                    String fieldName = StringUtils.substringBefore(name, ".");
+                    String embeddableFieldName = StringUtils.substringAfter(name, ".");
+                    Object embeddable = embeddables.get(fieldName);
+                    Field field = Reflect.on(entity).field0(fieldName);
+                    if (embeddable == null) {
+                        embeddable = Reflect.on(field.getType()).create().get();
+                        embeddables.put(fieldName, embeddable);
+                    }
+                    Reflect.on(embeddable).set(embeddableFieldName, result);
+                    Reflect.on(entity).set(fieldName, embeddable);
+                } else {
+                    Object o = result;
+                    Reflect.on(entity).set(name, o);
+                }
             } catch (Exception e) {
                 LOGGER.error("convert to bean error! can't set '{}' with '{}'", name, result, e);
             }

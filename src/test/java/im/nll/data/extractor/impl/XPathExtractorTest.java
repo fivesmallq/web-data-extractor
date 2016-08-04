@@ -3,6 +3,7 @@ package im.nll.data.extractor.impl;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import im.nll.data.extractor.exception.ExtractException;
+import org.jdom2.Namespace;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +62,9 @@ public class XPathExtractorTest {
         String s = xPathExtractor.extract(base4Html);
         Assert.assertEquals("/fivesmallq", s);
         //element
-        xPathExtractor = new XPathExtractor("//oa:Task").registerNamespace("oa", "http://www.xx.com/xx");
+        // register namespace use jdom2 namespace
+        Namespace namespace = Namespace.getNamespace("oa", "http://www.xx.com/xx");
+        xPathExtractor = new XPathExtractor("//oa:Task").registerNamespace(namespace);
         s = xPathExtractor.extract(base4Html);
         Assert.assertEquals("<oa:Task xmlns:oa=\"http://www.xx.com/xx\" href=\"/fivesmallq\">ReceiveKeeper</oa:Task>", s);
         //text
