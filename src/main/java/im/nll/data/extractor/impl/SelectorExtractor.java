@@ -36,12 +36,13 @@ public class SelectorExtractor implements ListableExtractor {
      */
     private String query;
     /**
-     * 元素序号,0代表第一个(默认第一个元素)
+     * the element index
      */
     private int eq = 0;
     /**
-     * 输出类型 <li>text 只输出文本.</li> <li>html 输出带有html格式.</li><li>
-     * 如果想获取其他属性,直接写属性名,比如'href'则输出元素的href属性值</li>
+     * out type: <ul><li>text - text of element.</li> <li>html - html of element.</li><li>
+     * attr - set to "href" means you want to get the href attribute of element</li>
+     * </ul>
      */
     private String outType = "text";
 
@@ -51,8 +52,8 @@ public class SelectorExtractor implements ListableExtractor {
     private Parser parser = Parser.xmlParser();
 
     /**
-     * @param query
-     * @param eq
+     * @param query jquery selector
+     * @param eq    the element index
      */
     public SelectorExtractor(String query, int eq) {
         this.query = query;
@@ -60,9 +61,11 @@ public class SelectorExtractor implements ListableExtractor {
     }
 
     /**
-     * @param query
-     * @param eq
-     * @param outType
+     * @param query   jquery selector
+     * @param eq      the element index
+     * @param outType <ul><li>text - text of element.</li> <li>html - html of element.</li><li>
+     *                attr - set to "href" means you want to get the href attribute of element</li>
+     *                </ul>
      */
     public SelectorExtractor(String query, int eq, String outType) {
         this.query = query;
