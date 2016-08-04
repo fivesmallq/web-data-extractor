@@ -150,6 +150,38 @@ more method
     }
 ````
 
+###support Embeddable bean
+set embeddable field value by ``embeddable.fieldName``
+
+```java
+    @Test
+    public void testEmbeddable() {
+        List<Activity> activities = Extractors.on(base5Xml)
+                .split(xpath("//ProcessDefinition/activity").removeNamespace())
+                .extract("name", xpath("//activity/@name"))
+                .extract("type", xpath("//activity/type/text()"))
+                .extract("resourceType", xpath("//activity/resourceType/text()"))
+                .extract("config.encoding", xpath("//activity/config/encoding/text()"))
+                .extract("config.compressFile", xpath("//activity/config/compressFile/text()"))
+                .extract("inputBindings.fileName", xpath("//activity/inputBindings/WriteActivityInputTextClass/fileName/value-of/@select"))
+                .extract("inputBindings.textContent", xpath("//activity/inputBindings/WriteActivityInputTextClass/textContent/value-of/@select"))
+                .asBeanList(Activity.class);
+        Assert.assertNotNull(activities);
+        Assert.assertEquals(1, activities.size());
+        Activity activity = activities.get(0);
+        Assert.assertEquals("Output1", activity.getName());
+        Assert.assertEquals("com.tibco.plugin.file.FileWriteActivity", activity.getType());
+        //config
+        Config config = activity.getConfig();
+        Assert.assertEquals("text", config.getEncoding());
+        Assert.assertEquals("None", config.getCompressFile());
+        //bind
+        BindingSpec bindingSpec = activity.getInputBindings();
+        Assert.assertEquals("$_globalVariables/ns:GlobalVariables/GlobalVariables/OutputLocation", bindingSpec.getFileName());
+        Assert.assertEquals("$File-Poller/pfx:EventSourceOuputTextClass/fileContent/textContent", bindingSpec.getTextContent());
+    }
+```
+
 ###filter
 ``before`` and ``after`` is the global filter.
 
