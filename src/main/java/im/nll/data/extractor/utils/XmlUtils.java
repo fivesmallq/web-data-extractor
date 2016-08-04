@@ -14,15 +14,6 @@ import java.io.StringReader;
  * @author clardeur
  */
 public class XmlUtils {
-
-    private static final InputStream XSLT_REMOVE_NAMESPACE;
-
-    static {
-        XSLT_REMOVE_NAMESPACE = XmlUtils.class.getResourceAsStream("/remove-namespace.xslt");
-        if (XSLT_REMOVE_NAMESPACE == null)
-            throw new ExceptionInInitializerError(new FileNotFoundException("No XSLT resource is found!"));
-    }
-
     /**
      * Remove all namespaces from the XML source into the XML output.
      *
@@ -31,6 +22,9 @@ public class XmlUtils {
      */
     public static String removeNamespace(String xmlSource) throws TransformerException {
         TransformerFactory factory = TransformerFactory.newInstance();
+        InputStream XSLT_REMOVE_NAMESPACE = XmlUtils.class.getResourceAsStream("/remove-namespace.xslt");
+        if (XSLT_REMOVE_NAMESPACE == null)
+            throw new ExceptionInInitializerError(new FileNotFoundException("No XSLT resource is found!"));
         Templates transformer = factory.newTemplates(new StreamSource(XSLT_REMOVE_NAMESPACE));
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Result result = new StreamResult(baos);
