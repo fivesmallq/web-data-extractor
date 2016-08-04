@@ -475,8 +475,7 @@ public class Extractors {
                     Reflect.on(embeddable).set(embeddableFieldName, result);
                     Reflect.on(entity).set(fieldName, embeddable);
                 } else {
-                    Object o = result;
-                    Reflect.on(entity).set(name, o);
+                    Reflect.on(entity).set(name, result);
                 }
             } catch (Exception e) {
                 LOGGER.error("convert to bean error! can't set '{}' with '{}'", name, result, e);
