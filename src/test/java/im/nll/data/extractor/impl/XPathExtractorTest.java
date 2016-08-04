@@ -38,11 +38,10 @@ public class XPathExtractorTest {
         Assert.assertEquals("&nbsp; 2013&nbsp;", s);
     }
 
-    @Test(expected = ExtractException.class)
+    @Test
     public void testRemoveNamespaceError() {
         //attribute
         xPathExtractor = new XPathExtractor("//div/a[1]/@href").removeNamespace();
-        //FIXME xml remove namespace is broken
         String s = xPathExtractor.extract(baseHtml);
         Assert.assertEquals("/fivesmallq", s);
         //element

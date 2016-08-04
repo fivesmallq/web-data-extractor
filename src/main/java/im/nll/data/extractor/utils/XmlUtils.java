@@ -22,10 +22,10 @@ public class XmlUtils {
      */
     public static String removeNamespace(String xmlSource) throws TransformerException {
         TransformerFactory factory = TransformerFactory.newInstance();
-        InputStream XSLT_REMOVE_NAMESPACE = XmlUtils.class.getResourceAsStream("/remove-namespace.xslt");
-        if (XSLT_REMOVE_NAMESPACE == null)
+        InputStream xsltRemoveNamespace = XmlUtils.class.getResourceAsStream("/remove-namespace.xslt");
+        if (xsltRemoveNamespace == null)
             throw new ExceptionInInitializerError(new FileNotFoundException("No XSLT resource is found!"));
-        Templates transformer = factory.newTemplates(new StreamSource(XSLT_REMOVE_NAMESPACE));
+        Templates transformer = factory.newTemplates(new StreamSource(xsltRemoveNamespace));
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Result result = new StreamResult(baos);
         Source src = new StreamSource(new StringReader(xmlSource));
