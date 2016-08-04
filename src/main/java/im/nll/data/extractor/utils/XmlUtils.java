@@ -3,10 +3,7 @@ package im.nll.data.extractor.utils;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.StringReader;
+import java.io.*;
 
 /**
  * Utilities methods for XML files.
@@ -31,6 +28,12 @@ public class XmlUtils {
         Source src = new StreamSource(new StringReader(xmlSource));
         transformer.newTransformer().transform(src, result);
         String newXml = baos.toString();
+        try {
+            xsltRemoveNamespace.close();
+            baos.close();
+        } catch (IOException e) {
+            //eat it
+        }
         return newXml;
     }
 }
