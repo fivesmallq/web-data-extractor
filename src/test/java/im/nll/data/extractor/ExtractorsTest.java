@@ -508,6 +508,9 @@ public class ExtractorsTest {
                 .extract("type", xpath("//activity/type/text()"))
                 .extract("resourceType", xpath("//activity/resourceType/text()"))
                 .extract("config.encoding", xpath("//activity/config/encoding/text()"))
+                .extract("config.pollInterval", xpath("//activity/config/encoding/text()"))
+                //if pollInterval is null set to default '5'
+                .filter(value -> value == null ? value : "5")
                 .extract("config.compressFile", xpath("//activity/config/compressFile/text()"))
                 .extract("inputBindings.fileName", xpath("//activity/inputBindings/WriteActivityInputTextClass/fileName/value-of/@select"))
                 .extract("inputBindings.textContent", xpath("//activity/inputBindings/WriteActivityInputTextClass/textContent/value-of/@select"))
@@ -521,6 +524,7 @@ public class ExtractorsTest {
         Config config = activity.getConfig();
         Assert.assertEquals("text", config.getEncoding());
         Assert.assertEquals("None", config.getCompressFile());
+        Assert.assertEquals("5", config.getPollInterval());
         //bind
         BindingSpec bindingSpec = activity.getInputBindings();
         Assert.assertEquals("$_globalVariables/ns:GlobalVariables/GlobalVariables/OutputLocation", bindingSpec.getFileName());
