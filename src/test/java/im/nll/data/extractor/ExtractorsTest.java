@@ -508,7 +508,7 @@ public class ExtractorsTest {
                 .extract("type", xpath("//activity/type/text()"))
                 .extract("resourceType", xpath("//activity/resourceType/text()"))
                 .extract("config.encoding", xpath("//activity/config/encoding/text()"))
-                .extract("config.pollInterval", xpath("//activity/config/encoding/text()"))
+                .extract("config.pollInterval", xpath("//activity/config/pollInterval/text()"))
                 //if pollInterval is null set to default '5'
                 .filter(value -> value == null ? value : "5")
                 .extract("config.compressFile", xpath("//activity/config/compressFile/text()"))
