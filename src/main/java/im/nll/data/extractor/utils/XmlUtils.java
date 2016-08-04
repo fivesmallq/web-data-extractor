@@ -1,9 +1,6 @@
 package im.nll.data.extractor.utils;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Templates;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
@@ -37,7 +34,9 @@ public class XmlUtils {
         Templates transformer = factory.newTemplates(new StreamSource(XSLT_REMOVE_NAMESPACE));
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Result result = new StreamResult(baos);
-        transformer.newTransformer().transform(new StreamSource(new StringReader(xmlSource)), result);
-        return baos.toString();
+        Source src = new StreamSource(new StringReader(xmlSource));
+        transformer.newTransformer().transform(src, result);
+        String newXml = baos.toString();
+        return newXml;
     }
 }
