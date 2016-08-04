@@ -1,6 +1,5 @@
 package im.nll.data.extractor;
 
-import com.google.common.collect.Maps;
 import com.jayway.jsonpath.JsonPath;
 import im.nll.data.extractor.entity.EntityExtractor;
 import im.nll.data.extractor.entity.EntityListExtractor;
@@ -451,7 +450,7 @@ public class Extractors {
             return (T) new String(html);
         }
         T entity = Reflect.on(clazz).create().get();
-        Map<String, Object> embeddables = Maps.newLinkedHashMap();
+        Map<String, Object> embeddables = new HashMap<String, Object>();
         for (Map.Entry<String, List<Extractor>> one : extractorsMap.entrySet()) {
             String name = one.getKey();
             List<Extractor> extractors = one.getValue();
