@@ -484,10 +484,10 @@ public class ExtractorsTest {
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSplit() {
-        //regex is not implements ListableExtractor
-        List<Language> languages = Extractors.on(listHtml).split(regex("tr.item.html"))
+    	//regex is implements ListableExtractor
+        List<Language> languages = Extractors.on(listHtml).split(regex("<tr class=\"item\">([\\s\\S]*?.*?)</tr>"))
                 .extract("type", selector("td.type"))
                 .extract("name", selector("td.name"))
                 .extract("url", selector("td.url"))
