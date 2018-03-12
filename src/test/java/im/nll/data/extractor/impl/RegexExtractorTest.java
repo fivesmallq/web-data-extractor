@@ -67,16 +67,16 @@ public class RegexExtractorTest {
 		List<String> stringList = regexExtractor.extractList(html);
 		Assert.assertNotNull(stringList);
 		Assert.assertEquals(stringList.size(), 3);
-		Assert.assertEquals("<tr class=\"item\">\r\n" + "        <td class=\"type\">dynamic</td>\r\n"
-				+ "        <td class=\"name\">Python</td>\r\n"
-				+ "        <td class=\"url\">https://www.python.org</td>\r\n" + "    </tr>", stringList.get(2));
+		Assert.assertEquals("<tr class=\"item\">\n" + "        <td class=\"type\">dynamic</td>\n"
+				+ "        <td class=\"name\">Python</td>\n" + "        <td class=\"url\">https://www.python.org</td>\n"
+				+ "    </tr>", stringList.get(2));
 		regexExtractor = new RegexExtractor("<tr class=\"item\">([\\s\\S]*?.*?)</tr>,1");
 		stringList = regexExtractor.extractList(html);
 		Assert.assertNotNull(stringList);
 		Assert.assertEquals(stringList.size(), 3);
 		Assert.assertEquals(
-				"\r\n" + "        <td class=\"type\">dynamic</td>\r\n" + "        <td class=\"name\">Python</td>\r\n"
-						+ "        <td class=\"url\">https://www.python.org</td>\r\n" + "    ",
+				"\n" + "        <td class=\"type\">dynamic</td>\n" + "        <td class=\"name\">Python</td>\n"
+						+ "        <td class=\"url\">https://www.python.org</td>\n" + "    ",
 				stringList.get(2));
 
 	}
