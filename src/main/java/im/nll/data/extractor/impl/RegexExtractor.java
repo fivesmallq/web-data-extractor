@@ -20,14 +20,21 @@ import im.nll.data.extractor.utils.StringUtils;
  */
 @Name("regex")
 public class RegexExtractor implements ListableExtractor {
+	Pattern replacePattern = Pattern.compile("\\$(\\d)+",
+			Pattern.DOTALL | Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 	private String regex;
-	private int group = 0;
+	private String replacement;
+	private List<Integer> groupIndexs = new LinkedList<>();
 
 	public RegexExtractor(String regex) {
 		String[] stringList = regex.split("(?<!\\\\),");
 		this.regex = stringList[0].replace("\\,", ",");
 		if (stringList.length > 1 && StringUtils.isNotNullOrEmpty(stringList[1])) {
-			this.group = Integer.valueOf(stringList[1].replace("\\,", ","));
+			this.replacement = stringList[1].replace("\\,", ",");
+			Matcher m = replacePattern.matcher(replacement);
+			while (m.find()) {
+				groupIndexs.add(Integer.parseInt(m.group(1)));
+			}
 		}
 	}
 
@@ -35,9 +42,13 @@ public class RegexExtractor implements ListableExtractor {
 	public String extract(String data) {
 		Pattern pattern = Pattern.compile(regex, Pattern.DOTALL | Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 		Matcher matcher = pattern.matcher(data);
-		if (matcher.find())
-			return matcher.group(group);
-		else {
+		if (matcher.find()) {
+			if (StringUtils.isNotNullOrEmpty(replacement)) {
+				return getMatchReplaceString(matcher);
+			} else {
+				return matcher.group();
+			}
+		} else {
 			return "";
 		}
 	}
@@ -48,15 +59,21 @@ public class RegexExtractor implements ListableExtractor {
 		Pattern pattern = Pattern.compile(regex, Pattern.DOTALL | Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 		Matcher m = pattern.matcher(data);
 		while (m.find()) {
-			if (group > 0) {
-				if (m.groupCount() >= 1) {
-					stringList.add(m.group(group));
-				}
+			if (StringUtils.isNotNullOrEmpty(replacement)) {
+				stringList.add(getMatchReplaceString(m));
 			} else {
 				stringList.add(m.group());
 			}
 		}
 		return stringList;
+	}
+
+	private String getMatchReplaceString(Matcher m) {
+		String result = replacement;
+		for (Integer groupIndex : groupIndexs) {
+			result = result.replace("$" + groupIndex, m.group(groupIndex));
+		}
+		return result;
 	}
 
 }

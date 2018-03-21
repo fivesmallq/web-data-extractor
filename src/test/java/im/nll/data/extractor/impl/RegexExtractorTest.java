@@ -32,11 +32,11 @@ public class RegexExtractorTest {
 	@Test
 	public void testExtractEscaped() throws Exception {
 		String demoHtml = "<td>www.baidu.com ,, www.google.com</a></td>";
-		regexExtractor = new RegexExtractor("<td>.*\\,\\,,0");
+		regexExtractor = new RegexExtractor("<td>.*\\,\\,,$0");
 		String result = regexExtractor.extract(demoHtml);
 		Assert.assertEquals("<td>www.baidu.com ,,", result);
 
-		regexExtractor = new RegexExtractor("<td>(.*)\\,\\,,1");
+		regexExtractor = new RegexExtractor("<td>(.*)\\,\\,,$1");
 		result = regexExtractor.extract(demoHtml);
 		Assert.assertEquals("www.baidu.com ", result);
 	}
@@ -48,15 +48,15 @@ public class RegexExtractorTest {
 		String result = regexExtractor.extract(demoHtml);
 		Assert.assertEquals(result, "<td>www.baidu.com</td>");
 
-		regexExtractor = new RegexExtractor("<td>(.*)</td>,1");
+		regexExtractor = new RegexExtractor("<td>(.*)</td>,http://$1");
 		result = regexExtractor.extract(demoHtml);
-		Assert.assertEquals(result, "www.baidu.com");
+		Assert.assertEquals(result, "http://www.baidu.com");
 
 		regexExtractor = new RegexExtractor("xxx");
 		result = regexExtractor.extract(demoHtml);
 		Assert.assertEquals(result, "");
 
-		regexExtractor = new RegexExtractor("<td>(.*)</td>,0");
+		regexExtractor = new RegexExtractor("<td>(.*)</td>,$0");
 		result = regexExtractor.extract(demoHtml);
 		Assert.assertEquals(result, "<td>www.baidu.com</td>");
 	}
@@ -70,7 +70,7 @@ public class RegexExtractorTest {
 		Assert.assertEquals("<tr class=\"item\">\n" + "        <td class=\"type\">dynamic</td>\n"
 				+ "        <td class=\"name\">Python</td>\n" + "        <td class=\"url\">https://www.python.org</td>\n"
 				+ "    </tr>", stringList.get(2));
-		regexExtractor = new RegexExtractor("<tr class=\"item\">([\\s\\S]*?.*?)</tr>,1");
+		regexExtractor = new RegexExtractor("<tr class=\"item\">([\\s\\S]*?.*?)</tr>,$1");
 		stringList = regexExtractor.extractList(html);
 		Assert.assertNotNull(stringList);
 		Assert.assertEquals(stringList.size(), 3);

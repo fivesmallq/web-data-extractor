@@ -63,10 +63,16 @@ public class ExtractorParserTest {
         String string = "json2:$..books";
         ExtractorParser.parse(string);
     }
-
+    
     @Test
     public void testStringRangeParse() throws Exception {
         String string = "stringRange:<li style=\"background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%;\">,</li>";
+        ExtractorParser.parse(string);
+    }
+    
+    @Test
+    public void testRegexParse() throws Exception {
+        String string = "regex:(www)\\.(baidu)\\.(com),http://$1.$2.$3";
         ExtractorParser.parse(string);
     }
 }

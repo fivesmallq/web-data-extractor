@@ -394,14 +394,14 @@ public class ExtractorsTest {
                 .before(value -> "|before|" + value)
                 .after(value -> value + "|after|")
                 .split(xpath("//tr[@class='item']"))
-                .extract("type", xpath("//td[1]/text()")).filter(value -> "filter:" + value)
+                .extract("type", xpath("//td[1]/text()")).filter(value -> {return "filter---:" + value;})
                 .extract("name", xpath("//td[2]/text()")).filter(value -> "filter:" + value)
                 .extract("url", xpath("//td[3]/text()")).filter(value -> "filter:" + value)
                 .asBeanList(Language.class);
         Assert.assertNotNull(languages);
         Language second = languages.get(1);
         Assert.assertEquals(languages.size(), 3);
-        Assert.assertEquals(second.getType(), "filter:|before|dynamic|after|");
+        Assert.assertEquals(second.getType(), "filter---:|before|dynamic|after|");
         Assert.assertEquals(second.getName(), "filter:|before|Ruby|after|");
         Assert.assertEquals(second.getUrl(), "filter:|before|https://www.ruby-lang.org|after|");
     }
@@ -482,7 +482,6 @@ public class ExtractorsTest {
         Assert.assertEquals(second.getTitle(), "Sword of Honour");
         Assert.assertEquals(second.getPrice(), new Double(12.99));
     }
-
 
     @Test
     public void testSplit() {
