@@ -1,0 +1,4 @@
+ignore:
+  - "src/main/java/jodd"  # ignore folders and all its contents
+  - "src/main/java/org"  # ignore folders and all its contents
+  - "src/main/java/eu"  # ignore folders and all its contents
