@@ -1,6 +1,4 @@
 language: java
-before_script:
-  - pip install --user codecov
 jdk:
   - openjdk8
 # whitelist
@@ -10,4 +8,4 @@ branches:
 notifications:
   email: false
 after_success:
-    - codecov
+  - bash <(curl -s https://codecov.io/bash)
